@@ -13,9 +13,9 @@ final class AuthManager: ObservableObject {
   @Published var isAuthenticated: Bool = false
   @Published var isauthenticating: Bool = false
   @Published var authError: String?
-  
-  private var credentia
-  
-  
+//  
+//  private var credentia
+//  
+//  
 }
 

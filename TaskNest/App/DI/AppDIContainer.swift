@@ -11,7 +11,7 @@ import Swinject
 final class AppDIContainer {
   let container = Container()
   
-  private func registerServices() {
-    container.register(<#T##serviceType: Service.Type##Service.Type#>, factory: <#T##(any Resolver) -> Service#>)
-  }
+//  private func registerServices() {
+//    container.register(<#T##serviceType: Service.Type##Service.Type#>, factory: <#T##(any Resolver) -> Service#>)
+//  }
 }

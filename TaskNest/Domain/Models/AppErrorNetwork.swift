@@ -9,16 +9,40 @@ import Foundation
 
 public enum AppErrorNetwork: LocalizedError {
   case timeout
-  case unreachable
+  case unreachable(code: URLError.Code)
   case unauthorized
   case unknown(message: String)
   
   public var errorDescription: String? {
     switch self {
-    case .timeout: return "Request timed out."
-    case .unreachable: return "Network is unreachable."
-    case .unauthorized: return "Unauthorized access."
-    case .unknown(let msg): return msg
+    case .timeout: 
+      return "Request timed out."
+      
+    case .unreachable(let code):
+      return "Network is unreachable: Code - \(code.rawValue) - \(code)"
+      
+    case .unauthorized:
+      return "Unauthorized access."
+      
+    case .unknown(let message):
+      return "Network Error: \(message)"
+    }
+  }
+  
+  
+  public var debugDescription: String {
+    switch self {
+    case .timeout:
+      return "Time out"
+      
+    case .unreachable(let code):
+      return "Network is unreachable: Code - \(code.rawValue) - \(code)"
+      
+    case .unauthorized:
+      return "401 Unauthorized – Token missing or expired"
+      
+    case .unknown(let message):
+      return "Unkown network issue: \(message)"
     }
   }
 }
