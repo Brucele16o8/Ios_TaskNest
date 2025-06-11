@@ -49,49 +49,56 @@ struct ErrorMapper {
 
   }
   
-  /// ✅
-  static func mapURLError(_ error: URLError, original: Error) -> AppError {
+  // ✅
+  static func mapURLError(_ error: URLError, originalError: Error) -> AppError {
       switch error.code {
       case .cancelled:
-          return .auth(.cancelled, underlyingError: original)
+          return .auth(.cancelled, underlyingError: originalError)
       case .notConnectedToInternet:
-          return .auth(.noInternet, underlyingError: original)
+          return .auth(.noInternet, underlyingError: originalError)
       case .timedOut:
-          return .network(.timeout, underlyingError: original)
+          return .network(.timeout, underlyingError: originalError)
       case .cannotConnectToHost:
-          return .network(.unreachable(code: .cannotConnectToHost), underlyingError: original)
+          return .network(.unreachable(code: .cannotConnectToHost), underlyingError: originalError)
       case .cannotFindHost:
-          return .network(.unreachable(code: .cannotFindHost), underlyingError: original)
+          return .network(.unreachable(code: .cannotFindHost), underlyingError: originalError)
       case .dnsLookupFailed:
-          return .network(.unreachable(code: .dnsLookupFailed), underlyingError: original)
+          return .network(.unreachable(code: .dnsLookupFailed), underlyingError: originalError)
       case .networkConnectionLost:
-          return .network(.unreachable(code: .networkConnectionLost), underlyingError: original)
+          return .network(.unreachable(code: .networkConnectionLost), underlyingError: originalError)
       case .httpTooManyRedirects:
-          return .network(.unreachable(code: .httpTooManyRedirects), underlyingError: original)
+          return .network(.unreachable(code: .httpTooManyRedirects), underlyingError: originalError)
       case .resourceUnavailable:
-          return .network(.unreachable(code: .resourceUnavailable), underlyingError: original)
+          return .network(.unreachable(code: .resourceUnavailable), underlyingError: originalError)
       case .redirectToNonExistentLocation:
-          return .network(.unreachable(code: .redirectToNonExistentLocation), underlyingError: original)
+          return .network(.unreachable(code: .redirectToNonExistentLocation), underlyingError: originalError)
       case .unsupportedURL:
-          return .network(.unreachable(code: .unsupportedURL), underlyingError: original)
+          return .network(.unreachable(code: .unsupportedURL), underlyingError: originalError)
       case .badURL:
-          return .network(.unreachable(code: .badURL), underlyingError: original)
+          return .network(.unreachable(code: .badURL), underlyingError: originalError)
       case .badServerResponse:
-          return .network(.unreachable(code: .badServerResponse), underlyingError: original)
+          return .network(.unreachable(code: .badServerResponse), underlyingError: originalError)
       case .userCancelledAuthentication:
-          return .network(.unreachable(code: .userCancelledAuthentication), underlyingError: original)
+          return .network(.unreachable(code: .userCancelledAuthentication), underlyingError: originalError)
       case .userAuthenticationRequired:
-          return .network(.unauthorized, underlyingError: original)
+          return .network(.unauthorized, underlyingError: originalError)
       case .zeroByteResource:
-          return .network(.unreachable(code: .zeroByteResource), underlyingError: original)
+          return .network(.unreachable(code: .zeroByteResource), underlyingError: originalError)
       case .cannotDecodeRawData:
-          return .decoding(.cannotDecodeRawData, underlyingError: original)
+          return .decoding(.cannotDecodeRawData, underlyingError: originalError)
       case .cannotDecodeContentData:
-          return .decoding(.cannotDecodeContentData, underlyingError: original)
+          return .decoding(.cannotDecodeContentData, underlyingError: originalError)
       case .cannotParseResponse:
-          return .decoding(.cannotParseResponse, underlyingError: original)
+          return .decoding(.cannotParseResponse, underlyingError: originalError)
       default:
-          return .network(.unknown(message: error.localizedDescription), underlyingError: original)
+          return .network(.unknown(message: error.localizedDescription), underlyingError: originalError)
       }
   }
+  
+  // ✅
+  static func mapJsonDecodingError(_ decodingError: DecodingError) -> AppError {
+    let parsed = JsonDecodingErrorParser.parse(decodingError)
+    return .decoding(parsed, underlyingError: decodingError)
+  }
+  
 }

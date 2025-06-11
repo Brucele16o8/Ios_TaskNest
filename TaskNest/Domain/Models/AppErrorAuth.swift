@@ -13,6 +13,7 @@ public enum AppErrorAuth: LocalizedError {
   case invalidCredentials
   case unknown(message: String)
   
+  // 🧩
   public var errorDescription: String? {
     switch self {
     case .cancelled:
@@ -29,6 +30,7 @@ public enum AppErrorAuth: LocalizedError {
     }
   }
   
+  // 🧩
   public var debugDescription: String {
     switch self {
     case .cancelled:
