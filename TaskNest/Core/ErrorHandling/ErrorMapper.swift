@@ -43,11 +43,45 @@ struct ErrorMapper {
     default:
       return .auth(.unknown(message: "Unknown Auth0 error"), underlyingError: webAuthError)
     }
-
-
-
-
   }
+  
+  
+  // ✅
+  static func mapCredentialsManagerError(_ error: CredentialsManagerError) -> AppError {
+      switch error {
+      case .noCredentials:
+          return .auth(.unauthorized(message: "No credentials found"), underlyingError: error)
+
+      case .noRefreshToken:
+          return .auth(.unauthorized(message: "Missing refresh token"), underlyingError: error)
+
+      case .renewFailed:
+          return .auth(.unauthorized(message: "Failed to renew credentials"), underlyingError: error)
+        
+      case .apiExchangeFailed:
+          return .auth(.unauthorized(message: "API exchange failed"), underlyingError: error)
+
+      case .ssoExchangeFailed:
+          return .auth(.unauthorized(message: "SSO exchange failed"), underlyingError: error)
+
+      case .storeFailed:
+          return .auth(.unknown(message: "Failed to store credentials"), underlyingError: error)
+
+      case .biometricsFailed:
+          return .auth(.unauthorized(message: "Biometric authentication failed"), underlyingError: error)
+
+      case .revokeFailed:
+          return .auth(.unknown(message: "Failed to revoke credentials"), underlyingError: error)
+
+      case .largeMinTTL:
+          return .auth(.unknown(message: "Requested minTTL exceeds token lifetime"), underlyingError: error)
+        
+      default:
+          return .auth(.unknown(message: "Unkown Auth0 error"), underlyingError: error)
+
+      }
+  }
+
   
   // ✅
   static func mapURLError(_ error: URLError, originalError: Error) -> AppError {
@@ -100,5 +134,11 @@ struct ErrorMapper {
     let parsed = JsonDecodingErrorParser.parse(decodingError)
     return .decoding(parsed, underlyingError: decodingError)
   }
+  
+  // ✅
+  static func mapAuthenticationError(_ authenticationError: AuthenticationError) -> AppError {
+    return .auth(.unauthenticated(message: "Code: \(authenticationError.code)"), underlyingError: authenticationError)
+  }
+
   
 }

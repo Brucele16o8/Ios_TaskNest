@@ -50,14 +50,19 @@ public enum AppError: Error, LocalizedError {
   }
  
   
-  /// Helper method
+  // Helper method
   private func underlyingInfo(_ error: Error?) -> String {
     guard let error = error else { return "" }
     let typeName = String(reflecting: type(of: error)) // to get the full type name of the error
     var message = " | System: [--\(typeName)--] - \(error.localizedDescription)"
     
-    // Special handling for WebAuthError.cause for deeper error
+    /// Special handling for WebAuthError.cause for deeper error
     if let webAuthError = error as? WebAuthError, let causeError = webAuthError.cause {
+      message += "\n   ↪︎ RootCause: [\(type(of: causeError))] - \(causeError.localizedDescription)"
+    }
+    
+    /// Special handling for CredentialsManagerError.cause
+    if let credentialsError = error as? CredentialsManagerError, let causeError = credentialsError.cause {
       message += "\n   ↪︎ RootCause: [\(type(of: causeError))] - \(causeError.localizedDescription)"
     }
     

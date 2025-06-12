@@ -12,6 +12,8 @@ public enum AppErrorAuth: LocalizedError {
   case noInternet
   case invalidCredentials
   case unknown(message: String)
+  case unauthorized(message: String)
+  case unauthenticated(message: String)
   
   // 🧩
   public var errorDescription: String? {
@@ -22,8 +24,14 @@ public enum AppErrorAuth: LocalizedError {
     case .noInternet:
       return "No internet connection."
       
-    case .invalidCredentials: 
+    case .invalidCredentials:
       return "Invalid credentials - please check your email or password"
+      
+    case .unauthorized(message: let message):
+      return "Unauthorized - \(message)"
+      
+    case .unauthenticated(message: let message):
+      return "Authentication error - \(message)"
       
     case .unknown(let message):
       return "Auth error \(message)"
@@ -41,6 +49,12 @@ public enum AppErrorAuth: LocalizedError {
       
     case .invalidCredentials:
       return "Invalid credentials provided"
+      
+    case .unauthorized(message: let message):
+      return "Unauthorized access - \(message)"
+      
+    case .unauthenticated(message: let message):
+      return "Authentication error - \(message)"
       
     case .unknown(let message):
       return "Unknown authentication error: \(message)"

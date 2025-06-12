@@ -9,13 +9,19 @@ import Foundation
 import Auth0
 import Combine
 
-final class AuthManager: ObservableObject {
-  @Published var isAuthenticated: Bool = false
-  @Published var isauthenticating: Bool = false
-  @Published var authError: String?
+//final class AuthManager: ObservableObject {
+//  @Published var isAuthenticated: Bool = false
+//  @Published var isauthenticating: Bool = false
+//  @Published var authError: String? = nil
 //  
-//  private var credentia
+//  private var credentials: Credentials
+//  private let credentialsManager: CredentialsManager
 //  
+//
+//  // ✅ Restore session from the key chain
+////  func restoreSession() {
+////    credentials.cre
+////  }
 //  
-}
+//} // 🧱
 
