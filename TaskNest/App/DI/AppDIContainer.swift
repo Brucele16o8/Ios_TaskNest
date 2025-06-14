@@ -9,13 +9,22 @@ import Foundation
 import Swinject
 
 final class AppDIContainer {
+  static let shared = AppDIContainer()
   let container = Container()
   
+  init() {
+    Task {
+      await registerServices()
+    }
+  }
   
-  
-  private func registerServices() {
+  private func registerServices() async {
     registerDataSources()
     registerRepositories()
+    registerUseCases()
+    await MainActor.run {
+      registerViewModels()
+    }
   }
   
   // ✅ - Data sources

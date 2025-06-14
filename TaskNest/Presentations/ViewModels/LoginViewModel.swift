@@ -24,6 +24,16 @@ final class LoginViewModel: ObservableObject {
     restoreSession()
   }
   
+  // ✅
+  func updateEmail(_ email: String) {
+    loginState.email = email
+  }
+  
+  // ✅
+  func updatePassword(_ password: String) {
+    loginState.password = password
+  }
+  
   ///  - Restore session
   func restoreSession() {
     loginUseCase.restore { [weak self] result in
