@@ -57,7 +57,7 @@ final class Auth0RemoteDataSource {
     webAuth.start { result in
       if case .success(let credentials) = result {
         let didStore = self.credentialsManager.store(credentials: credentials)
-        print("STore securely with biometrics: \(didStore)")
+        print("Store securely with biometrics: \(didStore)")
         
       }
       completion(result.mapError { $0.toAppError })

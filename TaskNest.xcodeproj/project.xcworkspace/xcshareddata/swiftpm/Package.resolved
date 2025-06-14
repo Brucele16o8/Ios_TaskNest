@@ -1,5 +1,5 @@
 {
-  "originHash" : "edd5f22ff44550b666bfdfca57065ec5ff8781e230a918b504c80371590d3453",
+  "originHash" : "004e27591a7cc7b4edd3c0559ea9c9bec986acefd6e01ab16b3941d89f5e733c",
   "pins" : [
     {
       "identity" : "auth0.swift",

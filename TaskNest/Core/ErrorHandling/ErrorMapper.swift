@@ -145,4 +145,26 @@ struct ErrorMapper {
     return .validation(validationError, underlyingError: validationError)
   }
   
+  // ✅ Mapper generic error
+  static func map(_ error: Error) -> AppError {
+    if let authError = error as? AuthenticationError {
+      return mapAuthenticationError(authError)
+    }
+    if let webAuthError = error as? WebAuthError {
+      return mapWebAuthError(webAuthError)
+    }
+    if let cmError = error as? CredentialsManagerError {
+      return mapCredentialsManagerError(cmError)
+    }
+    if let urlError = error as? URLError {
+      return mapURLError(urlError, originalError: error)
+    }
+    if let decodingError = error as? DecodingError {
+      return mapJsonDecodingError(decodingError)
+    }
+    if let appError = error as? AppError {
+      return appError
+    }
+    return .unknown(message: error.localizedDescription, underlyingError: error)
+  }
 }
