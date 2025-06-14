@@ -14,8 +14,7 @@ final class LoginUseCase {
     self.repository = repository
   }
   
-  public func loginWithEmailAndPassword(email: String, password: String,
-                                        completion: @escaping (Result<Credentials, Error>) -> Void) {
+  public func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
           repository.loginWithEmailAndPassword(email: email, password: password, completion: completion)
       }
   

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AppErrorAuth: LocalizedError {
+enum AppErrorAuth: LocalizedError {
   case cancelled
   case noInternet
   case invalidCredentials

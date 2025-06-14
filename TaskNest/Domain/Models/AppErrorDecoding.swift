@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AppErrorDecoding: LocalizedError {
+enum AppErrorDecoding: LocalizedError {
   case cannotDecodeRawData
   case cannotDecodeContentData
   case cannotParseResponse

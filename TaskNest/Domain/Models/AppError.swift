@@ -8,10 +8,11 @@
 import Foundation
 import Auth0
 
-public enum AppError: Error, LocalizedError {
+enum AppError: Error, LocalizedError {
   case auth(AppErrorAuth, underlyingError: Error? = nil)
   case network(AppErrorNetwork, underlyingError: Error? = nil)
   case decoding(AppErrorDecoding, underlyingError: Error? = nil)
+  case validation(ValidationError, underlyingError: Error? = nil)
   case unknown(message: String, underlyingError: Error? = nil)
   
   // ✅
@@ -26,6 +27,9 @@ public enum AppError: Error, LocalizedError {
       
     case .decoding(let decodingError, _):
       return decodingError.localizedDescription
+      
+    case .validation(let validationError, _):
+      return validationError.localizedDescription
       
     case .unknown(let message, _):
       return "Unexpected error - error: \(message)"
@@ -44,11 +48,14 @@ public enum AppError: Error, LocalizedError {
     case .decoding(let message, let underlyingError):
       return "[Decoding] \(message)" + underlyingInfo(underlyingError)
       
+    case .validation(let validationError, let underlyingError):
+      return "[Validation] \(validationError.localizedDescription)" + underlyingInfo(underlyingError)
+      
     case .unknown(message: let message, let underlyingError):
       return "[Unknown] \(message)" + underlyingInfo(underlyingError)
     }
   }
- 
+  
   
   // Helper method
   private func underlyingInfo(_ error: Error?) -> String {

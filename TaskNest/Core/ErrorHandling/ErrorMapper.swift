@@ -138,7 +138,11 @@ struct ErrorMapper {
   // ✅
   static func mapAuthenticationError(_ authenticationError: AuthenticationError) -> AppError {
     return .auth(.unauthenticated(message: "Code: \(authenticationError.code)"), underlyingError: authenticationError)
+  }  
+  
+  // ✅
+  static func mapValidationError(_ validationError: ValidationError) -> AppError {
+    return .validation(validationError, underlyingError: validationError)
   }
-
   
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum AppErrorNetwork: LocalizedError {
+enum AppErrorNetwork: LocalizedError {
   case timeout
   case unreachable(code: URLError.Code)
   case unauthorized
