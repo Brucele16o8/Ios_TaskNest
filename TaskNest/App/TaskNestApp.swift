@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct TaskNestApp: App {
-  @Environment(\.resolver) private var resolver
+  let container = AppDIContainer.shared.container
   
   var body: some Scene {
     WindowGroup {
-      LoginView(viewModel: resolver.resolve(LoginViewModel.self)!)
+      LoginView(viewModel: container.resolve(LoginViewModel.self)!)
     }
   }
   

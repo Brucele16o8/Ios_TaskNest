@@ -8,35 +8,36 @@
 import Foundation
 import Swinject
 
+@MainActor
 final class AppDIContainer {
-  static let shared = AppDIContainer()
+  static private(set) var shared: AppDIContainer = AppDIContainer()
   let container = Container()
   
   init() {
-    Task {
-      await registerServices()
-    }
+    registerServices()
   }
   
-  private func registerServices() async {
+  private func registerServices() {
     registerDataSources()
     registerRepositories()
     registerUseCases()
-    await MainActor.run {
-      registerViewModels()
-    }
+    registerViewModels()
   }
   
   // ✅ - Data sources
   private func registerDataSources() {
-    container.register(Auth0RemoteDataSource.self) { _ in Auth0RemoteDataSource()
+    container.register(Auth0RemoteDataSource.self) { _ in
+      Auth0RemoteDataSource()
     }
+    Logger.d(tag: "DIContainer", message: "Successful registerDataSources")
   }
   
   // ✅ - Repositories
   private func registerRepositories() {
     container.register(AuthRepository.self) { r in
-      AuthRepositoryImpl(remote: r.resolve(Auth0RemoteDataSource.self)!) }
+      AuthRepositoryImpl(remote: r.resolve(Auth0RemoteDataSource.self)!)
+    }
+    Logger.d(tag: "DIContainer", message: "Successful registerRepositories")
   }
   
   // ✅ - Use cases
@@ -44,14 +45,15 @@ final class AppDIContainer {
     container.register(LoginUseCase.self) { r in
       LoginUseCase(repository: r.resolve(AuthRepository.self)!)
     }
+    Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }
   
   // ✅ - View Model
-  @MainActor
   private func registerViewModels() {
     container.register(LoginViewModel.self) { r in
       LoginViewModel(loginUseCase: r.resolve(LoginUseCase.self)!)
     }
+    Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   
 } // 🧱

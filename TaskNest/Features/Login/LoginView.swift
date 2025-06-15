@@ -6,18 +6,26 @@
 //
 
 import SwiftUI
+import Swinject
 
 struct LoginView: View {
   @ObservedObject private(set) var viewModel: LoginViewModel
   
   var body: some View {
+//    let loginState = viewModel.state
     
+    VStack {
+      Text("Testing Login")
+//      if loginState.isAuthenticated {
+//        Text("✅ Logged in as \(loginState.email)")
+//      }
+      
+    }
   }
 }
 
 //#Preview {
-//  
-//  LoginView()
+//  LoginView(viewModel: resolver.resolve(LoginViewModel.self)!)
 //}
 
 
