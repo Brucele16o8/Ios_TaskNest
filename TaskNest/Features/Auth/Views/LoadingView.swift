@@ -18,7 +18,7 @@ struct LoadingView: View {
       VStack {
         Spacer()
         Text("TaskNest")
-          .font(.system(size: 68, weight: .bold, design: .rounded))
+          .font(.custom("Pacifico-Regular", size: 68).weight(.bold))
           .foregroundStyle(.headingText)
           .scaleEffect(loadingViewModel.showText ? 1 : 0.8)
           .opacity(loadingViewModel.showText ? 1 : 0)
@@ -26,7 +26,8 @@ struct LoadingView: View {
         ProgressView()
           .progressViewStyle(CircularProgressViewStyle(tint: .white))
           .scaleEffect(1.3)
-          .padding(.top, 20)
+        Spacer()
+        Spacer()
         Spacer()
       }
       .onAppear {

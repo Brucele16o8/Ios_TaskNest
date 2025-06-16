@@ -7,6 +7,7 @@
 
 import Foundation
 import Auth0
+import SwiftUI
 
 @MainActor
 final class LoginViewModel: ObservableObject {
@@ -110,6 +111,16 @@ final class LoginViewModel: ObservableObject {
     }
     
     return true
+  }
+  
+  ///  - Animation
+  func startAnimation() {
+    Task {
+      try? await Task.sleep(nanoseconds: 300_000_000)
+      withAnimation(.easeOut(duration: 1)) {
+        loginState.showText = true
+      }
+    }
   }
   
 } // 🧱

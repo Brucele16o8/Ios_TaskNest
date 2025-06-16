@@ -9,6 +9,7 @@ struct LoginUIState: Equatable {
   var email: String = ""
   var password: String = ""
   var status: LoginStatus = .idle
+  var showText = false
   
   var isAuthenticating: Bool { status == .authenticating }
   var isAuthenticated: Bool { status == .authenticated }

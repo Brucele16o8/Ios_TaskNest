@@ -22,7 +22,9 @@ final class AppDIContainer {
     registerRepositories()
     registerUseCases()
     registerViewModels()
+    registerManagers()
   }
+
   
   // ✅ - Data sources
   private func registerDataSources() {
@@ -58,8 +60,16 @@ final class AppDIContainer {
       LoadingViewModel()
     }.inObjectScope(.container)
     
-    
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
+  }
+  
+  
+  // ✅ - Manager
+  private func registerManagers() {
+    container.register(AuthManager.self) { r in
+      AuthManager(loginUseCase: r.resolve(LoginUseCase.self)!)
+    }.inObjectScope(.container)
+    Logger.d(tag: "DIContainer", message: "Successful registerManagers")
   }
   
 } // 🧱

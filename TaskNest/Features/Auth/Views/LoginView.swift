@@ -9,23 +9,37 @@ import SwiftUI
 import Swinject
 
 struct LoginView: View {
-  @ObservedObject private(set) var viewModel: LoginViewModel
+  @ObservedObject private(set) var viewModel: LoginViewModel  
+  @ObservedObject private(set) var authManager: AuthManager
   
   var body: some View {
-//    let loginState = viewModel.state
+    let loginState = viewModel.state
     
-    VStack {
-      Text("Testing Login")
-//      if loginState.isAuthenticated {
-//        Text("✅ Logged in as \(loginState.email)")
-//      }
+    ZStack {
+      BackgroundGridView()
       
+      VStack {
+        LogoTitleView(title: "TaskNest", showText: loginState.showText)
+        
+        VStack(spacing: 16) {
+          PrimaryButton(
+            title: "I'm new to TaskNest",
+            icon: GoogleIcon(),
+            action: {
+              
+            })
+        }
+      }
     }
   }
 }
 
-//#Preview {
-//  LoginView(viewModel: resolver.resolve(LoginViewModel.self)!)
-//}
+#Preview {
+  let container = AppDIContainer.shared.container
+  LoginView(
+    viewModel: container.resolve(LoginViewModel.self)!,
+    authManager: container.resolve(AuthManager.self)!
+  )
+}
 
 

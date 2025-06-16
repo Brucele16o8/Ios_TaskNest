@@ -12,12 +12,13 @@ import Auth0
 final class AuthManager: ObservableObject {
   // ✅ Type
   enum AuthState {
+    case checking
     case authenticating
     case authenticated
     case unauthenticated
   }
   
-  @Published var authState: AuthState = .authenticating
+  @Published var authState: AuthState = .checking
   private let loginUseCase: LoginUseCase
   
   init(loginUseCase: LoginUseCase) {
@@ -41,10 +42,15 @@ final class AuthManager: ObservableObject {
   
   // ✅
   func updateAuthStateIfNeeded(from loginStatus: LoginStatus) {
-    if loginStatus == LoginStatus.authenticated {
+    switch loginStatus {
+    case .authenticated:
       authState = AuthState.authenticated
+    case .authenticating:
+      authState = AuthState.authenticating
+    case .idle, .error:
+      authState = AuthState.unauthenticated
     }
-  } 
+  }
   
 } // 🧱
 

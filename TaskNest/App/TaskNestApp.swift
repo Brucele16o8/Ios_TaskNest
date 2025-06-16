@@ -13,7 +13,7 @@ struct TaskNestApp: App {
   
   var body: some Scene {
     WindowGroup {
-      LoginView(viewModel: container.resolve(LoginViewModel.self)!)
+      RoorAppView()
     }
   }
   
