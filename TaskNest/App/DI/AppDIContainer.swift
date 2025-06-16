@@ -28,7 +28,7 @@ final class AppDIContainer {
   private func registerDataSources() {
     container.register(Auth0RemoteDataSource.self) { _ in
       Auth0RemoteDataSource()
-    }
+    }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerDataSources")
   }
   
@@ -36,7 +36,7 @@ final class AppDIContainer {
   private func registerRepositories() {
     container.register(AuthRepository.self) { r in
       AuthRepositoryImpl(remote: r.resolve(Auth0RemoteDataSource.self)!)
-    }
+    }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerRepositories")
   }
   
@@ -44,7 +44,7 @@ final class AppDIContainer {
   private func registerUseCases() {
     container.register(LoginUseCase.self) { r in
       LoginUseCase(repository: r.resolve(AuthRepository.self)!)
-    }
+    }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }
   
@@ -52,7 +52,7 @@ final class AppDIContainer {
   private func registerViewModels() {
     container.register(LoginViewModel.self) { r in
       LoginViewModel(loginUseCase: r.resolve(LoginUseCase.self)!)
-    }
+    }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   

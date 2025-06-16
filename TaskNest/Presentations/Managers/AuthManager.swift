@@ -7,10 +7,44 @@
 
 import Foundation
 import Auth0
-import Combine
 
+@MainActor
 final class AuthManager: ObservableObject {
-
+  // ✅ Type
+  enum AuthState {
+    case authenticating
+    case authenticated
+    case unauthenticated
+  }
+  
+  @Published var authState: AuthState = .authenticating
+  private let loginUseCase: LoginUseCase
+  
+  init(loginUseCase: LoginUseCase) {
+    self.loginUseCase = loginUseCase
+    checkSession()
+    }
+  
+  /// Checking session
+  func checkSession() {
+    loginUseCase.restore { [weak self] result in
+      Task { @MainActor in
+          switch result {
+          case .success:
+            self?.authState = .authenticated
+          case .failure:
+            self?.authState = .unauthenticated
+        }
+      }
+    }
+  }
+  
+  // ✅
+  func updateAuthStateIfNeeded(from loginStatus: LoginStatus) {
+    if loginStatus == LoginStatus.authenticated {
+      authState = AuthState.authenticated
+    }
+  } 
   
 } // 🧱
 
