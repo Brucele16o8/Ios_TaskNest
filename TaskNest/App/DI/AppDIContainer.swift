@@ -53,6 +53,12 @@ final class AppDIContainer {
     container.register(LoginViewModel.self) { r in
       LoginViewModel(loginUseCase: r.resolve(LoginUseCase.self)!)
     }.inObjectScope(.container)
+    
+    container.register(LoadingViewModel.self) { r in
+      LoadingViewModel()
+    }.inObjectScope(.container)
+    
+    
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   
