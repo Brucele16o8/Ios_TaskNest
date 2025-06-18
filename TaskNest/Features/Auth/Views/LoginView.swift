@@ -24,11 +24,12 @@ struct LoginView: View {
         VStack(spacing: 16) {
           PrimaryButton(
             title: "I'm new to TaskNest",
-            icon: GoogleIcon(),
+            icon: GoogleIcon(iconSize: 25),
             action: {
               
             })
         }
+        .padding(38)
       }
     }
   }

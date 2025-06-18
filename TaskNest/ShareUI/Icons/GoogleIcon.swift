@@ -8,10 +8,16 @@
 import SwiftUI
 
 struct GoogleIcon: View {
+  let iconSize: CGFloat
+  
+  init(iconSize: CGFloat = 45) {
+    self.iconSize = iconSize
+  }
+  
   var body: some View {
     Image("GoogleIcon")
       .resizable()
-      .frame(width: 45, height: 45)
+      .frame(width: iconSize, height: iconSize)
   }
 }
 
