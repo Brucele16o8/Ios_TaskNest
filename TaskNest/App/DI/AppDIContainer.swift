@@ -18,11 +18,20 @@ final class AppDIContainer {
   }
   
   private func registerServices() {
+    registerAppCoordinators()
     registerDataSources()
     registerRepositories()
     registerUseCases()
     registerViewModels()
     registerManagers()
+  }
+  
+  // ✅ - App Coordinators
+  private func registerAppCoordinators() {
+    container.register(AppCoordinator.self) { _ in
+      AppCoordinator()
+    }.inObjectScope(.container)
+    Logger.d(tag: "DIContainer", message: "Successful registerAppCoordinators")
   }
 
   
@@ -58,6 +67,10 @@ final class AppDIContainer {
     
     container.register(LoadingViewModel.self) { r in
       LoadingViewModel()
+    }.inObjectScope(.container)
+    
+    container.register(SignUpViewModel.self) {  _ in // TODO: - more later
+      SignUpViewModel()
     }.inObjectScope(.container)
     
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")

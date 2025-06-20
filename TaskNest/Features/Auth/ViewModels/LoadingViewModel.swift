@@ -8,8 +8,9 @@
 import SwiftUI
 
 @MainActor
-final class LoadingViewModel: ObservableObject {
-  @Published var showText = false
+@Observable
+final class LoadingViewModel {
+  var showText = false
   
   init() {
     animateTitle()

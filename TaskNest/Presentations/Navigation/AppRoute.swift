@@ -6,7 +6,8 @@
 //
 
 enum AppRoute: Hashable {
-  case login
+  case auth(authuRoute: AuthRoute)
   case home
   case category(category: Category)
+  case photoViewer(startingAt: Int, photos: [String])
 }

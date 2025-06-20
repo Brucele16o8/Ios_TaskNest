@@ -11,6 +11,7 @@ import Swinject
 struct LoginView: View {
   @Bindable private(set) var viewModel: LoginViewModel  
   @Bindable private(set) var authManager: AuthManager
+  @Bindable private(set) var appCoordinator: AppCoordinator
   @State private var showfForgotPasswordView: Bool = false
   
   var body: some View {
@@ -45,7 +46,8 @@ struct LoginView: View {
   let container = AppDIContainer.shared.container
   LoginView(
     viewModel: container.resolve(LoginViewModel.self)!,
-    authManager: container.resolve(AuthManager.self)!
+    authManager: container.resolve(AuthManager.self)!,
+    appCoordinator: container.resolve(AppCoordinator.self)!
   )
 }
 

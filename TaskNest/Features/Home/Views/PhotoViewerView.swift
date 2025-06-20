@@ -7,12 +7,15 @@
 
 import SwiftUI
 
-struct SubTaskPhotoView: View {
+struct PhotoViewerView: View {
+  let startingIndex : Int
+  let photos : [String]
+  
   var body: some View {
-    Text("SubTaskPhotoView")
+    Text("PhotoViewerView")
   }
 }
 
-#Preview {
-  SubTaskPhotoView()
-}
+//#Preview {
+//  PhotoViewerView()
+//}

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LoadingView: View {
-  @ObservedObject var loadingViewModel: LoadingViewModel
+  @Bindable var loadingViewModel: LoadingViewModel
   @Namespace private var animationNamespace
   
   var body: some View {

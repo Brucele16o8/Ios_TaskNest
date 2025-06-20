@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Task {
+final class TaskItem {
   @Attribute(.unique) var id: UUID
   var title: String
   var isCompleted: Bool
