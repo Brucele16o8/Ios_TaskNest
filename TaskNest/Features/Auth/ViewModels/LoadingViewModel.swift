@@ -11,7 +11,11 @@ import SwiftUI
 final class LoadingViewModel: ObservableObject {
   @Published var showText = false
   
-  func startAnimation() {
+  init() {
+    animateTitle()
+  }
+  
+  func animateTitle() {
     Task {
       try? await Task.sleep(nanoseconds: 300_000_000)
       withAnimation(.easeOut(duration: 1)) {

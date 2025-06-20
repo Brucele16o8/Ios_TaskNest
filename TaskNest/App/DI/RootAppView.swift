@@ -8,8 +8,8 @@
 import SwiftUI
 import Swinject
 
-struct RoorAppView: View {
-  @StateObject private var authManager = AppDIContainer.shared.container.resolve(AuthManager.self)!
+struct RootAppView: View {
+  @State private var authManager = AppDIContainer.shared.container.resolve(AuthManager.self)!
   let container = AppDIContainer.shared.container
   
   var body: some View {
@@ -28,5 +28,5 @@ struct RoorAppView: View {
 }
 
 #Preview {
-  RoorAppView()
+  RootAppView()
 }

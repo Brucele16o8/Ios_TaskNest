@@ -7,18 +7,20 @@
 
 import Foundation
 import Auth0
+import Observation
 
 @MainActor
-final class AuthManager: ObservableObject {
+@Observable
+final class AuthManager {
   // ✅ Type
-  enum AuthState {
+  enum AuthState: Equatable {
     case checking
     case authenticating
     case authenticated
     case unauthenticated
   }
   
-  @Published var authState: AuthState = .checking
+  var authState: AuthState = .checking
   private let loginUseCase: LoginUseCase
   
   init(loginUseCase: LoginUseCase) {

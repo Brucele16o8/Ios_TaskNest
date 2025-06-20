@@ -14,6 +14,11 @@ struct LoginUIState: Equatable {
   var isAuthenticating: Bool { status == .authenticating }
   var isAuthenticated: Bool { status == .authenticated }
   var isLoginDisable: Bool { email.isEmpty || password.isEmpty || isAuthenticating }
+  
+  var isValidLoginForm: Bool {
+    !email.isEmpty && email.contains("@") &&
+    !password.isEmpty && password.count >= PasswordConfig.minLength
+  }
 }
 
 

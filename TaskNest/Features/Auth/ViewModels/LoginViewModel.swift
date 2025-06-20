@@ -8,20 +8,31 @@
 import Foundation
 import Auth0
 import SwiftUI
+import Combine
 
 @MainActor
-final class LoginViewModel: ObservableObject {
-  @Published private var loginState = LoginUIState()
-  @Published private var appError: AppError?
+@Observable
+final class LoginViewModel {
+  // MARK: - State
+  private var loginState = LoginUIState()
+  private var appError: AppError?
   
   var state: LoginUIState { loginState }
   var error: AppError? { appError }
   
+  // MARK: - Dependencies
   private let loginUseCase: LoginUseCase
   private var credentials: Credentials?
   
+  // MARK: - Computed
+  var isValidLoginForm: Bool {
+    loginState.isValidLoginForm
+  }
+  
+  
   init(loginUseCase: LoginUseCase) {
     self.loginUseCase = loginUseCase
+//    bindValidation()
     restoreSession()
   }
   
@@ -47,7 +58,9 @@ final class LoginViewModel: ObservableObject {
   
   // ✅ Login with email and password
   func loginWithEmailAndPassword() {
-    guard validateInput() else { return }
+    let result = validateInput(email: loginState.email, password: loginState.password)
+    appError = result.appError
+    guard result.isValid else { return }
     
     loginState.status = .authenticating
     appError = nil
@@ -92,25 +105,23 @@ final class LoginViewModel: ObservableObject {
   }
   
   ///  - Validation
-  private func validateInput() -> Bool {
-    if loginState.email.isEmpty {
-      appError = ValidationError.emptyEmail.toAppError
-      return false
-    }
-    if !loginState.email.contains("@") {
-      appError = ValidationError.invalidEmailFormat.toAppError
-      return false
-    }
-    if loginState.password.isEmpty {
-      appError = ValidationError.invalidEmailFormat.toAppError
-      return false
-    }
-    if loginState.password.count < 8 {
-      appError = ValidationError.tooShortPassword(min: PasswordConfig.minLength).toAppError
-      return false
+  private func validateInput(email: String, password: String) -> (isValid: Bool, appError: AppError?) {
+    let rules: [(Bool, ValidationError)] = [
+      (email.isEmpty, .emptyEmail),
+      (email.contains("@"), .invalidEmailFormat),
+      (password.isEmpty, .emptyPassword),
+      (password.count < PasswordConfig.minLength, .tooShortPassword(min: PasswordConfig.minLength)),
+      (!password.contains(where: \.isUppercase), .missingUppercase),
+      (!password.contains(where: \.isNumber) , .missingNumber)
+    ]
+    
+    for (failed, validationError) in rules {
+      if failed {
+        return (false, validationError.toAppError)
+      }
     }
     
-    return true
+    return (true, nil)
   }
   
   ///  - Animation

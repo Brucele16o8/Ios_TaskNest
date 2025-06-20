@@ -9,8 +9,9 @@ import SwiftUI
 import Swinject
 
 struct LoginView: View {
-  @ObservedObject private(set) var viewModel: LoginViewModel  
-  @ObservedObject private(set) var authManager: AuthManager
+  @Bindable private(set) var viewModel: LoginViewModel  
+  @Bindable private(set) var authManager: AuthManager
+  @State private var showfForgotPasswordView: Bool = false
   
   var body: some View {
     let loginState = viewModel.state
@@ -19,8 +20,10 @@ struct LoginView: View {
       BackgroundGridView()
       
       VStack {
+        Spacer()
         LogoTitleView(title: "TaskNest", showText: loginState.showText)
-        
+        Spacer()
+        Spacer()
         VStack(spacing: 16) {
           PrimaryButton(
             title: "I'm new to TaskNest",
@@ -29,8 +32,11 @@ struct LoginView: View {
               
             })
         }
-        .padding(38)
+        .padding(.horizontal, 32)
       }
+    }
+    .task {
+      viewModel.startAnimation()
     }
   }
 }

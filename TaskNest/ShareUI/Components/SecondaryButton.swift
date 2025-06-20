@@ -14,6 +14,7 @@ struct SecondaryButton: View {
   var body: some View {
     Button(action: action) {
       Text(title)
+        .fontWeight(.semibold)
         .frame(maxWidth: .infinity)
         .padding()
         .background(Color.white)

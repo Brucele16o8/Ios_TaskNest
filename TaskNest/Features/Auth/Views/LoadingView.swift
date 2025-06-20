@@ -30,9 +30,6 @@ struct LoadingView: View {
         Spacer()
         Spacer()
       }
-      .onAppear {
-        loadingViewModel.startAnimation()
-      }
     }
   }
 }
