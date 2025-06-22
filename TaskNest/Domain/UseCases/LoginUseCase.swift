@@ -15,8 +15,9 @@ final class LoginUseCase {
   }
   
   public func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
-          repository.loginWithEmailAndPassword(email: email, password: password, completion: completion)
-      }
+    Logger.d(tag: "", message: "Inside LoginUseCase - loginWithEmailAndPassword")
+    repository.loginWithEmailAndPassword(email: email, password: password, completion: completion)
+  }
   
   func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void) {
     repository.loginWithGoogle(completion: completion)
@@ -29,5 +30,5 @@ final class LoginUseCase {
   func logout() {
     repository.logout()
   }
-    
+  
 }

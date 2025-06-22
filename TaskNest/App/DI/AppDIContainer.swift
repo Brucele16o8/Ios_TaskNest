@@ -18,12 +18,12 @@ final class AppDIContainer {
   }
   
   private func registerServices() {
+    registerManagers()
     registerAppCoordinators()
     registerDataSources()
     registerRepositories()
     registerUseCases()
     registerViewModels()
-    registerManagers()
   }
   
   // ✅ - App Coordinators
@@ -62,7 +62,10 @@ final class AppDIContainer {
   // ✅ - View Model
   private func registerViewModels() {
     container.register(LoginViewModel.self) { r in
-      LoginViewModel(loginUseCase: r.resolve(LoginUseCase.self)!)
+      LoginViewModel(
+        loginUseCase: r.resolve(LoginUseCase.self)!,
+        authManager: r.resolve(AuthManager.self)!
+      )
     }.inObjectScope(.container)
     
     container.register(LoadingViewModel.self) { r in

@@ -18,7 +18,7 @@ final class Auth0RemoteDataSource {
   }
   
   // ✅ Login with email and passwork by Auth0
-  func loginWithEmail(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
+  func loginWithEmailandPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
     auth
       .login(
         usernameOrEmail: email,

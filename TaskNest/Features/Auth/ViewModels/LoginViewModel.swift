@@ -14,7 +14,7 @@ import Combine
 @Observable
 final class LoginViewModel {
   // MARK: - State
-  private var loginState = LoginUIState()
+  private var loginState: LoginUIState = LoginUIState()
   private var appError: AppError?
   
   var state: LoginUIState { loginState }
@@ -23,16 +23,17 @@ final class LoginViewModel {
   // MARK: - Dependencies
   private let loginUseCase: LoginUseCase
   private var credentials: Credentials?
+  private var authManager: AuthManager
   
   // MARK: - Computed
   var isValidLoginForm: Bool {
     loginState.isValidLoginForm
   }
   
-  
-  init(loginUseCase: LoginUseCase) {
+  // MARK: - INIT
+  init(loginUseCase: LoginUseCase, authManager: AuthManager) {
     self.loginUseCase = loginUseCase
-//    bindValidation()
+    self.authManager = authManager
     restoreSession()
   }
   
@@ -58,11 +59,17 @@ final class LoginViewModel {
   
   // ✅ Login with email and password
   func loginWithEmailAndPassword() {
+    Logger.d(tag: "Login", message: "Inside LoginViewModel - loginWithEmailAndPassword")
     let result = validateInput(email: loginState.email, password: loginState.password)
+    Logger.d(tag: "Login", message: "emai: \(loginState.email), password: \(loginState.password)")
     appError = result.appError
-    guard result.isValid else { return }
+    guard result.isValid else {
+      Logger.e(tag: "Login", message: "Error in loginWithEmailAndPassword", error: appError)
+      loginState.status = .authenticating
+      return
+    }
+    Logger.d(tag: "Login", message: "Result is valid")
     
-    loginState.status = .authenticating
     appError = nil
     
     loginUseCase.loginWithEmailAndPassword(
@@ -97,9 +104,18 @@ final class LoginViewModel {
       case .success(let credentials):
         self.credentials = credentials
         loginState.status = .authenticated
+        authManager.updateAuthStateIfNeeded(from: loginState.status)
+        Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
+        Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
+        Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")
+        
       case .failure(let error):
         appError = error.toAppError
         loginState.status = .error
+        Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
+        Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
+        Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")
+        Logger.e(tag: "Login", message: "Error while authenticating: \(error)")
       }
     }
   }
@@ -108,7 +124,7 @@ final class LoginViewModel {
   private func validateInput(email: String, password: String) -> (isValid: Bool, appError: AppError?) {
     let rules: [(Bool, ValidationError)] = [
       (email.isEmpty, .emptyEmail),
-      (email.contains("@"), .invalidEmailFormat),
+      (!email.contains("@"), .invalidEmailFormat),
       (password.isEmpty, .emptyPassword),
       (password.count < PasswordConfig.minLength, .tooShortPassword(min: PasswordConfig.minLength)),
       (!password.contains(where: \.isUppercase), .missingUppercase),

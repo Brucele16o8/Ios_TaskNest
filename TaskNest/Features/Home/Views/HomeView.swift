@@ -9,9 +9,29 @@ import SwiftUI
 
 struct HomeView: View {
   @Bindable private(set) var appCoordinator: AppCoordinator
+  @State private var showSettings: Bool = false
   
   var body: some View {
-    Text("Hello, World!")
+    NavigationStack {
+      Group {
+        Text("Hello, World!")
+      }
+      .navigationTitle("Home")
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .topBarLeading) {
+          Button {
+            
+          } label: {
+            Image(systemName: "gear")
+              .imageScale(.large)
+          }
+        }
+      }
+      .sheet(isPresented: $showSettings) {
+        SettingPanel()
+      }
+    }
   }
 }
 

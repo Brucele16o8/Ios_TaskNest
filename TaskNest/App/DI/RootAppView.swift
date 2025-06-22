@@ -15,42 +15,45 @@ struct RootAppView: View {
   
   var body: some View {
     NavigationStack(path: $appCoordinator.path) {
-      switch authManager.authState {
-      case .checking, .authenticating:
-        LoadingView(loadingViewModel: container.resolve(LoadingViewModel.self)!)
-        
-      case .authenticated:
-        HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
-        
-      case .unauthenticated:
-        LoginView(
-          viewModel: container.resolve(LoginViewModel.self)!,
-          authManager: container.resolve(AuthManager.self)!,
-          appCoordinator: container.resolve(AppCoordinator.self)!
-        )
-      }
-    }
-    .navigationDestination(for: AppRoute.self) { route in
-      switch route {
-      case .auth(let authRoute):
-        switch authRoute {
-        case .login:
+      Group {
+        switch authManager.authState {
+        case .checking, .authenticating:
+          LoadingView(loadingViewModel: container.resolve(LoadingViewModel.self)!)
+          
+        case .authenticated:
+          HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
+          
+        case .unauthenticated:
           LoginView(
             viewModel: container.resolve(LoginViewModel.self)!,
-            authManager: container.resolve(AuthManager.self)!,
+            //          authManager: container.resolve(AuthManager.self)!,
             appCoordinator: container.resolve(AppCoordinator.self)!
           )
-        case .forgotPassword:
-          ForgotPasswordView()
-        case .signUp:
-          SignUpView()
         }
-      case .home:
-        HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
-      case .category(category: let category):
-        CategoryDetailView(category: category)
-      case .photoViewer(startingAt: let index, photos: let photos):
-        PhotoViewerView(startingIndex: index, photos: photos)
+      }
+      
+      .navigationDestination(for: AppRoute.self) { route in
+        switch route {
+        case .auth(let authRoute):
+          switch authRoute {
+          case .login:
+            LoginView(
+              viewModel: container.resolve(LoginViewModel.self)!,
+              //            authManager: container.resolve(AuthManager.self)!,
+              appCoordinator: container.resolve(AppCoordinator.self)!
+            )
+          case .forgotPassword:
+            ForgotPasswordView()
+          case .signUp:
+            SignUpView()
+          }
+        case .home:
+          HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
+        case .category(category: let category):
+          CategoryDetailView(category: category)
+        case .photoViewer(startingAt: let index, photos: let photos):
+          PhotoViewerView(startingIndex: index, photos: photos)
+        }
       }
     }
   }

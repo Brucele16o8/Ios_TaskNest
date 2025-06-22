@@ -15,7 +15,8 @@ final class AuthRepositoryImpl: AuthRepository {
   }
   
   func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
-    remote.loginWithEmail(email: email, password: password, completion: completion)
+    Logger.d(tag: "", message: "Inside AuthRepositoryImpl - loginWithEmailAndPassword")
+    remote.loginWithEmailandPassword(email: email, password: password, completion: completion)
   }
   
   func loginWithGoogle(completion: @escaping (Result<Credentials, any Error>) -> Void) {
