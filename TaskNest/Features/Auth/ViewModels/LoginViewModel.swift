@@ -21,7 +21,7 @@ final class LoginViewModel {
   var error: AppError? { appError }
   
   // MARK: - Dependencies
-  private let loginUseCase: LoginUseCase
+  private let authUseCase: AuthUseCase
   private var credentials: Credentials?
   private var authManager: AuthManager
   
@@ -31,8 +31,8 @@ final class LoginViewModel {
   }
   
   // MARK: - INIT
-  init(loginUseCase: LoginUseCase, authManager: AuthManager) {
-    self.loginUseCase = loginUseCase
+  init(loginUseCase: AuthUseCase, authManager: AuthManager) {
+    self.authUseCase = loginUseCase
     self.authManager = authManager
     restoreSession()
   }
@@ -49,7 +49,7 @@ final class LoginViewModel {
   
   ///  - Restore session
   func restoreSession() {
-    loginUseCase.restore { [weak self] result in
+    authUseCase.restore { [weak self] result in
       if case .success(let credentials) = result {
         self?.credentials = credentials
         self?.loginState.status = .authenticated
@@ -72,7 +72,7 @@ final class LoginViewModel {
     
     appError = nil
     
-    loginUseCase.loginWithEmailAndPassword(
+    authUseCase.loginWithEmailAndPassword(
       email: loginState.email,
       password: loginState.password
     ) { [weak self] result in
@@ -85,14 +85,14 @@ final class LoginViewModel {
     loginState.status = .authenticating
     appError = nil
     
-    loginUseCase.loginWithGoogle() { [weak self] result in
+    authUseCase.loginWithGoogle() { [weak self] result in
       self?.handleLoginResult(result)
     }
   }
   
   // ✅ Logout
   func logout() {
-    loginUseCase.logout()
+    authUseCase.logout()
     loginState = LoginUIState()
     appError = nil
   }
@@ -105,6 +105,7 @@ final class LoginViewModel {
         self.credentials = credentials
         loginState.status = .authenticated
         authManager.updateAuthStateIfNeeded(from: loginState.status)
+        
         Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
         Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
         Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")
@@ -112,6 +113,8 @@ final class LoginViewModel {
       case .failure(let error):
         appError = error.toAppError
         loginState.status = .error
+        authManager.updateAuthStateIfNeeded(from: loginState.status)
+        
         Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
         Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
         Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")

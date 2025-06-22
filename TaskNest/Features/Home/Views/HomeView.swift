@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
-  @Bindable private(set) var appCoordinator: AppCoordinator
-  @State private var showSettings: Bool = false
+  @Bindable private(set) var homeViewModel: HomeViewModel
   
   var body: some View {
+    let state = homeViewModel.state
+    
     NavigationStack {
       Group {
         Text("Hello, World!")
@@ -21,15 +22,17 @@ struct HomeView: View {
       .toolbar {
         ToolbarItem(placement: .topBarLeading) {
           Button {
-            
+            homeViewModel.openSettings()
           } label: {
             Image(systemName: "gear")
               .imageScale(.large)
           }
         }
       }
-      .sheet(isPresented: $showSettings) {
-        SettingPanel()
+      .sheet(isPresented: homeViewModel.showSettingsBinding) {
+        SettingsPanel(
+          onLogout: { homeViewModel.logout() }
+        )
       }
     }
   }
@@ -37,5 +40,10 @@ struct HomeView: View {
 
 #Preview {
   let container = AppDIContainer.shared.container
-  HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
-} 
+  HomeView(
+    homeViewModel: HomeViewModel(
+      authManager: container.resolve(AuthManager.self)!,
+      authUseCase: container.resolve(AuthUseCase.self)!
+    )
+  )
+}

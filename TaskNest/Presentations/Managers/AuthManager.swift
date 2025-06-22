@@ -21,9 +21,9 @@ final class AuthManager {
   }
   
   var authState: AuthState = .checking
-  private let loginUseCase: LoginUseCase
+  private let loginUseCase: AuthUseCase
   
-  init(loginUseCase: LoginUseCase) {
+  init(loginUseCase: AuthUseCase) {
     self.loginUseCase = loginUseCase
     checkSession()
     }

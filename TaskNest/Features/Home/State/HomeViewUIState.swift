@@ -8,11 +8,10 @@
 import Foundation
 
 
-struct HomeViewUIState {
+struct HomeViewUIState: Equatable {
   var isLoading: Bool = false
   var errorMessage: String = ""
   
   
-  var showSetting: Bool = false
-  
+  var showSetting: Bool = false  
 }

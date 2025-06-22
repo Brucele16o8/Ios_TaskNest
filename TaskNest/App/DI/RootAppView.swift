@@ -21,12 +21,16 @@ struct RootAppView: View {
           LoadingView(loadingViewModel: container.resolve(LoadingViewModel.self)!)
           
         case .authenticated:
-          HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
+          HomeView(
+            homeViewModel: HomeViewModel(
+              authManager: container.resolve(AuthManager.self)!,
+              authUseCase: container.resolve(AuthUseCase.self)!
+            )
+          )
           
         case .unauthenticated:
           LoginView(
             viewModel: container.resolve(LoginViewModel.self)!,
-            //          authManager: container.resolve(AuthManager.self)!,
             appCoordinator: container.resolve(AppCoordinator.self)!
           )
         }
@@ -48,7 +52,12 @@ struct RootAppView: View {
             SignUpView()
           }
         case .home:
-          HomeView(appCoordinator: container.resolve(AppCoordinator.self)!)
+          HomeView(
+            homeViewModel: HomeViewModel(
+              authManager: container.resolve(AuthManager.self)!,
+              authUseCase: container.resolve(AuthUseCase.self)!
+            )
+          )
         case .category(category: let category):
           CategoryDetailView(category: category)
         case .photoViewer(startingAt: let index, photos: let photos):

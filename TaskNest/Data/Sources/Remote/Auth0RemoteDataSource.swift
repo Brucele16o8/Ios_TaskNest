@@ -78,7 +78,9 @@ final class Auth0RemoteDataSource {
   func clearSession() {
     Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
-      .clearSession { _ in }
+      .clearSession { _ in
+        Logger.d(tag: "Auth0", message: "Session cleared")
+      }
   }
   
   // ✅

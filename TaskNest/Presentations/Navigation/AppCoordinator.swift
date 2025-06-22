@@ -19,7 +19,7 @@ final class AppCoordinator {
     path.removeLast()
   }
   
-  func goToRoorScreen() {
+  func goToRootScreen() {
     path = []
   }
   

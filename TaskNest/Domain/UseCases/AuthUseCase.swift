@@ -7,7 +7,7 @@
 
 import Auth0
 
-final class LoginUseCase {
+final class AuthUseCase {
   private let repository: AuthRepository
   
   init(repository: AuthRepository) {

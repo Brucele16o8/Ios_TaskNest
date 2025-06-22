@@ -48,22 +48,24 @@ final class AppDIContainer {
     container.register(AuthRepository.self) { r in
       AuthRepositoryImpl(remote: r.resolve(Auth0RemoteDataSource.self)!)
     }.inObjectScope(.container)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerRepositories")
   }
   
   // ✅ - Use cases
   private func registerUseCases() {
-    container.register(LoginUseCase.self) { r in
-      LoginUseCase(repository: r.resolve(AuthRepository.self)!)
+    container.register(AuthUseCase.self) { r in
+      AuthUseCase(repository: r.resolve(AuthRepository.self)!)
     }.inObjectScope(.container)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }
   
-  // ✅ - View Model
+  // ✅ - View Models
   private func registerViewModels() {
     container.register(LoginViewModel.self) { r in
       LoginViewModel(
-        loginUseCase: r.resolve(LoginUseCase.self)!,
+        loginUseCase: r.resolve(AuthUseCase.self)!,
         authManager: r.resolve(AuthManager.self)!
       )
     }.inObjectScope(.container)
@@ -76,6 +78,13 @@ final class AppDIContainer {
       SignUpViewModel()
     }.inObjectScope(.container)
     
+    container.register(HomeViewModel.self) { r in
+      HomeViewModel(
+        authManager: r.resolve(AuthManager.self)!,
+        authUseCase: r.resolve(AuthUseCase.self)!
+      )
+    }.inObjectScope(.container)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   
@@ -83,7 +92,7 @@ final class AppDIContainer {
   // ✅ - Manager
   private func registerManagers() {
     container.register(AuthManager.self) { r in
-      AuthManager(loginUseCase: r.resolve(LoginUseCase.self)!)
+      AuthManager(loginUseCase: r.resolve(AuthUseCase.self)!)
     }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerManagers")
   }
