@@ -14,7 +14,7 @@ class SubTask: Identifiable {
   var title: String
   var isCompleted: Bool
   var createdAt: Date
-  var task: TaskItem? /// for inverse relationship
+  @Relationship(inverse: \TaskItem.subTasks) var task: TaskItem? /// for inverse relationship
   @Relationship(deleteRule: .cascade) var photoAttachments: [PhotoAttachment] = []
   
   init(
@@ -22,7 +22,7 @@ class SubTask: Identifiable {
     title: String,
     isCompleted: Bool = false,
     createdAt: Date = .now,
-    photoAttachments: [PhotoAttachment]
+    task: TaskItem? = nil
   ) {
     self.id = id
     self.title = title

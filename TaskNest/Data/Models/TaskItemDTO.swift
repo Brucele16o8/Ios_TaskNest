@@ -12,5 +12,5 @@ struct TaskItemDTO: Codable, Identifiable {
   let title: String
   let isCompleted: Bool
   let createdAt: Date
-  let category: UUID // foreign key to Category
+  let categoryId: UUID // foreign key to Category
 }

@@ -7,8 +7,6 @@
 
 enum CategoryMapper {
   static func fromDTO(_ dto: CategoryDTO) -> Category {
-    Category(
-      title: <#T##String#>
-    )
+    Category(id: dto.id, title: dto.title, createdAt: dto.createdAt)
   }
 }

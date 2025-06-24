@@ -19,7 +19,7 @@ class PhotoAttachment: Identifiable {
     id: UUID = .init(),
     localPath: String? = nil,
     remoteURL: URL? = nil,
-    subTask: SubTask
+    subTask: SubTask? = nil
   ) {
     self.id = id
     self.localPath = localPath
