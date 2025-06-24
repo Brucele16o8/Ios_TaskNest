@@ -14,19 +14,20 @@ final class TaskItem {
   var title: String
   var isCompleted: Bool
   var createdAt: Date
-  var category: Category? /// for inverse relationship
+  @Relationship(inverse: \Category.tasks) var category: Category?
   @Relationship(deleteRule: .cascade) var subTasks: [SubTask] = []
   
-  init (
+  init(
     id: UUID = .init(),
     title: String,
     isCompleted: Bool = false,
-    createdAt: Date = .now
+    createdAt: Date = .now,
+    category: Category? = nil
   ) {
     self.id = id
     self.title = title
     self.isCompleted = isCompleted
     self.createdAt = createdAt
-    self.subTasks = []
+    self.category = category
   }
 }

@@ -11,6 +11,7 @@ enum AppErrorNetwork: LocalizedError {
   case timeout
   case unreachable(code: URLError.Code)
   case unauthorized
+  case invalidResponse(code: Int)
   case unknown(message: String)
   
   public var errorDescription: String? {
@@ -23,6 +24,9 @@ enum AppErrorNetwork: LocalizedError {
       
     case .unauthorized:
       return "Unauthorized access."
+      
+    case .invalidResponse(let code):
+          return "Invalid server response. Status code: \(code)"
       
     case .unknown(let message):
       return "Network Error: \(message)"
@@ -40,6 +44,9 @@ enum AppErrorNetwork: LocalizedError {
       
     case .unauthorized:
       return "401 Unauthorized – Token missing or expired"
+      
+    case .invalidResponse(let code):
+          return "[InvalidResponse] HTTP status: \(code)"
       
     case .unknown(let message):
       return "Unkown network issue: \(message)"

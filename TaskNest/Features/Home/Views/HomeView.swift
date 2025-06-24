@@ -9,23 +9,46 @@ import SwiftUI
 
 struct HomeView: View {
   @Bindable private(set) var homeViewModel: HomeViewModel
+  private let columns = [GridItem(.adaptive(minimum: 80), spacing: 16)]
   
   var body: some View {
-    let state = homeViewModel.state
+    //    let state = homeViewModel.state
     
     NavigationStack {
-      Group {
-        Text("Hello, World!")
+      VStack {
+        HomeViewTitleComponent()
+        Spacer()
       }
-      .navigationTitle("Home")
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
-        ToolbarItem(placement: .topBarLeading) {
+        /// --- Search
+        ToolbarItem(placement: .topBarTrailing) {
+          Button {
+            // TODO: viewmodel.search here
+          } label: {
+            Image(systemName: "magnifyingglass")
+              .imageScale(.large)
+          }
+        }
+        
+        /// --- Settings and Profile
+        ToolbarItem(placement: .topBarTrailing) {
           Button {
             homeViewModel.openSettings()
           } label: {
-            Image(systemName: "gear")
+            Image(systemName: "person.crop.circle")
               .imageScale(.large)
+          }
+        }
+        
+        /// --- Profile
+        ToolbarItem(placement: .topBarLeading) {
+          Button {
+            // TODO:
+          } label: {
+            Text("Tasknest")
+              .font(.headline)
+              .fontWeight(.bold)
           }
         }
       }
@@ -34,6 +57,7 @@ struct HomeView: View {
           onLogout: { homeViewModel.logout() }
         )
       }
+      .background(Color.backgroundColor3)
     }
   }
 }
@@ -43,7 +67,8 @@ struct HomeView: View {
   HomeView(
     homeViewModel: HomeViewModel(
       authManager: container.resolve(AuthManager.self)!,
-      authUseCase: container.resolve(AuthUseCase.self)!
+      authUseCase: container.resolve(AuthUseCase.self)!,
+      appCoordinator: container.resolve(AppCoordinator.self)!
     )
   )
 }

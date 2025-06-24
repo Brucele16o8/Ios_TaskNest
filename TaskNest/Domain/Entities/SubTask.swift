@@ -29,6 +29,5 @@ class SubTask: Identifiable {
     self.isCompleted = isCompleted
     self.createdAt = createdAt
     self.task = task
-    self.photoAttachments = []
   }
 }

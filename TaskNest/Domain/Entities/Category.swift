@@ -13,12 +13,11 @@ class Category: Identifiable {
   @Attribute(.unique) var id: UUID
   var title: String
   var createdAt: Date
-  @Relationship(deleteRule: .cascade) var tasks: [TaskItem]
+  @Relationship(deleteRule: .cascade) var tasks: [TaskItem] = []
   
   init(id: UUID = .init(), title: String, createdAt: Date = .now) {
     self.id = id
     self.title = title
     self.createdAt = createdAt
-    self.tasks = []
   }
 }

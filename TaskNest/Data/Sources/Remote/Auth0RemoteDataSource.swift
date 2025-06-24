@@ -75,12 +75,14 @@ final class Auth0RemoteDataSource {
   }
   
   // ✅
-  func clearSession() {
+  func clearSession(completion: @escaping (Result<Void, Error>) -> Void) {
     Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
-      .clearSession { _ in
+      .redirectURL(URL(string: Auth0Config.callbackURLString)!)
+      .clearSession { result in
         Logger.d(tag: "Auth0", message: "Session cleared")
-      }
+        completion(result.mapError{ $0.toAppError })
+      } 
   }
   
   // ✅
@@ -92,6 +94,7 @@ final class Auth0RemoteDataSource {
   // ✅
   @discardableResult 
   func clearCredentials() -> Bool {
+    Logger.d(tag: "Logout", message: "Clear credentials")
     return credentialsManager.clear()
   }
   

@@ -27,8 +27,8 @@ final class AuthUseCase {
     repository.restoreSession(completion: completion)
   }
   
-  func logout() {
-    repository.logout()
+  func logout(completion: @escaping (Result<Void, Error>) -> Void) {
+    repository.logout(completion: completion)
   }
   
 }

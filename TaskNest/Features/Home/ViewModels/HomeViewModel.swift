@@ -24,6 +24,7 @@ final class HomeViewModel {
   // MARK: - States
   private var homeViewState = HomeViewUIState()
   private let authManager: AuthManager
+  private let appCoordinator: AppCoordinator
   
   var state: HomeViewUIState { homeViewState }
   
@@ -32,10 +33,11 @@ final class HomeViewModel {
   private let authUseCase: AuthUseCase
   
   // MARK: - INIT
-  init(authManager: AuthManager, authUseCase: AuthUseCase) {
+  init(authManager: AuthManager, authUseCase: AuthUseCase, appCoordinator: AppCoordinator) {
     self.authManager = authManager
     self.authUseCase = authUseCase
-  }  
+    self.appCoordinator = appCoordinator
+  }
   
   // ✅
   func openSettings() {
@@ -51,9 +53,22 @@ final class HomeViewModel {
   
   // ✅
   func logout() {
-    authUseCase.logout()
-    Task { @MainActor in
-      authManager.authState = .unauthenticated
+    authUseCase.logout { result in
+      switch result {
+      case .success:
+        Task { @MainActor [weak self] in
+          self?.authManager.authState = .unauthenticated
+        }
+        
+        Logger.d(tag: "Logout", message: "Inside HomeViewModel - logout")
+        Logger.d(tag: "Logout", message: "Successful Logout - Session cookies cleared")
+        
+      case .failure(let error):
+        let appError = error as? AppError
+        
+        Logger.d(tag: "Logout", message: "Inside HomeViewModel - logout")
+        Logger.e(tag: "Logout", message: "unuccessful Logout", error: appError)
+      }
     }
   }
 }

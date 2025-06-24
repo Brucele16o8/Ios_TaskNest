@@ -27,8 +27,8 @@ final class AuthRepositoryImpl: AuthRepository {
     remote.restoreSession(completion: completion)
   }
   
-  func logout() {
-    remote.clearSession()
+  func logout(completion: @escaping (Result<Void, Error>) -> Void) {
+    remote.clearSession(completion: completion)
     remote.clearCredentials()
   }
   

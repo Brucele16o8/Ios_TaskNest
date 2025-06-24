@@ -90,13 +90,6 @@ final class LoginViewModel {
     }
   }
   
-  // ✅ Logout
-  func logout() {
-    authUseCase.logout()
-    loginState = LoginUIState()
-    appError = nil
-  }
-  
   /// ✅ -  Helper method
   private func handleLoginResult(_ result: Result<Credentials, Error>) {
     Task { @MainActor in

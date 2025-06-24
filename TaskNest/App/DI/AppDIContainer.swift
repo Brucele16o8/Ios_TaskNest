@@ -81,7 +81,8 @@ final class AppDIContainer {
     container.register(HomeViewModel.self) { r in
       HomeViewModel(
         authManager: r.resolve(AuthManager.self)!,
-        authUseCase: r.resolve(AuthUseCase.self)!
+        authUseCase: r.resolve(AuthUseCase.self)!,
+        appCoordinator: r.resolve(AppCoordinator.self)!
       )
     }.inObjectScope(.container)
     

@@ -24,7 +24,8 @@ struct RootAppView: View {
           HomeView(
             homeViewModel: HomeViewModel(
               authManager: container.resolve(AuthManager.self)!,
-              authUseCase: container.resolve(AuthUseCase.self)!
+              authUseCase: container.resolve(AuthUseCase.self)!,
+              appCoordinator: container.resolve(AppCoordinator.self)!,
             )
           )
           
@@ -55,7 +56,8 @@ struct RootAppView: View {
           HomeView(
             homeViewModel: HomeViewModel(
               authManager: container.resolve(AuthManager.self)!,
-              authUseCase: container.resolve(AuthUseCase.self)!
+              authUseCase: container.resolve(AuthUseCase.self)!,
+              appCoordinator: container.resolve(AppCoordinator.self)!,
             )
           )
         case .category(category: let category):
