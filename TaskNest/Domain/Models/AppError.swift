@@ -12,6 +12,7 @@ enum AppError: Error, LocalizedError {
   case auth(AppErrorAuth, underlyingError: Error? = nil)
   case network(AppErrorNetwork, underlyingError: Error? = nil)
   case decoding(AppErrorDecoding, underlyingError: Error? = nil)
+  case encoding(AppErrorEncoding, underlyingError: Error? = nil)
   case validation(ValidationError, underlyingError: Error? = nil)
   case unknown(message: String, underlyingError: Error? = nil)
   
@@ -27,6 +28,9 @@ enum AppError: Error, LocalizedError {
       
     case .decoding(let decodingError, _):
       return decodingError.localizedDescription
+      
+    case .encoding(let encodingError, _):
+      return encodingError.localizedDescription
       
     case .validation(let validationError, _):
       return validationError.localizedDescription
@@ -47,6 +51,9 @@ enum AppError: Error, LocalizedError {
       
     case .decoding(let message, let underlyingError):
       return "[Decoding] \(message)" + underlyingInfo(underlyingError)
+      
+    case .encoding(let message, let underlyingError):
+      return "[Encoding] \(message)" + underlyingInfo(underlyingError)
       
     case .validation(let validationError, let underlyingError):
       return "[Validation] \(validationError.localizedDescription)" + underlyingInfo(underlyingError)

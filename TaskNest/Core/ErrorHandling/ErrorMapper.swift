@@ -136,6 +136,12 @@ struct ErrorMapper {
   }
   
   // ✅
+  static func mapJsonEncodingError(_ encodingError: EncodingError) -> AppError {
+    let parsed = JsonEncodingErrorParser.parse(encodingError)
+    return .encoding(parsed, underlyingError: encodingError)
+  }
+  
+  // ✅
   static func mapAuthenticationError(_ authenticationError: AuthenticationError) -> AppError {
     return .auth(.unauthenticated(message: "Code: \(authenticationError.code)"), underlyingError: authenticationError)
   }  
@@ -162,6 +168,9 @@ struct ErrorMapper {
     if let decodingError = error as? DecodingError {
       return mapJsonDecodingError(decodingError)
     }
+    if let encodingError = error as? EncodingError {
+        return mapJsonEncodingError(encodingError)
+      }
     if let appError = error as? AppError {
       return appError
     }
