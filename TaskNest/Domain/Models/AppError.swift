@@ -14,6 +14,7 @@ enum AppError: Error, LocalizedError {
   case decoding(AppErrorDecoding, underlyingError: Error? = nil)
   case encoding(AppErrorEncoding, underlyingError: Error? = nil)
   case validation(ValidationError, underlyingError: Error? = nil)
+  case database(DatabaseError, underlyingError: Error? = nil)
   case unknown(message: String, underlyingError: Error? = nil)
   
   // ✅
@@ -34,6 +35,9 @@ enum AppError: Error, LocalizedError {
       
     case .validation(let validationError, _):
       return validationError.localizedDescription
+      
+    case .database(let databaseError, underlyingError: _):
+      return databaseError.localizedDescription
       
     case .unknown(let message, _):
       return "Unexpected error - error: \(message)"
@@ -57,6 +61,9 @@ enum AppError: Error, LocalizedError {
       
     case .validation(let validationError, let underlyingError):
       return "[Validation] \(validationError.localizedDescription)" + underlyingInfo(underlyingError)
+      
+    case .database(let DatabaseError, underlyingError: let underlyingError):
+      return "[Database] \(DatabaseError.localizedDescription)" + underlyingInfo(underlyingError)
       
     case .unknown(message: let message, let underlyingError):
       return "[Unknown] \(message)" + underlyingInfo(underlyingError)
