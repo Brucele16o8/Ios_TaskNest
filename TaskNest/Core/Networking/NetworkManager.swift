@@ -8,8 +8,8 @@
 import Foundation
 
 final class NetworkManager: NetworkService {
-  static let shared = NetworkManager()
-  private init() { }
+//  static let shared = NetworkManager()
+  init() { }
   
   // ✅
   func request<T, R>(

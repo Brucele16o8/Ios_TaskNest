@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CategoryDTO: Codable, Identifiable {
+struct CategoryDto: Codable, Identifiable {
   let id: UUID
   let title: String
   let createdAt: Date

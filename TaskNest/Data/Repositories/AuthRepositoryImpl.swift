@@ -8,28 +8,28 @@
 import Auth0
 
 final class AuthRepositoryImpl: AuthRepository {
-  private let remote: Auth0RemoteDataSource
+  private let remoteAuthenticationSource: Auth0RemoteDataSource
   
   init(remote: Auth0RemoteDataSource) {
-    self.remote = remote
+    self.remoteAuthenticationSource = remote
   }
   
   func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
     Logger.d(tag: "", message: "Inside AuthRepositoryImpl - loginWithEmailAndPassword")
-    remote.loginWithEmailandPassword(email: email, password: password, completion: completion)
+    remoteAuthenticationSource.loginWithEmailandPassword(email: email, password: password, completion: completion)
   }
   
   func loginWithGoogle(completion: @escaping (Result<Credentials, any Error>) -> Void) {
-    remote.loginWithGoogle(completion: completion)
+    remoteAuthenticationSource.loginWithGoogle(completion: completion)
   }
   
   func restoreSession(completion: @escaping (Result<Credentials, any Error>) -> Void) {
-    remote.restoreSession(completion: completion)
+    remoteAuthenticationSource.restoreSession(completion: completion)
   }
   
   func logout(completion: @escaping (Result<Void, Error>) -> Void) {
-    remote.clearSession(completion: completion)
-    remote.clearCredentials()
+    remoteAuthenticationSource.clearSession(completion: completion)
+    remoteAuthenticationSource.clearCredentials()
   }
   
 }

@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 enum TaskItemMapper {
-  static func fromDTOs(_ dtos: [TaskItemDTO], categoryMap: [UUID : Category]) -> [TaskItem] {
+  static func fromDTOs(_ dtos: [TaskItemDto], categoryMap: [UUID : Category]) -> [TaskItem] {
     dtos.compactMap { dto in
       guard let category = categoryMap[dto.categoryId] else { return nil }
       return TaskItem(

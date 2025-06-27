@@ -44,7 +44,6 @@ struct RootAppView: View {
           case .login:
             LoginView(
               viewModel: container.resolve(LoginViewModel.self)!,
-              //            authManager: container.resolve(AuthManager.self)!,
               appCoordinator: container.resolve(AppCoordinator.self)!
             )
           case .forgotPassword:

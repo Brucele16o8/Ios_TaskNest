@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 enum SubTaskMapper {
-  static func fromDTOs(_ dtos: [SubTaskDTO], taskMap: [UUID : TaskItem]) -> [SubTask] {
+  static func fromDTOs(_ dtos: [SubTaskDto], taskMap: [UUID : TaskItem]) -> [SubTask] {
     dtos.compactMap { dto in
       guard let task = taskMap[dto.taskId] else { return nil }
       return SubTask(

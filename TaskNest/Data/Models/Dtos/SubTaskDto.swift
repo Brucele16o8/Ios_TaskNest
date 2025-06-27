@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SubTaskDTO: Codable, Identifiable {
+struct SubTaskDto: Codable, Identifiable {
   let id: UUID
   let title: String
   let isCompleted: Bool

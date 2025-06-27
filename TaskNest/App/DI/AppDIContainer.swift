@@ -95,6 +95,11 @@ final class AppDIContainer {
     container.register(AuthManager.self) { r in
       AuthManager(loginUseCase: r.resolve(AuthUseCase.self)!)
     }.inObjectScope(.container)
+    
+    container.register(NetworkService.self) { _ in
+      NetworkManager()
+    }
+    
     Logger.d(tag: "DIContainer", message: "Successful registerManagers")
   }
   

@@ -2,12 +2,12 @@
 //  Untitled.swift
 //  TaskNest
 //
-//  Created by Tung Le on 24/6/2025.
+//  Created by Tung Le on 27/6/2025.
 //
 
 import Foundation
 
-struct PhotoAttachmentDTO: Codable, Identifiable {
+struct PhotoAttachmentDto: Codable, Identifiable {
   let id: UUID
   let localPath: String?
   let remoteURL: URL?

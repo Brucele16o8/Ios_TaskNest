@@ -22,7 +22,6 @@ final class LoginViewModel {
   
   // MARK: - Dependencies
   private let authUseCase: AuthUseCase
-  private var credentials: Credentials?
   private var authManager: AuthManager
   
   // MARK: - Computed
@@ -51,7 +50,7 @@ final class LoginViewModel {
   func restoreSession() {
     authUseCase.restore { [weak self] result in
       if case .success(let credentials) = result {
-        self?.credentials = credentials
+        self?.authManager.storeCredentials(credentials)
         self?.loginState.status = .authenticated
       }
     }
@@ -95,7 +94,7 @@ final class LoginViewModel {
     Task { @MainActor in
       switch result {
       case .success(let credentials):
-        self.credentials = credentials
+        self.authManager.storeCredentials(credentials)
         loginState.status = .authenticated
         authManager.updateAuthStateIfNeeded(from: loginState.status)
         

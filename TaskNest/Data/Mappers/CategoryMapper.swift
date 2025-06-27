@@ -6,7 +6,7 @@
 //
 
 enum CategoryMapper {
-  static func fromDTO(_ dto: CategoryDTO) -> Category {
+  static func fromDTO(_ dto: CategoryDto) -> Category {
     Category(id: dto.id, title: dto.title, createdAt: dto.createdAt)
   }
 }

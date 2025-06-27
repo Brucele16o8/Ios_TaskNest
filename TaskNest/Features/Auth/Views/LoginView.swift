@@ -10,7 +10,6 @@ import Swinject
 
 struct LoginView: View {
   @Bindable private(set) var viewModel: LoginViewModel
-//  @Bindable private(set) var authManager: AuthManager
   @Bindable private(set) var appCoordinator: AppCoordinator
   @State private var showfForgotPasswordView: Bool = false
   

@@ -22,11 +22,17 @@ final class AuthManager {
   
   var authState: AuthState = .checking
   private let loginUseCase: AuthUseCase
+  private var credentials: Credentials?
   
   init(loginUseCase: AuthUseCase) {
     self.loginUseCase = loginUseCase
     checkSession()
     }
+  
+  var authToken: String? {
+    guard let credentials else { return nil }
+    return credentials.accessToken
+  }
   
   /// Checking session
   func checkSession() {
@@ -40,6 +46,11 @@ final class AuthManager {
         }
       }
     }
+  }
+  
+  // ✅ Store / Cache credentials
+  func storeCredentials(_ credentials: Credentials) {
+    self.credentials = credentials
   }
   
   // ✅
