@@ -31,3 +31,11 @@ class SubTask: Identifiable {
     self.task = task
   }
 }
+
+extension SubTask {
+  static let subTask1 = SubTask(title: "SubTask 1", isCompleted: false, task: .taskItem1)
+  static let subTask2 = SubTask(title: "SubTask 2", isCompleted: true, task: .taskItem1)
+  static let subTask3 = SubTask(title: "SubTask 1", isCompleted: true, task: .taskItem2)
+  
+  static let all: [SubTask] = [subTask1, subTask2, subTask3]
+}

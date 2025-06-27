@@ -21,3 +21,13 @@ class Category: Identifiable {
     self.createdAt = createdAt
   }
 }
+
+
+extension Category {
+  static let work = Category(title: "Work")
+  static let personal = Category(title: "Personal")
+  static let shopping = Category(title: "Shopping")
+  static let study = Category(title: "Study")
+  
+  static let all: [Category] = [work, personal, shopping, study]
+}

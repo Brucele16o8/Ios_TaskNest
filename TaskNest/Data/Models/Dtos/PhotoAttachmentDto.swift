@@ -10,6 +10,6 @@ import Foundation
 struct PhotoAttachmentDto: Codable, Identifiable {
   let id: UUID
   let localPath: String?
-  let remoteURL: URL?
+  let remoteURL: String?
   let subTaskId: UUID // foreign key to SubTask
 }

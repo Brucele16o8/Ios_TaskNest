@@ -12,13 +12,13 @@ import SwiftData
 class PhotoAttachment: Identifiable {
   @Attribute(.unique) var id: UUID
   var localPath: String?
-  var remoteURL: URL?
+  var remoteURL: String?
   @Relationship(inverse: \SubTask.photoAttachments) var subTask: SubTask?
     
   init (
     id: UUID = .init(),
     localPath: String? = nil,
-    remoteURL: URL? = nil,
+    remoteURL: String? = nil,
     subTask: SubTask? = nil
   ) {
     self.id = id
@@ -26,4 +26,20 @@ class PhotoAttachment: Identifiable {
     self.remoteURL = remoteURL
     self.subTask = subTask
   }
+}
+
+extension PhotoAttachment {
+  static let photo1 = PhotoAttachment(
+    localPath: Bundle.main.url(forResource: "Dolomites-Itay", withExtension: "webp")?.path,
+    remoteURL: "",
+    subTask: .subTask1
+  )
+  
+  static let photo2 = PhotoAttachment(
+    localPath: Bundle.main.url(forResource: "Milan-City-Italy-Canal", withExtension: "webp")?.path,
+    remoteURL: "",
+    subTask: .subTask1
+  )
+  
+  static let all = [photo1, photo2]
 }
