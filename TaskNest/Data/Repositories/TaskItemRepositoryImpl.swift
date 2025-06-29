@@ -86,7 +86,6 @@ final class TaskItemRepositoryImpl: TaskItemRepository {
     } catch {
       throw AppError.database(.fetchFailed(message: "[SwiftData] Failed to fetch TaskItems for categoryId \(categoryId)"), underlyingError: error)
     }
-  }
-  
+  }  
   
 } // 🧱
