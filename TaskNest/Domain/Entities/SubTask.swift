@@ -37,5 +37,5 @@ extension SubTask {
   static let subTask2 = SubTask(title: "SubTask 2", isCompleted: true, task: .taskItem1)
   static let subTask3 = SubTask(title: "SubTask 1", isCompleted: true, task: .taskItem2)
   
-  static let all: [SubTask] = [subTask1, subTask2, subTask3]
+  static var all: [SubTask] = [subTask1, subTask2, subTask3]
 }

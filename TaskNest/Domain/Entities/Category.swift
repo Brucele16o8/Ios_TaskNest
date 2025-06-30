@@ -22,6 +22,11 @@ class Category: Identifiable {
   }
 }
 
+extension Category {
+  static var empty: Category {
+    .init(title: "")
+  }
+}
 
 extension Category {
   static let work = Category(title: "Work")
@@ -29,5 +34,5 @@ extension Category {
   static let shopping = Category(title: "Shopping")
   static let study = Category(title: "Study")
   
-  static let all: [Category] = [work, personal, shopping, study]
+  static var all: [Category] = [work, personal, shopping, study]
 }

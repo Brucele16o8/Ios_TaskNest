@@ -41,5 +41,5 @@ extension PhotoAttachment {
     subTask: .subTask1
   )
   
-  static let all = [photo1, photo2]
+  static var all = [photo1, photo2]
 }

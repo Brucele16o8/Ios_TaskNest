@@ -33,11 +33,17 @@ final class TaskItem {
 }
 
 extension TaskItem {
+  static var empty: TaskItem {
+    .init(title: "")
+  }
+}
+
+extension TaskItem {
   static let taskItem1 = TaskItem(title: "Task 1", isCompleted: false, category: .work)
   static let taskItem2 = TaskItem(title: "Task 2", isCompleted: false, category: .work)
   static let taskItem3 = TaskItem(title: "Task 3", isCompleted: false, category: .work)
   static let taskItem4 = TaskItem(title: "Task 1", isCompleted: false, category: .personal)
   static let taskItem5 = TaskItem(title: "Task 2", isCompleted: false, category: .personal)
   
-  static let all: [TaskItem] = [taskItem1, taskItem2, taskItem3, taskItem4, taskItem5]
+  static var all: [TaskItem] = [taskItem1, taskItem2, taskItem3, taskItem4, taskItem5]
 }
