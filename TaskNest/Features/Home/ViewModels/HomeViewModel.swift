@@ -7,37 +7,70 @@
 
 import SwiftUI
 
-// MARK: - Binding
-extension HomeViewModel {
-  var showSettingsBinding: Binding<Bool> {
-    Binding (
-      get: { self.homeViewState.showSetting },
-      set: { self.homeViewState.showSetting = $0 }
-    )
-  }
-}
-
-
-
+@MainActor
 @Observable
 final class HomeViewModel {
   // MARK: - States
-  private var homeViewState = HomeViewUIState()
+  private(set) var homeViewState = HomeViewUIState()
   private let authManager: AuthManager
-  private let appCoordinator: AppCoordinator
-  
-  var state: HomeViewUIState { homeViewState }
-  
+  private let appCoordinator: AppCoordinator  
   
   // MARK: - Dependencies
   private let authUseCase: AuthUseCase
+  private let getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase
+  private let deleteCategoryUseCase: DeleteCategoryEntityUseCase
   
   // MARK: - INIT
-  init(authManager: AuthManager, authUseCase: AuthUseCase, appCoordinator: AppCoordinator) {
+  init(
+    authManager: AuthManager,
+    authUseCase: AuthUseCase,
+    appCoordinator: AppCoordinator,
+    getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase,
+    deleteCategoryUseCase: DeleteCategoryEntityUseCase
+  ) {
     self.authManager = authManager
     self.authUseCase = authUseCase
     self.appCoordinator = appCoordinator
+    self.getAllCategoriesUseCase = getAllCategoriesUseCase
+    self.deleteCategoryUseCase = deleteCategoryUseCase
   }
+  
+  // ✅
+  func startLoading() async {
+    homeViewState.isLoading = true
+    do {
+      let categoryEntities = try await getAllCategoriesUseCase()
+      let categoryItems = categoryEntities.map { $0.mapToCategotyItem }
+      homeViewState = homeViewState.copy(
+        isLoading: false,
+        categories: categoryItems
+      )
+    } catch let appError as AppError {
+      homeViewState.errorMessage = appError.localizedDescription
+    } catch {
+      homeViewState.errorMessage = "Failed to loading data from Database"
+    }
+  }
+  
+  // ✅
+  func updateSearchText(_ searchText: String) {
+    homeViewState.searchText = searchText
+  }
+  
+  // ✅
+  func updateShowSetting(_ showSetting: Bool) {
+    homeViewState.showSetting = showSetting
+  }
+  
+  // ✅  haven't finished
+  func deleteCategory(ofId categoryId: UUID) {
+    Task {
+      do {
+        try await deleteCategoryUseCase(id: categoryId)
+      }
+    }
+  }
+  
   
   // ✅
   func openSettings() {

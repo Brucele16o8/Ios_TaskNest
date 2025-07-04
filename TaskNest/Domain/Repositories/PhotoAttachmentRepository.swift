@@ -9,11 +9,11 @@ import Foundation
 
 
 protocol PhotoAttachmentRepository {
-  func getAll() async throws -> [PhotoAttachment]
-  func getPhotoAttachment(by id: UUID) async throws -> PhotoAttachment
-  func save(_ photoAttachment: PhotoAttachment) async throws
-  func update(_ photoAttachment: PhotoAttachment) async throws
+  func getAll() async throws -> [PhotoAttachmentEntity]
+  func getPhotoAttachmentEntity(by id: UUID) async throws -> PhotoAttachmentEntity
+  func save(_ photoAttachmentEntity: PhotoAttachmentEntity) async throws
+  func update(_ photoAttachmentEntity: PhotoAttachmentEntity) async throws
   func delete(id: UUID) async throws
-  func getAllPhotoAttachments(ofSubTaskId subTaskId: UUID) async throws -> [PhotoAttachment]
+  func getAllPhotoAttachmentEntities(ofSubTaskEntityId subTaskId: UUID) async throws -> [PhotoAttachmentEntity]
 }
 

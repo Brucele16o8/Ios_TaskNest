@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct GetAllSubTasksOfTaskId {
+struct GetAllSubTaskEntitiesOfTaskId {
   private let subTaskRepository: SubTaskRepository
   
   init(subTaskRepository: SubTaskRepository) {
     self.subTaskRepository = subTaskRepository
   }
   
-  func callAsFunction(_ taskId: UUID) async throws -> [SubTask] {
-    try await subTaskRepository.getAllSubTasks(ofTaskId: taskId)
+  func callAsFunction(_ taskEntityId: UUID) async throws -> [SubTaskEntity] {
+    try await subTaskRepository.getAllSubTaskEntities(ofTaskEntityId: taskEntityId)
   }
 }

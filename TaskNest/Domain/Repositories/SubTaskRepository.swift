@@ -8,11 +8,11 @@
 import Foundation
 
 protocol SubTaskRepository {
-  func getAll() async throws -> [SubTask]
-  func getSubTask(by id: UUID) async throws -> SubTask
-  func save(_ subTask: SubTask) async throws
-  func update(_ subTask: SubTask) async throws
+  func getAll() async throws -> [SubTaskEntity]
+  func getSubTaskEntity(by id: UUID) async throws -> SubTaskEntity
+  func save(_ subTaskEntity: SubTaskEntity) async throws
+  func update(_ subTaskEntity: SubTaskEntity) async throws
   func delete(id: UUID) async throws
-  func getAllSubTasks(ofTaskId taskId: UUID) async throws -> [SubTask]
+  func getAllSubTaskEntities(ofTaskEntityId taskItemId: UUID) async throws -> [SubTaskEntity]
 }
 

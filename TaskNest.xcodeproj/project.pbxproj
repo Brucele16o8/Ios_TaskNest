@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		530CC40D2DFDB8E000BA0DF1 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 530CC40C2DFDB8E000BA0DF1 /* Auth0 */; };
-		530CC4102DFDB8EB00BA0DF1 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 530CC40F2DFDB8EB00BA0DF1 /* Swinject */; };
+		534F90452E1833CE009C276C /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = 534F90442E1833CE009C276C /* Auth0 */; };
+		534F90482E1833DC009C276C /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 534F90472E1833DC009C276C /* Swinject */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,8 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				530CC40D2DFDB8E000BA0DF1 /* Auth0 in Frameworks */,
-				530CC4102DFDB8EB00BA0DF1 /* Swinject in Frameworks */,
+				534F90452E1833CE009C276C /* Auth0 in Frameworks */,
+				534F90482E1833DC009C276C /* Swinject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,8 +85,8 @@
 			);
 			name = TaskNest;
 			packageProductDependencies = (
-				530CC40C2DFDB8E000BA0DF1 /* Auth0 */,
-				530CC40F2DFDB8EB00BA0DF1 /* Swinject */,
+				534F90442E1833CE009C276C /* Auth0 */,
+				534F90472E1833DC009C276C /* Swinject */,
 			);
 			productName = TaskNest;
 			productReference = 539C5D672DF582ED0027041B /* TaskNest.app */;
@@ -117,8 +117,8 @@
 			mainGroup = 539C5D5E2DF582ED0027041B;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				530CC40B2DFDB8E000BA0DF1 /* XCRemoteSwiftPackageReference "Auth0.swift" */,
-				530CC40E2DFDB8EB00BA0DF1 /* XCRemoteSwiftPackageReference "Swinject" */,
+				534F90432E1833CE009C276C /* XCRemoteSwiftPackageReference "Auth0.swift" */,
+				534F90462E1833DC009C276C /* XCRemoteSwiftPackageReference "Swinject" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 539C5D682DF582ED0027041B /* Products */;
@@ -352,7 +352,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		530CC40B2DFDB8E000BA0DF1 /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
+		534F90432E1833CE009C276C /* XCRemoteSwiftPackageReference "Auth0.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/auth0/Auth0.swift.git";
 			requirement = {
@@ -360,7 +360,7 @@
 				minimumVersion = 2.13.0;
 			};
 		};
-		530CC40E2DFDB8EB00BA0DF1 /* XCRemoteSwiftPackageReference "Swinject" */ = {
+		534F90462E1833DC009C276C /* XCRemoteSwiftPackageReference "Swinject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Swinject/Swinject.git";
 			requirement = {
@@ -371,14 +371,14 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		530CC40C2DFDB8E000BA0DF1 /* Auth0 */ = {
+		534F90442E1833CE009C276C /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 530CC40B2DFDB8E000BA0DF1 /* XCRemoteSwiftPackageReference "Auth0.swift" */;
+			package = 534F90432E1833CE009C276C /* XCRemoteSwiftPackageReference "Auth0.swift" */;
 			productName = Auth0;
 		};
-		530CC40F2DFDB8EB00BA0DF1 /* Swinject */ = {
+		534F90472E1833DC009C276C /* Swinject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 530CC40E2DFDB8EB00BA0DF1 /* XCRemoteSwiftPackageReference "Swinject" */;
+			package = 534F90462E1833DC009C276C /* XCRemoteSwiftPackageReference "Swinject" */;
 			productName = Swinject;
 		};
 /* End XCSwiftPackageProductDependency section */

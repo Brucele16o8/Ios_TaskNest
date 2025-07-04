@@ -8,9 +8,9 @@
 import Foundation
 
 protocol CategoryRepository {
-    func getAll() async throws -> [Category]
-    func getCategory(by id: UUID) async throws -> Category
-    func save(_ category: Category) async throws
-    func update(_ category: Category) async throws
+    func getAll() async throws -> [CategoryEntity]
+    func getCategoryEntity(by id: UUID) async throws -> CategoryEntity
+    func save(_ categoryEntity: CategoryEntity) async throws
+    func update(_ categoryEntity: CategoryEntity) async throws
     func delete(id: UUID) async throws
 }

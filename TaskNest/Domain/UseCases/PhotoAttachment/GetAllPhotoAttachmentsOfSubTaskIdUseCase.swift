@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct GetAllPhotoAttachmentsOfSubTaskId {
+struct GetAllPhotoAttachmentEntitiesOfSubTaskId {
   private let photoAttachmentRepository: PhotoAttachmentRepository
   
   init(photoAttachmentRepository: PhotoAttachmentRepository) {
     self.photoAttachmentRepository = photoAttachmentRepository
   }
   
-  func callAsFunction(_ subTaskId: UUID) async throws -> [PhotoAttachment] {
-    try await photoAttachmentRepository.getAllPhotoAttachments(ofSubTaskId: subTaskId)
+  func callAsFunction(_ subTaskEntityId: UUID) async throws -> [PhotoAttachmentEntity] {
+    try await photoAttachmentRepository.getAllPhotoAttachmentEntities(ofSubTaskEntityId: subTaskEntityId)
   }
 }

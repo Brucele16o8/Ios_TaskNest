@@ -30,7 +30,6 @@ struct HomeViewTitleComponent: View {
       }
       .padding(.horizontal)
     }
-    .padding(.horizontal)
   }
 }
 

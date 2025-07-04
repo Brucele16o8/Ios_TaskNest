@@ -8,28 +8,34 @@
 import Foundation
 
 final class MockPhotoAttachmentRepository: PhotoAttachmentRepository {
-  func getAll() async throws -> [PhotoAttachment] {
-    PhotoAttachment.all
+  
+  func getAll() async throws -> [PhotoAttachmentEntity] {
+    try PhotoAttachment.all.map { try $0.mapToPhotoAttachmentEntity }
   }
   
-  func getPhotoAttachment(by id: UUID) async throws -> PhotoAttachment {
+  func getPhotoAttachmentEntity(by id: UUID) async throws -> PhotoAttachmentEntity {
     if let index = PhotoAttachment.all.firstIndex(where: { $0.id == id }) {
-      return PhotoAttachment.all[index]
+      return try PhotoAttachment.all[index].mapToPhotoAttachmentEntity
     } else {
       throw AppError.database(.notFound(message: "PhotoAttachment not found for id: \(id)"))
     }
+    // wrong - change later
   }
   
-  func save(_ photoAttachment: PhotoAttachment) async throws {
+  func save(_ photoAttachmentEntity: PhotoAttachmentEntity) async throws {
+    let photoAttachment = photoAttachmentEntity.mapToPhotoAttachment
     PhotoAttachment.all.append(photoAttachment)
+    // wrong - change later
   }
   
-  func update(_ photoAttachment: PhotoAttachment) async throws {
+  func update(_ photoAttachmentEntity: PhotoAttachmentEntity) async throws {
+    let photoAttachment = photoAttachmentEntity.mapToPhotoAttachment
     if let index = PhotoAttachment.all.firstIndex(of: photoAttachment) {
       PhotoAttachment.all[index] = photoAttachment
     } else {
       throw AppError.database(.notFound(message: "PhotoAttachment not found for id: \(photoAttachment.id) to update"))
     }
+    // wrong - change later
   }
   
   func delete(id: UUID) async throws {
@@ -38,11 +44,12 @@ final class MockPhotoAttachmentRepository: PhotoAttachmentRepository {
     } else {
       throw AppError.database(.notFound(message: "PhotoAttachment not found for id: \(id)"))
     }
+    // wrong - change later
   }
   
-  func getAllPhotoAttachments(ofSubTaskId subTaskId: UUID) async throws -> [PhotoAttachment] {
-    return PhotoAttachment.all.filter { $0.subTask?.id == subTaskId }
+  func getAllPhotoAttachmentEntities(ofSubTaskEntityId subTaskId: UUID) async throws -> [PhotoAttachmentEntity] {
+    return try PhotoAttachment.all.filter { $0.subTask?.id == subTaskId }.map { try $0.mapToPhotoAttachmentEntity }
+    // wrong - change later
   }
-  
   
 }

@@ -8,6 +8,6 @@
 enum AppRoute: Hashable {
   case auth(authuRoute: AuthRoute)
   case home
-  case category(category: Category)
+  case category(categoryItem: CategoryItem)
   case photoViewer(startingAt: Int, photos: [String])
 }

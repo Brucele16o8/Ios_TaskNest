@@ -58,6 +58,28 @@ final class AppDIContainer {
       AuthUseCase(repository: r.resolve(AuthRepository.self)!)
     }.inObjectScope(.container)
     
+    /// Use cases for Category
+    container.register(GetAllCategoryEntitiesUseCase.self) { r in
+      GetAllCategoryEntitiesUseCase(categoryRepository: r.resolve(CategoryRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(GetCategoryEntityUseCase.self) { r in
+      GetCategoryEntityUseCase(categoryRepository: r.resolve(CategoryRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(SaveCategoryEntityUseCase.self) { r in
+      SaveCategoryEntityUseCase(categoryRepository: r.resolve(CategoryRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(UpdateCategoryEntityUserCase.self) { r in
+      UpdateCategoryEntityUserCase(categoryRepository: r.resolve(CategoryRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(DeleteCategoryEntityUseCase.self) { r in
+      DeleteCategoryEntityUseCase(categoryRepository: r.resolve(CategoryRepository.self)!)
+    }.inObjectScope(.container)
+    
+    
     Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }
   
@@ -82,7 +104,9 @@ final class AppDIContainer {
       HomeViewModel(
         authManager: r.resolve(AuthManager.self)!,
         authUseCase: r.resolve(AuthUseCase.self)!,
-        appCoordinator: r.resolve(AppCoordinator.self)!
+        appCoordinator: r.resolve(AppCoordinator.self)!,
+        getAllCategoriesUseCase: r.resolve(GetAllCategoryEntitiesUseCase.self)!,
+        deleteCategoryUseCase: r.resolve(DeleteCategoryEntityUseCase.self)!
       )
     }.inObjectScope(.container)
     

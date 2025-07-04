@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct UpdateCategoryUserCase {
+struct UpdateCategoryEntityUserCase {
   private let categoryRepository: CategoryRepository
   
   init(categoryRepository: CategoryRepository) {
     self.categoryRepository = categoryRepository
   }
   
-  func callAsFunction(category: Category) async throws -> Void {
-    try await categoryRepository.update(category)
+  func callAsFunction(categoryEntity: CategoryEntity) async throws -> Void {
+    try await categoryRepository.update(categoryEntity)
   }    
 }

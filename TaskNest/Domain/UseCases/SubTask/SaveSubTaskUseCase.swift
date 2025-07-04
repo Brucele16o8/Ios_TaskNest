@@ -12,7 +12,7 @@ struct SaveSubTaskUseCase {
     self.subTaskRepository = subTaskRepository
   }
   
-  func callAsFunction(subTask: SubTask) async throws {
-    try await subTaskRepository.save(subTask)
+  func callAsFunction(subTaskEntity: SubTaskEntity) async throws {
+    try await subTaskRepository.save(subTaskEntity)
   }
 }

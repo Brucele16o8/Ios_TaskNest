@@ -8,11 +8,11 @@
 import Foundation
 
 protocol TaskItemRepository {
-  func getAll() async throws -> [TaskItem]
-  func getTaskItem(by id: UUID) async throws -> TaskItem
-  func save(_ taskItem: TaskItem) async throws
-  func update(_ taskItem: TaskItem) async throws
+  func getAll() async throws -> [TaskItemEntity]
+  func getTaskItemEntity(byId id: UUID) async throws -> TaskItemEntity
+  func save(_ taskItemEntity: TaskItemEntity) async throws
+  func update(_ taskItemEntity: TaskItemEntity) async throws
   func delete(id: UUID) async throws
-  func getTaskItemsByCategory(categoryId: UUID) async throws -> [TaskItem]
+  func getTaskItemsByCategory(categoryEntityId: UUID) async throws -> [TaskItemEntity]
 }
 

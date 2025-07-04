@@ -26,6 +26,8 @@ struct RootAppView: View {
               authManager: container.resolve(AuthManager.self)!,
               authUseCase: container.resolve(AuthUseCase.self)!,
               appCoordinator: container.resolve(AppCoordinator.self)!,
+              getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
+              deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
             )
           )
           
@@ -57,10 +59,12 @@ struct RootAppView: View {
               authManager: container.resolve(AuthManager.self)!,
               authUseCase: container.resolve(AuthUseCase.self)!,
               appCoordinator: container.resolve(AppCoordinator.self)!,
+              getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
+              deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
             )
           )
-        case .category(category: let category):
-          CategoryDetailView(category: category)
+        case .category(categoryItem: let categoryItem):
+          CategoryDetailView(category: categoryItem)
         case .photoViewer(startingAt: let index, photos: let photos):
           PhotoViewerView(startingIndex: index, photos: photos)
         }

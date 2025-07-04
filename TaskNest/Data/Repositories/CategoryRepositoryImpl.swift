@@ -12,71 +12,36 @@ import SwiftData
 
 final class CategoryRepositoryImpl: CategoryRepository {
   private let categoryRemoteSource: CategoryRemoteSource // Use later
-  private let modelContext: ModelContext
+  private let categoryLocalDb: CategoryLocalDb
   
-  init(categoryRemoteSource: CategoryRemoteSource, modelContext: ModelContext) {
+  init(categoryRemoteSource: CategoryRemoteSource, categoryLocalDb: CategoryLocalDb) {
     self.categoryRemoteSource = categoryRemoteSource
-    self.modelContext = modelContext
+    self.categoryLocalDb = categoryLocalDb
   }
   
   // ✅
-  func getAll() async throws -> [Category] {
-    do {
-      return try modelContext.fetch(FetchDescriptor<Category>())
-    } catch {
-      throw AppError.database(.fetchFailed(message: "[SwiftData] Failed to fetch categories from database"), underlyingError: error)
-    }
+  func getAll() async throws -> [CategoryEntity] {
+    return try await categoryLocalDb.getAllCategoryEntities()
   }
   
   // ✅
-  func getCategory(by id: UUID) async throws -> Category {
-    let predicate = #Predicate<Category> { $0.id == id }
-    let descriptor = FetchDescriptor<Category>(predicate: predicate)
-    
-    do {
-      guard let category = try modelContext.fetch(descriptor).first else {
-        throw AppError.database(.notFound(message: "[SwiftData] Category with id \(id) not found"))
-      }
-      return category
-    } catch {
-      throw AppError.database(.fetchFailed(message: "[SwiftData] Failed to fetch category with id \(id)"), underlyingError: error)
-    }
+  func getCategoryEntity(by id: UUID) async throws -> CategoryEntity {
+    return try await categoryLocalDb.getCategoryEntity(ofId: id)
   }
   
   // ✅
-  func save(_ category: Category) async throws {
-    modelContext.insert(category)
-    do {
-      try modelContext.save()
-    } catch {
-      throw AppError.database(.saveFailed(message: "[SwiftData] Failed to save category"), underlyingError: error)
-    }
+  func save(_ categoryEntity: CategoryEntity) async throws {
+    try await categoryLocalDb.saveCategoryEntity(categoryEntity)
   }
   
   // ✅
-  func update(_ category: Category) async throws {
-    do {
-      try modelContext.save()
-    } catch {
-      throw AppError.database(.saveFailed(message: "[SwiftData] Failed to update category"), underlyingError: error)
-    }
+  func update(_ categoryEntity: CategoryEntity) async throws {
+    try await categoryLocalDb.updateCategoryEntity(categoryEntity)
   }
   
   // ✅
   func delete(id: UUID) async throws {
-    let predicate = #Predicate<Category> { $0.id == id }
-    let descriptor = FetchDescriptor<Category>(predicate: predicate)
-    
-    do {
-      if let category = try modelContext.fetch(descriptor).first {
-        modelContext.delete(category)
-        try modelContext.save()
-      } else {
-        throw AppError.database(.notFound(message: "[SwiftData] Category with id \(id) not found"))
-      }
-    } catch {
-      throw AppError.database(.deleteFailed(message: "[SwiftData] Failed to delete category with id \(id)"), underlyingError: error)
-    }
+    try await categoryLocalDb.deleteCategoryEntity(id: id)
   }
   
 } // 🧱

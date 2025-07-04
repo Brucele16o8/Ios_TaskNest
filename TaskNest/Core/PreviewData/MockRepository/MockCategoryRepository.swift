@@ -8,28 +8,36 @@
 import Foundation
 
 final class MockCategoryRepository: CategoryRepository {
-  func getAll() async throws -> [Category] {
-    Category.all
+  
+  
+  
+  func getAll() async throws -> [CategoryEntity] {
+    Category.all.map { $0.mapToCategoryEntity }
   }
   
-  func getCategory(by id: UUID) async throws -> Category {
+  func getCategoryEntity(by id: UUID) async throws -> CategoryEntity {
     if let index = Category.all.firstIndex(where: { $0.id == id }) {
-      return Category.all[index]
+      return Category.all[index].mapToCategoryEntity
     } else {
       throw AppError.database(.notFound(message: "Category with id \(id) not found"))
     }
+    // wrong - change later
   }
   
-  func save(_ category: Category) async throws {
+  func save(_ categoryEntity: CategoryEntity) async throws {
+    let category = categoryEntity.mapToCategory
     Category.all.append(category)
+    // wrong - change later
   }
   
-  func update(_ category: Category) async throws {
+  func update(_ categoryEntity: CategoryEntity) async throws {
+    let category = categoryEntity.mapToCategory
     if let index = Category.all.firstIndex(of: category) {
       Category.all[index] = category
     } else {
       throw AppError.database(.notFound(message: "Category with id \(category.id) not found"))
     }
+    // wrong - change later
   }
   
   func delete(id: UUID) async throws {
@@ -38,6 +46,7 @@ final class MockCategoryRepository: CategoryRepository {
     } else {
       throw AppError.database(.notFound(message: "Category with id \(id) not found"))
     }
+    // wrong - change later
   }
   
 } // 🧱

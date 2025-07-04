@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct GetCategoryUseCase {
+struct GetCategoryEntityUseCase {
   private let categoryRepository: CategoryRepository
   
   init(categoryRepository: CategoryRepository) {
     self.categoryRepository = categoryRepository
   }
   
-  func callAsFunction(id: UUID) async throws -> Category {
-    try await categoryRepository.getCategory(by: id)
+  func callAsFunction(id: UUID) async throws -> CategoryEntity {
+    try await categoryRepository.getCategoryEntity(by: id)
   }
 }

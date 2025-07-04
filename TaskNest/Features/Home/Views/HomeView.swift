@@ -12,13 +12,47 @@ struct HomeView: View {
   private let columns = [GridItem(.adaptive(minimum: 80), spacing: 16)]
   
   var body: some View {
-    //    let state = homeViewModel.state
+    let state = homeViewModel.homeViewState
     
     NavigationStack {
       VStack {
         HomeViewTitleComponent()
+        SearchableBar(searchText: homeViewModel.searchTextBinding)
+        
+        VStack(alignment: .leading, spacing: 10) {
+          Text("Categories")
+            .font(.title3.bold())
+          
+          let column = [GridItem(.adaptive(minimum: 68))]
+          ScrollView {
+            LazyVGrid(columns: column) {
+              ForEach(state.categoryItems, id: \.id) { category in
+                NavigationLink(destination: CategoryDetailView(category: category)) {
+                  CategoryIcon(
+                    name: category.title,
+                    systemIcon: AppCategory.from(title: category.title).iconName,
+                    iconSize: 25)
+                }
+//                .contextMenu {
+//                  Button(role: .destructive) {
+////                    homeViewModel
+//                  }
+//                }
+              }
+              AddCategoryIcon(iconSize: 25, action: {
+                // TODO: ADD new category
+              })
+            }
+          }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        
         Spacer()
       }
+      .task {
+          await homeViewModel.startLoading()
+      }
+      .padding()
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         /// --- Search
@@ -68,7 +102,9 @@ struct HomeView: View {
     homeViewModel: HomeViewModel(
       authManager: container.resolve(AuthManager.self)!,
       authUseCase: container.resolve(AuthUseCase.self)!,
-      appCoordinator: container.resolve(AppCoordinator.self)!
+      appCoordinator: container.resolve(AppCoordinator.self)!,
+      getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase(categoryRepository: MockCategoryRepository()),
+      deleteCategoryUseCase: DeleteCategoryEntityUseCase(categoryRepository: MockCategoryRepository())
     )
   )
 }

@@ -6,7 +6,34 @@
 //
 
 enum CategoryMapper {
-  static func fromDTO(_ dto: CategoryDto) -> Category {
+  
+  // MARK: - From Dto
+  static func fromDtoToSwiftData(_ dto: CategoryDto) -> Category {
     Category(id: dto.id, title: dto.title, createdAt: dto.createdAt)
+    // todo: More to come since involve matching and syncing with SwiftData
+  }
+  
+  
+  // MARK: - From Item
+  static func fromItemToEntity(_ categoryItem: CategoryItem) -> CategoryEntity {
+    CategoryEntity(id: categoryItem.id, title: categoryItem.title, createdAt: categoryItem.createdAt)
+  }
+  
+  // MARK: - From Entity
+  static func fromEntityToDto(_ categoryEntity: CategoryEntity) -> CategoryDto {
+    CategoryDto(id: categoryEntity.id, title: categoryEntity.title, createdAt: categoryEntity.createdAt)
+  }
+  
+  static func fromEntityToItem(_ categoryEntity: CategoryEntity) -> CategoryItem {
+    CategoryItem(id: categoryEntity.id, title: categoryEntity.title, createdAt: categoryEntity.createdAt)
+  }
+  
+  static func fromEntityToSwiftData(_ categoryEntity: CategoryEntity) -> Category {
+    Category(id: categoryEntity.id, title: categoryEntity.title, createdAt: categoryEntity.createdAt)
+  }
+  
+  // MARK: - From SwifData
+  static func fromSwiftDataToEntity(_ category: Category) -> CategoryEntity {
+    CategoryEntity(id: category.id, title: category.title, createdAt: category.createdAt)
   }
 }

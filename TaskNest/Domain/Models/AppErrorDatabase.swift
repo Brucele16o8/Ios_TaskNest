@@ -11,6 +11,7 @@ enum DatabaseError: LocalizedError {
   case saveFailed(message: String)
   case deleteFailed(message: String)
   case fetchFailed(message: String)
+  case missingParent(message: String)
   
   case unknown(message: String)
   
@@ -25,6 +26,8 @@ enum DatabaseError: LocalizedError {
       return "Unable to delete data. \(message)"
     case .fetchFailed(let message):
       return "Unable to fetch data. \(message)"
+    case .missingParent(let message):
+      return "Missing linked parent. \(message)"
     case .unknown(let message):
       return "Database Error: \(message)"
     }
@@ -41,6 +44,8 @@ enum DatabaseError: LocalizedError {
       return ".deleteFailed: \(message)"
     case .fetchFailed(let message):
       return ".fetchFailed: \(message)"
+    case .missingParent(let message):
+      return ".missingParent: \(message)"
     case .unknown(let message):
       return "Unkown database issue: \(message)"
     }

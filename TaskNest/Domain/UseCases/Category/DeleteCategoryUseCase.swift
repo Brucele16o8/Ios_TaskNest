@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct DeleteCategoryUseCase {
-  private let categoryrepository: CategoryRepository
+struct DeleteCategoryEntityUseCase {
+  private let categoryRepository: CategoryRepository
   
-  init(categoryrepository: CategoryRepository) {
-    self.categoryrepository = categoryrepository
+  init(categoryRepository: CategoryRepository) {
+    self.categoryRepository = categoryRepository
   }
   
   func callAsFunction(id: UUID) async throws {
-    try await categoryrepository.delete(id: id)
+    try await categoryRepository.delete(id: id)
   }
 }
