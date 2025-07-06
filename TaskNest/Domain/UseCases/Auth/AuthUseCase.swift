@@ -31,4 +31,8 @@ final class AuthUseCase {
     repository.logout(completion: completion)
   }
   
+  func getUserInfo(acceessToken: String) async throws -> AuthenticatedUser {
+    return try await repository.getUserInfo(accessToken: acceessToken)
+  }
+  
 }

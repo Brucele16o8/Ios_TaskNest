@@ -7,6 +7,7 @@
 
 import Foundation
 import Swinject
+import SwiftData
 
 @MainActor
 final class AppDIContainer {
@@ -18,6 +19,7 @@ final class AppDIContainer {
   }
   
   private func registerServices() {
+    registerSwiftDataContainer()
     registerManagers()
     registerAppCoordinators()
     registerDataSources()
@@ -33,13 +35,60 @@ final class AppDIContainer {
     }.inObjectScope(.container)
     Logger.d(tag: "DIContainer", message: "Successful registerAppCoordinators")
   }
+  
+  
+  // ✅ - SwiftData container
+  private func registerSwiftDataContainer() {
+    container.register(ModelContainer.self) { _ in
+      SwiftDataContainer.shared.container
+    }.inObjectScope(.container)
+  }
 
   
   // ✅ - Data sources
   private func registerDataSources() {
-    container.register(Auth0RemoteDataSource.self) { _ in
-      Auth0RemoteDataSource()
+    /// Remote data sources
+    container.register(Auth0RemoteDataSource.self) { r in
+      Auth0RemoteDataSource(networkService: r.resolve(NetworkService.self)!)
     }.inObjectScope(.container)
+    
+    container.register(CategoryRemoteSource.self) { r in
+      CategoryRemoteSourceImpl(
+        categoryApi: CategoryApiClient(
+          networkService: r.resolve(NetworkService.self)!,
+          authManager: r.resolve(AuthManager.self)!)
+      )
+    }.inObjectScope(.container)
+    
+    container.register(TaskItemRemoteSource.self) { r in
+      TaskItemRemoteSourceImpl(
+        taskItemApi: TaskItemApiClient(
+          networkService: r.resolve(NetworkService.self)!,
+          authManager: r.resolve(AuthManager.self)!)
+      )
+    }.inObjectScope(.container)
+    
+    container.register(SubTaskRemoteSource.self) { r in
+      SubTaskRemoteSourceImpl(
+        subTaskApi: SubTaskApiClient(
+          networkservice: r.resolve(NetworkService.self)!,
+          authManager: r.resolve(AuthManager.self)!)
+      )
+    }.inObjectScope(.container)
+    
+    container.register(PhotoAttachmentRemoteSource.self) { r in
+      PhotoAttachmentRemoteSourceImpl(
+        phototAttachmentApi: PhotoAttachmentApiClient(
+          networkService: r.resolve(NetworkService.self)!,
+          authManager: r.resolve(AuthManager.self)!)
+      )
+    }.inObjectScope(.container)
+    
+    /// Local Data Sources
+    container.register(AppModelActor.self) { r in
+      AppModelActor(modelContainer: r.resolve(ModelContainer.self)!)
+    }.inObjectScope(.container)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerDataSources")
   }
   
@@ -47,6 +96,30 @@ final class AppDIContainer {
   private func registerRepositories() {
     container.register(AuthRepository.self) { r in
       AuthRepositoryImpl(remote: r.resolve(Auth0RemoteDataSource.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(CategoryRepository.self) { r in
+      CategoryRepositoryImpl(
+        categoryRemoteSource: r.resolve(CategoryRemoteSource.self)!,
+        categoryLocalDb: r.resolve(AppModelActor.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(TaskItemRepository.self) { r in
+      TaskItemRepositoryImpl(
+        taskItemRemoteSource: r.resolve(TaskItemRemoteSource.self)!,
+        taskItemLocalDb: r.resolve(AppModelActor.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(SubTaskRepository.self) { r in
+      SubTaskRepositoryImpl(
+        subTaskRemoteSource: r.resolve(SubTaskRemoteSource.self)!,
+        subTaskModelActor: r.resolve(AppModelActor.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(PhotoAttachmentRepository.self) { r in
+      PhotoAttachmentRepositoryImpl(
+        photoAttachmentRemoteSource: r.resolve(PhotoAttachmentRemoteSource.self)!,
+        photoAttachmentLocalDb: r.resolve(AppModelActor.self)!)
     }.inObjectScope(.container)
     
     Logger.d(tag: "DIContainer", message: "Successful registerRepositories")
@@ -122,7 +195,7 @@ final class AppDIContainer {
     
     container.register(NetworkService.self) { _ in
       NetworkManager()
-    }
+    }.inObjectScope(.container)
     
     Logger.d(tag: "DIContainer", message: "Successful registerManagers")
   }

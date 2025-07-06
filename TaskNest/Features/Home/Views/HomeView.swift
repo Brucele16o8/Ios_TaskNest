@@ -26,18 +26,12 @@ struct HomeView: View {
           let column = [GridItem(.adaptive(minimum: 68))]
           ScrollView {
             LazyVGrid(columns: column) {
-              ForEach(state.categoryItems, id: \.id) { category in
-                NavigationLink(destination: CategoryDetailView(category: category)) {
-                  CategoryIcon(
-                    name: category.title,
-                    systemIcon: AppCategory.from(title: category.title).iconName,
-                    iconSize: 25)
+              ForEach(state.categoryItems, id: \.id) { categoryItem in
+                CategoryItemView(categoryItem: categoryItem) {
+                  Task {
+                    await homeViewModel.deleteCategory(ofId: categoryItem.id)
+                  }
                 }
-//                .contextMenu {
-//                  Button(role: .destructive) {
-////                    homeViewModel
-//                  }
-//                }
               }
               AddCategoryIcon(iconSize: 25, action: {
                 // TODO: ADD new category

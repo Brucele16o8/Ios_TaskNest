@@ -10,8 +10,8 @@ import Foundation
 class PhotoAttachmentRemoteSourceImpl: PhotoAttachmentRemoteSource {
   private let photoAttachmentApi: PhotoAttachmentApi
   
-  init(phpotAttachmentApi: PhotoAttachmentApi) {
-    self.photoAttachmentApi = phpotAttachmentApi
+  init(phototAttachmentApi: PhotoAttachmentApi) {
+    self.photoAttachmentApi = phototAttachmentApi
   }
   
   func getAllPhotoAttachments() async throws -> [PhotoAttachmentDto] {

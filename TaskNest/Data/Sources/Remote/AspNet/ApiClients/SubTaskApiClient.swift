@@ -24,7 +24,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: nil
+      authToken: nil,
+      customURL: nil,
     )
   }
   
@@ -34,7 +35,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: nil
+      authToken: nil,
+      customURL: nil,
     )
   }
   
@@ -44,7 +46,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .postMethod,
       body: subTaskDto,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -54,7 +57,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .putMethod,
       body: subTaskDto,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -64,7 +68,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .postMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -74,7 +79,8 @@ class SubTaskApiClient: SubTaskApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   

@@ -11,10 +11,12 @@ import Auth0
 final class Auth0RemoteDataSource {
   private let credentialsManager: CredentialsManager
   private let auth: Authentication
+  private let networkService: NetworkService
   
-  init() {
+  init(networkService: NetworkService) {
     auth = Auth0.authentication(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
     credentialsManager = CredentialsManager(authentication: auth)
+    self.networkService = networkService
   }
   
   // ✅ Login with email and passwork by Auth0
@@ -42,7 +44,7 @@ final class Auth0RemoteDataSource {
           login(connection: Auth0Config.googleConnection, completion: completion)
       }
   
-  /// Helper method
+  /// ++ Helper method
   func login(connection: String? = nil, completion: @escaping (Result<Credentials, Error>) -> Void) {
     var webAuth = Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
@@ -98,5 +100,18 @@ final class Auth0RemoteDataSource {
     return credentialsManager.clear()
   }
   
+  // ✅ Fetch User Info
+  func getUserInfo(accessToken: String) async throws -> AuthenticatedUser {
+    let url = URL(string: "https://\(Auth0Config.domain)/userinfo")!
+    let userInfoDto: UserInfoDto = try await networkService.request(
+      endpoint: "",
+      method: .getMethod,
+      body: Optional<String>.none,
+      headers: [:],
+      authToken: accessToken,
+      customURL: url
+    )
+    return userInfoDto.mapToAuthenticatedUser
+  }
     
 } // 🧱

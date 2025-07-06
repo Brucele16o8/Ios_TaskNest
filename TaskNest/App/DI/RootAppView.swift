@@ -64,7 +64,7 @@ struct RootAppView: View {
             )
           )
         case .category(categoryItem: let categoryItem):
-          CategoryDetailView(category: categoryItem)
+          CategoryDetailView(categoryItem: categoryItem)
         case .photoViewer(startingAt: let index, photos: let photos):
           PhotoViewerView(startingIndex: index, photos: photos)
         }

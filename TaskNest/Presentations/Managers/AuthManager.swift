@@ -23,15 +23,20 @@ final class AuthManager {
   var authState: AuthState = .checking
   private let loginUseCase: AuthUseCase
   private var credentials: Credentials?
+  private(set) var currentUser: AuthenticatedUser?
   
   init(loginUseCase: AuthUseCase) {
     self.loginUseCase = loginUseCase
     checkSession()
     }
   
-  var authToken: String? {
-    guard let credentials else { return nil }
-    return credentials.accessToken
+  var authToken: String {
+    get throws {
+      guard let credentials else {
+        throw AppError.auth(.unknown(message: "Failed to get auth token from stored credentials in AuthManager"))
+      }
+      return credentials.accessToken
+    }
   }
   
   /// Checking session
@@ -52,6 +57,10 @@ final class AuthManager {
   func storeCredentials(_ credentials: Credentials) {
     self.credentials = credentials
   }
+  
+  func storeAuthenticatedUser(_ user: AuthenticatedUser) {
+      self.currentUser = user
+    }
   
   // ✅
   func updateAuthStateIfNeeded(from loginStatus: LoginStatus) {

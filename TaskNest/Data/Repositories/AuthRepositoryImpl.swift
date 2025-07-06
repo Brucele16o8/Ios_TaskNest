@@ -32,4 +32,8 @@ final class AuthRepositoryImpl: AuthRepository {
     remoteAuthenticationSource.clearCredentials()
   }
   
-}
+  func getUserInfo(accessToken: String) async throws -> AuthenticatedUser {
+    return try await remoteAuthenticationSource.getUserInfo(accessToken: accessToken)
+  }
+  
+} // 🧱

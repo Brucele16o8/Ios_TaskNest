@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct CategoryDetailView: View {
-  let category: CategoryItem
+  let categoryItem: CategoryItem
   
   var body: some View {
-    Text("Category Detail View: name - \(category.title)")
+    Text("Category Detail View: name - \(categoryItem.title)")
   }
 }
 
 #Preview {
-  CategoryDetailView(category: CategoryItem(title: "Testing Category"))
+  CategoryDetailView(categoryItem: CategoryItem(title: "Testing Category"))
 }

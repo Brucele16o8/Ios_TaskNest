@@ -16,14 +16,15 @@ final class NetworkManager: NetworkService {
     endpoint: String,
     method: HTTPMethod, body: T?,
     headers: [String : String],
-    authToken: String?
+    authToken: String?,
+    customURL: URL? = nil
   ) async throws -> R where T : Decodable, T : Encodable, R : Decodable
   {
     guard let  baseUrl = URL(string: APIConfig.baseURL) else {
       throw AppError.network(.unknown(message: "Invalid base URL: \(APIConfig.baseURL)"))
     }
     
-    let fullURL = baseUrl.appendingPathComponent(endpoint)
+    let fullURL = customURL ?? baseUrl.appendingPathComponent(endpoint)
     var request = URLRequest(url: fullURL)
     request.httpMethod = method.rawValue
     applyHeader(to: &request, headers: headers, authToken: authToken)
@@ -54,14 +55,15 @@ final class NetworkManager: NetworkService {
     endpoint: String,
     method: HTTPMethod,
     body: T?, headers: [String : String],
-    authToken: String?
+    authToken: String?,
+    customURL: URL? = nil
   ) async throws where T : Decodable, T : Encodable
   {
     guard let  baseUrl = URL(string: APIConfig.baseURL) else {
       throw AppError.network(.unknown(message: "Invalid base URL: \(APIConfig.baseURL)"))
     }
     
-    let fullURL = baseUrl.appendingPathComponent(endpoint)
+    let fullURL = customURL ?? baseUrl.appendingPathComponent(endpoint)
     var request = URLRequest(url: fullURL)
     request.httpMethod = method.rawValue
     applyHeader(to: &request, headers: headers, authToken: authToken)

@@ -39,6 +39,9 @@ final class HomeViewModel {
   func startLoading() async {
     homeViewState.isLoading = true
     do {
+      let user = try await authUseCase.getUserInfo(acceessToken: authManager.authToken)
+      authManager.storeAuthenticatedUser(user)
+      
       let categoryEntities = try await getAllCategoriesUseCase()
       let categoryItems = categoryEntities.map { $0.mapToCategotyItem }
       homeViewState = homeViewState.copy(
@@ -63,11 +66,13 @@ final class HomeViewModel {
   }
   
   // ✅  haven't finished
-  func deleteCategory(ofId categoryId: UUID) {
-    Task {
-      do {
-        try await deleteCategoryUseCase(id: categoryId)
-      }
+  func deleteCategory(ofId categoryId: UUID) async {
+    do {
+      try await deleteCategoryUseCase(id: categoryId)
+    } catch let appError as AppError {
+      homeViewState.errorMessage = appError.localizedDescription
+    } catch {
+      homeViewState.errorMessage = "Failed to delete category"
     }
   }
   

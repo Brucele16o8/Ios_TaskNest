@@ -22,7 +22,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: nil
+      authToken: nil,
+      customURL: nil,
     )
   }
   
@@ -32,7 +33,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: nil
+      authToken: nil,
+      customURL: nil,
     )
   }
   
@@ -42,7 +44,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .postMethod,
       body: photoAttachmentDto,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -52,7 +55,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .putMethod,
       body: photoAttachmentDto,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -62,7 +66,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .deleteMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: authManager.authToken
+      authToken: authManager.authToken,
+      customURL: nil,
     )
   }
   
@@ -72,7 +77,8 @@ class PhotoAttachmentApiClient: PhotoAttachmentApi {
       method: .getMethod,
       body: Optional<Data>.none,
       headers: [:],
-      authToken: nil
+      authToken: nil,
+      customURL: nil,
     )
   }
   

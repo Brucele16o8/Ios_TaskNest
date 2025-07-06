@@ -13,7 +13,8 @@ protocol NetworkService {
     method: HTTPMethod,
     body: T?,
     headers: [String : String],
-    authToken: String?
+    authToken: String?,
+    customURL: URL?
   ) async throws -> R
   
   func requestWithoutResponse<T: Codable>(
@@ -21,6 +22,7 @@ protocol NetworkService {
     method: HTTPMethod,
     body: T?,
     headers: [String : String],
-    authToken: String?
+    authToken: String?,
+    customURL: URL?
   ) async throws
 }
