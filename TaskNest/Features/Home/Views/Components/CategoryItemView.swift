@@ -28,5 +28,5 @@ struct CategoryItemView: View {
 }
 
 #Preview {
-  CategoryItemView(categoryItem: CategoryItem(title: "work"), onDelete: {})
+  CategoryItemView(categoryItem: CategoryItem(title: "work", userId: "116688"), onDelete: {})
 }

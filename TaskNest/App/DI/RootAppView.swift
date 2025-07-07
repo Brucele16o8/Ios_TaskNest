@@ -28,7 +28,8 @@ struct RootAppView: View {
               appCoordinator: container.resolve(AppCoordinator.self)!,
               getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
               deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
-            )
+            ),
+            appCoordinator: container.resolve(AppCoordinator.self)!
           )
           
         case .unauthenticated:
@@ -38,6 +39,12 @@ struct RootAppView: View {
           )
         }
       }
+      
+      .onChange(of: authManager.authState) { newState, _ in
+              if newState == .unauthenticated {
+                appCoordinator.goToRootScreen()
+              }
+            }
       
       .navigationDestination(for: AppRoute.self) { route in
         switch route {
@@ -51,7 +58,9 @@ struct RootAppView: View {
           case .forgotPassword:
             ForgotPasswordView()
           case .signUp:
-            SignUpView()
+            SignUpView(
+              viewModel: container.resolve(SignUpViewModel.self)!,
+              appCoordinator: container.resolve(AppCoordinator.self)!)
           }
         case .home:
           HomeView(
@@ -61,7 +70,8 @@ struct RootAppView: View {
               appCoordinator: container.resolve(AppCoordinator.self)!,
               getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
               deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
-            )
+            ),
+            appCoordinator: container.resolve(AppCoordinator.self)!
           )
         case .category(categoryItem: let categoryItem):
           CategoryDetailView(categoryItem: categoryItem)

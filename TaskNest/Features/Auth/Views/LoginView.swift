@@ -21,7 +21,7 @@ struct LoginView: View {
       
       VStack {
         Spacer()
-        LogoTitleView(title: "TaskNest", showText: loginState.showText)
+        LogoTitleView(title: "TaskNest", size: 68, showText: loginState.showText)
         Spacer()
         Spacer()
         VStack(spacing: 16) {
@@ -34,8 +34,14 @@ struct LoginView: View {
             title: "Password",
             bindingPassword: viewModel.passwordBinding,
           )
+          
           Spacer()
             .frame(height: 10)
+          
+          ForgotPassowordText(onForgotButtonClicked: {
+            appCoordinator.navigate(to: .auth(authRoute: .forgotPassword))
+          })
+          
           PrimaryButton<Image>(
             title: "Sign in",
             icon: nil,
@@ -63,6 +69,11 @@ struct LoginView: View {
             action: {
               viewModel.loginWithGoogle()
             })
+          
+          SignUpText {
+            appCoordinator.navigate(to: .auth(authRoute: .signUp))
+          }
+          .padding(.top, 5)
         }
         .padding(.horizontal, 32)
       }

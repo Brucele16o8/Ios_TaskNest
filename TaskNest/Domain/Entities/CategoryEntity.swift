@@ -12,19 +12,21 @@ struct CategoryEntity: Identifiable {
   let id: UUID
   var title: String
   var createdAt: Date
+  var userId: String
   
-  init(id: UUID = .init(), title: String, createdAt: Date = .now) {
+  init(id: UUID = .init(), title: String, createdAt: Date = .now, userId: String) {
     self.id = id
     self.title = title
     self.createdAt = createdAt
+    self.userId = userId
   }
 }
 
 extension CategoryEntity {
-  static let work = CategoryEntity(title: "Work")
-  static let personal = CategoryEntity(title: "Personal")
-  static let shopping = CategoryEntity(title: "Shopping")
-  static let study = CategoryEntity(title: "Study")
+  static let work = CategoryEntity(title: "Work", userId: "116688")
+  static let personal = CategoryEntity(title: "Personal", userId: "116688")
+  static let shopping = CategoryEntity(title: "Shopping", userId: "116688")
+  static let study = CategoryEntity(title: "Study", userId: "116688")
   
   static var all: [CategoryEntity] = [work, personal, shopping, study]
 }

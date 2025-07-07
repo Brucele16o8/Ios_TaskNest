@@ -22,7 +22,8 @@ struct TextFieldFormPassword: View {
           SecureField(title, text: bindingPassword)
         }
       }
-        .textInputAutocapitalization(.never)
+      .textInputAutocapitalization(.never)
+      .disableAutocorrection(true)
       
       Button(action: {
         isPasswordVisible.toggle()

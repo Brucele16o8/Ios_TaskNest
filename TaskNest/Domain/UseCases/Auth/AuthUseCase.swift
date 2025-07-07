@@ -35,4 +35,7 @@ final class AuthUseCase {
     return try await repository.getUserInfo(accessToken: acceessToken)
   }
   
+  func signUpWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void) {
+    repository.signUpwithEmailAndPassword(email: email, password: password, completion: completion)
+  }
 }

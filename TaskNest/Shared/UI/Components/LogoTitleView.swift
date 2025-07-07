@@ -10,7 +10,7 @@ import SwiftUI
 struct LogoTitleView: View {
   @Namespace var animationNamespace
   let title: String
-  let size: CGFloat = 68
+  let size: CGFloat
   var showText: Bool
   
   var body: some View {
@@ -24,5 +24,5 @@ struct LogoTitleView: View {
 }
 
 #Preview {
-  LogoTitleView(title: "TaskNest", showText: true)
+  LogoTitleView(title: "TaskNest", size: 68, showText: true)
 }

@@ -12,14 +12,15 @@ enum TaskItemMapper {
   
   // From Dtos
   static func fromDTOs(_ dtos: [TaskItemDto], categoryMap: [UUID : Category]) -> [TaskItem] {
-    dtos.compactMap { dto in
-      guard let category = categoryMap[dto.categoryId] else { return nil }
+    dtos.compactMap { dto -> TaskItem? in
+      guard let category: Category = categoryMap[dto.categoryId] else { return nil }
       return TaskItem(
         id: dto.id,
         title: dto.title,
         isCompleted: dto.isCompleted,
         createdAt: dto.createdAt,
-        category: category
+        category: category,
+        userId: category.userId
       )
     }
   }
@@ -35,7 +36,8 @@ enum TaskItemMapper {
       title: taskItem.title,
       isCompleted: taskItem.isCompleted,
       createdAt: taskItem.createdAt,
-      categoryId: categoryId)
+      categoryId: categoryId,
+      userId: taskItem.userId)
   }
   
   // From Entity
@@ -45,7 +47,8 @@ enum TaskItemMapper {
       title: taskItemEntity.title,
       isCompleted: taskItemEntity.isCompleted,
       createdAt: taskItemEntity.createdAt,
-      category: nil
+      category: nil,
+      userId: taskItemEntity.userId
     )
   }
   

@@ -15,6 +15,8 @@ enum ValidationError: LocalizedError {
   case missingUppercase
   case missingNumber
   case passwordMismatch
+  case tooShortUsername(min: Int)
+  
   
   var errorDescription: String? {
     switch self {
@@ -32,6 +34,8 @@ enum ValidationError: LocalizedError {
       return "Password must contain a number."
     case .passwordMismatch:
           return "Passwords do not match."
+    case .tooShortUsername(min: let min):
+      return "Username must be at least 6 characters."
     }
   }
   

@@ -74,5 +74,17 @@ final class AuthManager {
     }
   }
   
+  // ✅
+  func updateAuthStateIfNeeded(from signupStatus: SignUpStatus) {
+    switch signupStatus {
+    case .signedUp:
+      authState = AuthState.authenticated
+    case .signingUp:
+      authState = AuthState.authenticating
+    case .idle, .error:
+      authState = AuthState.unauthenticated
+    }
+  }
+  
 } // 🧱
 

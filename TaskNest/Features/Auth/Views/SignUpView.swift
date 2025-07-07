@@ -9,11 +9,105 @@ import SwiftUI
 import Swinject
 
 struct SignUpView: View {
+  @Bindable private(set) var viewModel: SignUpViewModel
+  @Bindable private(set) var appCoordinator: AppCoordinator
+  
   var body: some View {
-    Text("Sign Up")
+    let state = viewModel.state
+    
+    ZStack {
+      BackgroundGridView()
+      
+      VStack {
+        Spacer()
+        
+        LogoTitleView(title: "Create Account", size: 38, showText: state.showText)
+        
+        VStack(spacing: 16) {
+          
+          // ✅ Email field + error
+          TextFieldFormGeneral(
+            title: "Email",
+            bindingText: viewModel.emailBinding,
+            keyboardType: .emailAddress
+          )
+          
+          if !state.emailError.isEmpty {
+            Text(state.emailError)
+              .foregroundColor(.red)
+              .font(.caption)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
+          
+          // ✅ Password field + error
+          TextFieldFormPassword(
+            title: "Password",
+            bindingPassword: viewModel.passwordBinding
+          )
+          
+          if !state.passwordError.isEmpty {
+            Text(state.passwordError)
+              .foregroundColor(.red)
+              .font(.caption)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
+          
+          // ✅ Confirm password + error
+          TextFieldFormPassword(
+            title: "Confirm Password",
+            bindingPassword: viewModel.confirmPasswordBinding
+          )
+          
+          if !state.confirmPasswordError.isEmpty {
+            Text(state.confirmPasswordError)
+              .foregroundColor(.red)
+              .font(.caption)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
+          
+          // ✅ Username field + error -> Later
+//          TextFieldFormGeneral(
+//            title: "Username",
+//            bindingText: viewModel.userNameBinding,
+//            keyboardType: nil
+//          )
+//          
+//          if !state.userNameError.isEmpty {
+//            Text(state.userNameError)
+//              .foregroundColor(.red)
+//              .font(.caption)
+//              .frame(maxWidth: .infinity, alignment: .leading)
+//          }
+          
+          // ✅ Primary Button – only enabled if form is valid
+          PrimaryButton<Image>(
+            title: "Sign Up",
+            icon: nil,
+            isDisabled: !state.isValidForm
+          ) {
+            viewModel.signUpWithEmailAndPassword()
+          }
+          
+          SignUpLoginText {
+            appCoordinator.goBack() // Go back to login screen
+          }
+          
+        } // VStack
+        .padding(.horizontal, 32)
+        Spacer()
+        Spacer()
+      }
+    }
+    .task {
+      viewModel.startAnimation()
+    }
   }
 }
 
 #Preview {
-  SignUpView()
+  let container = AppDIContainer.shared.container
+  SignUpView(
+    viewModel: container.resolve(SignUpViewModel.self)!,
+    appCoordinator: container.resolve(AppCoordinator.self)!
+  )
 }

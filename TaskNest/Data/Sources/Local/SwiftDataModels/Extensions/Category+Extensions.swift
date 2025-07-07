@@ -28,15 +28,15 @@ extension Category {
 // MARK: - Preview Data
 extension Category {
   static var empty: Category {
-    .init(title: "")
+    .init(title: "", userId: "")
   }
 }
 
 extension Category {
-  static let work = Category(title: "Work")
-  static let personal = Category(title: "Personal")
-  static let shopping = Category(title: "Shopping")
-  static let study = Category(title: "Study")
-  
+  static let work = Category(title: "Work", userId: "116688")
+  static let personal = Category(title: "Personal", userId: "116688")
+  static let shopping = Category(title: "Shopping", userId: "116688")
+  static let study = Category(title: "Study", userId: "116688")
+
   static var all: [Category] = [work, personal, shopping, study]
 }

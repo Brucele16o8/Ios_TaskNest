@@ -16,10 +16,14 @@ final class SwiftDataContainer {
   
   private init() {
     do {
+      Logger.d(tag: "SwiftDataContainer", message: "Inside SwiftDataContainer Initializer...")
+      
       container = try ModelContainer(
         for: Category.self, TaskItem.self, SubTask.self, PhotoAttachment.self,
         configurations: ModelConfiguration(isStoredInMemoryOnly: false)
       )
+      
+      Logger.d(tag: "SwiftDataContainer", message: "SwiftDataContainer created successfully.")
     } catch {
       fatalError("❌ Failed to create SwiftData container: \(error)")
     }

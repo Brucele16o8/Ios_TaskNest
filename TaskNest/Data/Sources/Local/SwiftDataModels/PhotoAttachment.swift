@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-class PhotoAttachment: Identifiable {
+class PhotoAttachment {
   @Attribute(.unique) var id: UUID
   var localPath: String?
   var remoteURL: String?

@@ -13,4 +13,5 @@ protocol AuthRepository {
   func logout(completion: @escaping (Result<Void, Error>) -> Void)
   func restoreSession(completion: @escaping (Result<Credentials, Error>) -> Void)
   func getUserInfo(accessToken: String) async throws -> AuthenticatedUser
+  func signUpwithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void)
 }

@@ -36,4 +36,8 @@ final class AuthRepositoryImpl: AuthRepository {
     return try await remoteAuthenticationSource.getUserInfo(accessToken: accessToken)
   }
   
+  func signUpwithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Auth0.Credentials, AppError>) -> Void) {
+    remoteAuthenticationSource.singUpWithEmailAndPassword(email: email, password: password, completion: completion)
+  }
+  
 } // 🧱

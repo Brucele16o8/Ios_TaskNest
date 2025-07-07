@@ -121,9 +121,9 @@ final class LoginViewModel {
       (email.isEmpty, .emptyEmail),
       (!email.contains("@"), .invalidEmailFormat),
       (password.isEmpty, .emptyPassword),
-      (password.count < PasswordConfig.minLength, .tooShortPassword(min: PasswordConfig.minLength)),
+      (password.count < SignUpLoginConfig.passwordMinLength, .tooShortPassword(min: SignUpLoginConfig.passwordMinLength)),
       (!password.contains(where: \.isUppercase), .missingUppercase),
-      (!password.contains(where: \.isNumber) , .missingNumber)
+      (!password.contains(where: \.isNumber) , .missingNumber),
     ]
     
     for (failed, validationError) in rules {

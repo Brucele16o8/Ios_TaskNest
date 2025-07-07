@@ -38,16 +38,16 @@ extension TaskItem {
 // MARK: - Preview Data
 extension TaskItem {
   static var empty: TaskItem {
-    .init(title: "")
+    .init(title: "", userId: "")
   }
 }
 
 extension TaskItem {
-  static let taskItem1 = TaskItem(title: "Task 1", isCompleted: false, category: .work)
-  static let taskItem2 = TaskItem(title: "Task 2", isCompleted: false, category: .work)
-  static let taskItem3 = TaskItem(title: "Task 3", isCompleted: false, category: .work)
-  static let taskItem4 = TaskItem(title: "Task 1", isCompleted: false, category: .personal)
-  static let taskItem5 = TaskItem(title: "Task 2", isCompleted: false, category: .personal)
+  static let taskItem1 = TaskItem(title: "Task 1", isCompleted: false, category: .work, userId: "116688")
+  static let taskItem2 = TaskItem(title: "Task 2", isCompleted: false, category: .work, userId: "116688")
+  static let taskItem3 = TaskItem(title: "Task 3", isCompleted: false, category: .work, userId: "116688")
+  static let taskItem4 = TaskItem(title: "Task 1", isCompleted: false, category: .personal, userId: "116688")
+  static let taskItem5 = TaskItem(title: "Task 2", isCompleted: false, category: .personal, userId: "116688")
   
   static var all: [TaskItem] = [taskItem1, taskItem2, taskItem3, taskItem4, taskItem5]
 }

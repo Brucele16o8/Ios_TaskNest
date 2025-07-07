@@ -113,5 +113,27 @@ final class Auth0RemoteDataSource {
     )
     return userInfoDto.mapToAuthenticatedUser
   }
+  
+  // ✅ Sign Up with Auth0
+  func singUpWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void) {
+    auth
+      .signup(
+        email: email,
+        password: password,
+        connection: Auth0Config.databaseRealm
+      )
+      .start { result in
+        Logger.d(tag: "Auth0", message: "Signup result: \(result)")
+        switch result {
+        case .success:
+          self.loginWithEmailandPassword(email: email, password: password) { loginResult in
+            completion(loginResult.mapError{ $0.toAppError })
+          }
+        case .failure(let authenticationError):
+          completion(.failure(authenticationError.toAppError))
+        }
+      }
+  }
+  
     
 } // 🧱

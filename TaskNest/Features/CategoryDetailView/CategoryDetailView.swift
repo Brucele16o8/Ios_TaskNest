@@ -16,5 +16,5 @@ struct CategoryDetailView: View {
 }
 
 #Preview {
-  CategoryDetailView(categoryItem: CategoryItem(title: "Testing Category"))
+  CategoryDetailView(categoryItem: CategoryItem(title: "Testing Category", userId: "116688"))
 }

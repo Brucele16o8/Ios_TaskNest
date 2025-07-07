@@ -10,6 +10,7 @@ import SwiftUI
 struct PrimaryButton<Icon: View>: View {
   let title: String
   let icon: Icon?
+  var isDisabled: Bool = false
   let action: () -> Void
   
   var body: some View {
@@ -23,13 +24,15 @@ struct PrimaryButton<Icon: View>: View {
       }
       .frame(maxWidth: .infinity)
       .padding()
-      .background(Color.blue)
+      .background(isDisabled ? Color.gray : Color.blue)
       .foregroundStyle(.white)
       .cornerRadius(10)
+      .opacity(isDisabled ? 0.5 : 1.0)
     }
+    .disabled(isDisabled)
   }
 }
 
 #Preview {
-  PrimaryButton<Image>(title: "PrimaryButton", icon: nil) { }
+  PrimaryButton<Image>(title: "PrimaryButton", icon: nil, isDisabled: true) { }
 }

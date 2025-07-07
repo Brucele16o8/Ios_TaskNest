@@ -13,4 +13,5 @@ struct TaskItemItem: Identifiable, Equatable, Sendable {
   let isCompleted: Bool
   let createdAt: Date
   let categoryId: UUID
+  let userId: String
 }

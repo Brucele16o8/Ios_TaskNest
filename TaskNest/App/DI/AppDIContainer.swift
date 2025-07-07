@@ -169,8 +169,10 @@ final class AppDIContainer {
       LoadingViewModel()
     }.inObjectScope(.container)
     
-    container.register(SignUpViewModel.self) {  _ in // TODO: - more later
-      SignUpViewModel()
+    container.register(SignUpViewModel.self) {  r in // TODO: - more later
+      SignUpViewModel(
+        authManager: r.resolve(AuthManager.self)!,
+        authUseCase: r.resolve(AuthUseCase.self)!)
     }.inObjectScope(.container)
     
     container.register(HomeViewModel.self) { r in

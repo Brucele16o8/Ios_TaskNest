@@ -17,7 +17,7 @@ struct LoginUIState: Equatable {
   
   var isValidLoginForm: Bool {
     !email.isEmpty && email.contains("@") &&
-    !password.isEmpty && password.count >= PasswordConfig.minLength
+    !password.isEmpty && password.count >= SignUpLoginConfig.passwordMinLength
   }
 }
 

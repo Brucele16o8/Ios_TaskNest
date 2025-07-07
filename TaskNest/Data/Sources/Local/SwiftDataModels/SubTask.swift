@@ -9,7 +9,7 @@ import SwiftData
 import Foundation
 
 @Model
-class SubTask: Identifiable {
+class SubTask {
   @Attribute(.unique) var id: UUID
   var title: String
   var isCompleted: Bool

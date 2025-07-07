@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
   @Bindable private(set) var homeViewModel: HomeViewModel
+  @Bindable private(set) var appCoordinator: AppCoordinator
   private let columns = [GridItem(.adaptive(minimum: 80), spacing: 16)]
   
   var body: some View {
@@ -82,7 +83,9 @@ struct HomeView: View {
       }
       .sheet(isPresented: homeViewModel.showSettingsBinding) {
         SettingsPanel(
-          onLogout: { homeViewModel.logout() }
+          onLogout: {
+            homeViewModel.logout()
+          }
         )
       }
       .background(Color.backgroundColor3)
@@ -99,6 +102,7 @@ struct HomeView: View {
       appCoordinator: container.resolve(AppCoordinator.self)!,
       getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase(categoryRepository: MockCategoryRepository()),
       deleteCategoryUseCase: DeleteCategoryEntityUseCase(categoryRepository: MockCategoryRepository())
-    )
+    ),
+    appCoordinator: container.resolve(AppCoordinator.self)!
   )
 }
