@@ -13,7 +13,7 @@ final class AppCoordinator {
   var currentRootRoute: AppRootRoute = .loading
   private var isNavigating = false
   
-  // ✅
+  // ✅ This thing is from the branch testing 01
   func navigate(to route: AppRoute, allowDuplicate: Bool = false) {
     guard !isNavigating else {
       Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring navigation to \(route).")
@@ -90,34 +90,22 @@ final class AppCoordinator {
   
   // ✅
   func logOut() {
-    Logger.d(tag: "AppCoordinator", message: "Logging out and navigating to login")
     setRootRoute(.auth(authRoute: .login))
   }
   
   // ✅
   func restoreSession(usingAuthUseCase authUseCase: AuthUseCase) async {
-    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession")
     guard !isNavigating else {
-      Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring restoreSession.")
       return
     }
-    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - after guard checking")
     isNavigating = true
     defer { isNavigating = false }
-    
-    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - isNavigating \(isNavigating)")
     do {
-      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - before calling isAuthenticated")
       let isAuthenticated = try await authUseCase.isAuthenticated()
-      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - AFTER calling isAuthenticated")
-      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - before setRootRoute")
-      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - isNavigating \(isNavigating) and isAuthenticated \(isAuthenticated)")
       setRootRoute(isAuthenticated ? .main : .auth(authRoute: .login), isInternalCall: true)
-      Logger.d(tag: "AppCoordinator", message: "Session restored: \(isAuthenticated ? "Authenticated" : "Unauthenticated")")
     } catch {
       let appError = ErrorMapper.map(error)
       setRootRoute(.auth(authRoute: .login))
-      Logger.e(tag: "AppCoordinator", message: "Session restoration failed: \(appError.debugDescription)")
     }
     
   }
@@ -125,7 +113,6 @@ final class AppCoordinator {
   // ✅
   func handleDeepLink(url: URL) {
       guard !isNavigating else {
-          Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring deep link: \(url)")
           return
       }
       
