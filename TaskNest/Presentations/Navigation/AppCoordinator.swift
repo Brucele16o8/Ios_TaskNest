@@ -57,9 +57,10 @@ final class AppCoordinator {
   }
   
   // ✅ Set RootRoute
-  func setRootRoute(_ rootRoute: AppRootRoute) {
-    guard !isNavigating else {
+  func setRootRoute(_ rootRoute: AppRootRoute, isInternalCall: Bool = false) {
+    guard isInternalCall || !isNavigating else {
       Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring setRootRoute(\(rootRoute)).")
+      Logger.w(tag: "AppCoordinator", message: "isInternalCall: \(isInternalCall), isNavigating: \(isNavigating)")
       return
     }
     isNavigating = true
@@ -95,17 +96,23 @@ final class AppCoordinator {
   
   // ✅
   func restoreSession(usingAuthUseCase authUseCase: AuthUseCase) async {
+    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession")
     guard !isNavigating else {
       Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring restoreSession.")
       return
     }
-    
+    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - after guard checking")
     isNavigating = true
     defer { isNavigating = false }
     
+    Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - isNavigating \(isNavigating)")
     do {
+      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - before calling isAuthenticated")
       let isAuthenticated = try await authUseCase.isAuthenticated()
-      setRootRoute(isAuthenticated ? .main : .auth(authRoute: .login))
+      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - AFTER calling isAuthenticated")
+      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - before setRootRoute")
+      Logger.d(tag: "AppCoordinator", message: "Inside restoreSession - isNavigating \(isNavigating) and isAuthenticated \(isAuthenticated)")
+      setRootRoute(isAuthenticated ? .main : .auth(authRoute: .login), isInternalCall: true)
       Logger.d(tag: "AppCoordinator", message: "Session restored: \(isAuthenticated ? "Authenticated" : "Unauthenticated")")
     } catch {
       let appError = ErrorMapper.map(error)

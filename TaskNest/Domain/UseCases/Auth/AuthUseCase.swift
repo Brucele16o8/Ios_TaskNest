@@ -15,6 +15,7 @@ final class AuthUseCase {
   }
   
   func isAuthenticated() async throws -> Bool {
+    Logger.d(tag: "AuthUseCase", message: "Inside isAuthenticated")
     return try await repository.isAuthenticated()
   }
   

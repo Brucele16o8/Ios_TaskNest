@@ -17,12 +17,15 @@ final class AuthRepositoryImpl: AuthRepository {
   // ✅
   func isAuthenticated() async throws -> Bool {
     try await withCheckedThrowingContinuation { continuation in
+      Logger.d(tag: "AuthrRepositoryImplement", message: "Inside isAuthenticated")
       remoteAuthenticationSource.restoreSession { result in
         switch result {
         case .success:
+          Logger.d(tag: "AuthrRepositoryImplement", message: "Inside restoreSession - success")
           continuation.resume(returning: true)
-        case .failure(let appError):
-          continuation.resume(throwing: appError)
+        case .failure:
+          continuation.resume(returning: false)
+          Logger.d(tag: "AuthrRepositoryImplement", message: "Inside restoreSession - failure")
         }
       }
     }

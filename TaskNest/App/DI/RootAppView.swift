@@ -19,6 +19,7 @@ struct RootAppView: View {
         case .loading:
           LoadingView(loadingViewModel: container.resolve(LoadingViewModel.self)!)
             .task {
+              Logger.d(tag: "RootAppView", message: "Restore session")
               await appCoordinator.restoreSession(usingAuthUseCase: container.resolve(AuthUseCase.self)!)
             }
         case .auth(let authRoute):
