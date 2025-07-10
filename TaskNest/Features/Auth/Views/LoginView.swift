@@ -11,7 +11,6 @@ import Swinject
 struct LoginView: View {
   @Bindable private(set) var viewModel: LoginViewModel
   @Bindable private(set) var appCoordinator: AppCoordinator
-  @State private var showfForgotPasswordView: Bool = false
   
   var body: some View {
     let loginState = viewModel.state
@@ -38,15 +37,19 @@ struct LoginView: View {
           Spacer()
             .frame(height: 10)
           
-          ForgotPassowordText(onForgotButtonClicked: {
-            appCoordinator.navigate(to: .auth(authRoute: .forgotPassword))
+          ForgotPassowordText(action: {
+            Logger.d(tag: "LoginView", message: "Navigating to forgot password")
+            appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
           })
           
           PrimaryButton<Image>(
             title: "Sign in",
             icon: nil,
+            isDisabled: !viewModel.isValidLoginForm,
             action: {
-              viewModel.loginWithEmailAndPassword()
+              Task {
+                await viewModel.loginWithEmailAndPassword()
+              }
             })
           
           HStack {
@@ -67,11 +70,14 @@ struct LoginView: View {
             title: "Sign in with Google",
             icon: GoogleIcon(iconSize: 25),
             action: {
-              viewModel.loginWithGoogle()
+              Task {
+                await viewModel.loginWithGoogle()
+              }
             })
           
           SignUpText {
-            appCoordinator.navigate(to: .auth(authRoute: .signUp))
+            Logger.d(tag: "LoginView", message: "Navigating to signup")
+            appCoordinator.setRootRoute(.auth(authRoute: .signUp))
           }
           .padding(.top, 5)
         }
@@ -81,6 +87,7 @@ struct LoginView: View {
     .task {
       viewModel.startAnimation()
     }
+    .navigationTitle("Login")
   }
 }
 
@@ -88,8 +95,7 @@ struct LoginView: View {
   let container = AppDIContainer.shared.container
   LoginView(
     viewModel: container.resolve(LoginViewModel.self)!,
-//    authManager: container.resolve(AuthManager.self)!,
-    appCoordinator: container.resolve(AppCoordinator.self)!
+    appCoordinator: container.resolve(AppCoordinator.self)!,
   )
 }
 

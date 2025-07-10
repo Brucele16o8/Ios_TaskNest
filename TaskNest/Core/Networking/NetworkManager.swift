@@ -14,7 +14,8 @@ final class NetworkManager: NetworkService {
   // ✅
   func request<T, R>(
     endpoint: String,
-    method: HTTPMethod, body: T?,
+    method: HTTPMethod,
+    body: T?,
     headers: [String : String],
     authToken: String?,
     customURL: URL? = nil

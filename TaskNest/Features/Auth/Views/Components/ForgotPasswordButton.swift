@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ForgotPassowordText: View {
-  let onForgotButtonClicked: () -> Void
+  let action: () -> Void
   
   var body: some View {
     Button {
-      onForgotButtonClicked()
+      action()
     } label: {
       Text("Forgot password?")
         .underline()
@@ -24,5 +24,5 @@ struct ForgotPassowordText: View {
 }
 
 #Preview {
-  ForgotPassowordText(onForgotButtonClicked: { })
+  ForgotPassowordText(action: { })
 }

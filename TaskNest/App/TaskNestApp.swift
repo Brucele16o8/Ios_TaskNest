@@ -13,7 +13,8 @@ struct TaskNestApp: App {
   
   var body: some Scene {
     WindowGroup {
-      RootAppView()
+      RootAppView(
+        appCoordinator: container.resolve(AppCoordinator.self)!)
     }
   }
   

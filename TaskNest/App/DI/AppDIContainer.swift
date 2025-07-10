@@ -160,8 +160,9 @@ final class AppDIContainer {
   private func registerViewModels() {
     container.register(LoginViewModel.self) { r in
       LoginViewModel(
-        loginUseCase: r.resolve(AuthUseCase.self)!,
-        authManager: r.resolve(AuthManager.self)!
+        authUseCase: r.resolve(AuthUseCase.self)!,
+        authManager: r.resolve(AuthManager.self)!,
+        appCoordinator: r.resolve(AppCoordinator.self)!
       )
     }.inObjectScope(.container)
     
@@ -172,10 +173,11 @@ final class AppDIContainer {
     container.register(SignUpViewModel.self) {  r in // TODO: - more later
       SignUpViewModel(
         authManager: r.resolve(AuthManager.self)!,
-        authUseCase: r.resolve(AuthUseCase.self)!)
+        authUseCase: r.resolve(AuthUseCase.self)!,
+        appCoordinator: r.resolve(AppCoordinator.self)!)
     }.inObjectScope(.container)
     
-    container.register(HomeViewModel.self) { r in
+    container.register(HomeViewModel.self) { r in /// Home View Model
       HomeViewModel(
         authManager: r.resolve(AuthManager.self)!,
         authUseCase: r.resolve(AuthUseCase.self)!,
@@ -192,7 +194,7 @@ final class AppDIContainer {
   // ✅ - Manager
   private func registerManagers() {
     container.register(AuthManager.self) { r in
-      AuthManager(loginUseCase: r.resolve(AuthUseCase.self)!)
+      AuthManager(authUseCase: r.resolve(AuthUseCase.self)!)
     }.inObjectScope(.container)
     
     container.register(NetworkService.self) { _ in

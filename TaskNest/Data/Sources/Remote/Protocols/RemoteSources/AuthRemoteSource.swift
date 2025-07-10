@@ -12,29 +12,30 @@
  */
 
 
-/*
 import Foundation
 import Auth0
 
-protocol AuthRemoteSource {
-    // Email/password login
-    func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void)
-
-    // Google login via WebAuth
-    func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void)
-
-    // Restore session if previously logged in
-    func restoreSession(completion: @escaping (Result<Credentials, Error>) -> Void)
-
-    // Logout via WebAuth (Auth0 logout)
-    func clearSession(completion: @escaping (Result<Void, Error>) -> Void)
-
-    // Store credentials manually
-    @discardableResult
-    func store(credentials: Credentials) -> Bool
-
-    // Clear credentials manually
-    @discardableResult
-    func clearCredentials() -> Bool
-}
-*/
+//protocol AuthRemoteDataSource {
+//  func
+//  
+//  // Email/password login
+//  func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void)
+//  
+//  // Google login via WebAuth
+//  func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void)
+//  
+//  // Restore session if previously logged in
+//  func restoreSession(completion: @escaping (Result<Credentials, Error>) -> Void)
+//  
+//  // Logout via WebAuth (Auth0 logout)
+//  func clearSession(completion: @escaping (Result<Void, Error>) -> Void)
+//  
+//  // Store credentials manually
+//  @discardableResult
+//  func store(credentials: Credentials) -> Bool
+//  
+//  // Clear credentials manually
+//  @discardableResult
+//  func clearCredentials() -> Bool
+//}
+//

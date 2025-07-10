@@ -14,28 +14,28 @@ final class AuthUseCase {
     self.repository = repository
   }
   
-  public func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
+  func isAuthenticated() async throws -> Bool {
+    return try await repository.isAuthenticated()
+  }
+  
+  public func loginWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
     Logger.d(tag: "", message: "Inside LoginUseCase - loginWithEmailAndPassword")
-    repository.loginWithEmailAndPassword(email: email, password: password, completion: completion)
+    return try await repository.loginWithEmailAndPassword(email: email, password: password)
   }
   
-  func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void) {
-    repository.loginWithGoogle(completion: completion)
+  func loginWithGoogle() async throws -> Credentials {
+    try await repository.loginWithGoogle()
   }
   
-  func restore(completion: @escaping (Result<Credentials, Error>) -> Void) {
-    repository.restoreSession(completion: completion)
-  }
-  
-  func logout(completion: @escaping (Result<Void, Error>) -> Void) {
-    repository.logout(completion: completion)
+  func logout() async throws {
+    try await repository.logout()
   }
   
   func getUserInfo(acceessToken: String) async throws -> AuthenticatedUser {
     return try await repository.getUserInfo(accessToken: acceessToken)
   }
   
-  func signUpWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void) {
-    repository.signUpwithEmailAndPassword(email: email, password: password, completion: completion)
+  func signUpWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
+    try await repository.signUpwithEmailAndPassword(email: email, password: password)
   }
 }

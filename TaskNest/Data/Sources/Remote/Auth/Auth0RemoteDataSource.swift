@@ -20,7 +20,7 @@ final class Auth0RemoteDataSource {
   }
   
   // ✅ Login with email and passwork by Auth0
-  func loginWithEmailandPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
+  func loginWithEmailandPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void) {
     auth
       .login(
         usernameOrEmail: email,
@@ -30,22 +30,25 @@ final class Auth0RemoteDataSource {
         scope: "openid profile email offline_access"
       )
       .start { result in
-        if case .success(let credentials) = result {
+        switch result {
+        case .success(let credentials):
           _ = self.credentialsManager.store(credentials: credentials)
+          completion(.success(credentials))
+        case .failure(let error):
+          completion(.failure(error.toAppError))
         }
-        completion(result.mapError { $0.toAppError })
       }
   }
   
   
   
   // ✅ Login with Google in Auth0
-  func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void) {
-          login(connection: Auth0Config.googleConnection, completion: completion)
-      }
+  func loginWithGoogle(completion: @escaping (Result<Credentials, AppError>) -> Void) {
+    login(connection: Auth0Config.googleConnection, completion: completion)
+  }
   
   /// ++ Helper method
-  func login(connection: String? = nil, completion: @escaping (Result<Credentials, Error>) -> Void) {
+  func login(connection: String? = nil, completion: @escaping (Result<Credentials, AppError>) -> Void) {
     var webAuth = Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
       .scope("openid profile email offline_access")
@@ -55,19 +58,20 @@ final class Auth0RemoteDataSource {
       webAuth = webAuth.connection(connection)
     }
     
-    
     webAuth.start { result in
-      if case .success(let credentials) = result {
+      switch result {
+      case .success(let credentials):
         let didStore = self.credentialsManager.store(credentials: credentials)
         print("Store securely with biometrics: \(didStore)")
-        
+        completion(.success(credentials))
+      case .failure(let error):
+        completion(.failure(error.toAppError))
       }
-      completion(result.mapError { $0.toAppError })
     }
   }
   
   // ✅
-  func restoreSession(completion: @escaping (Result<Credentials, Error>) -> Void) {
+  func restoreSession(completion: @escaping (Result<Credentials, AppError>) -> Void) {
     credentialsManager.credentials(
       withScope: "openid profile email",
       minTTL: 300
@@ -77,14 +81,14 @@ final class Auth0RemoteDataSource {
   }
   
   // ✅
-  func clearSession(completion: @escaping (Result<Void, Error>) -> Void) {
+  func clearSession(completion: @escaping (Result<Void, AppError>) -> Void) {
     Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
       .redirectURL(URL(string: Auth0Config.callbackURLString)!)
       .clearSession { result in
         Logger.d(tag: "Auth0", message: "Session cleared")
         completion(result.mapError{ $0.toAppError })
-      } 
+      }
   }
   
   // ✅
@@ -94,7 +98,7 @@ final class Auth0RemoteDataSource {
   }
   
   // ✅
-  @discardableResult 
+  @discardableResult
   func clearCredentials() -> Bool {
     Logger.d(tag: "Logout", message: "Clear credentials")
     return credentialsManager.clear()
@@ -103,15 +107,21 @@ final class Auth0RemoteDataSource {
   // ✅ Fetch User Info
   func getUserInfo(accessToken: String) async throws -> AuthenticatedUser {
     let url = URL(string: "https://\(Auth0Config.domain)/userinfo")!
-    let userInfoDto: UserInfoDto = try await networkService.request(
-      endpoint: "",
-      method: .getMethod,
-      body: Optional<String>.none,
-      headers: [:],
-      authToken: accessToken,
-      customURL: url
-    )
-    return userInfoDto.mapToAuthenticatedUser
+    do {
+      let userInfoDto: UserInfoDto = try await networkService.request(
+        endpoint: "",
+        method: .getMethod,
+        body: Optional<String>.none,
+        headers: [:],
+        authToken: accessToken,
+        customURL: url
+      )
+      return userInfoDto.mapToAuthenticatedUser
+    } catch let appError as AppError {
+      throw appError
+    } catch {
+      throw error.toAppError
+    }
   }
   
   // ✅ Sign Up with Auth0
@@ -127,7 +137,7 @@ final class Auth0RemoteDataSource {
         switch result {
         case .success:
           self.loginWithEmailandPassword(email: email, password: password) { loginResult in
-            completion(loginResult.mapError{ $0.toAppError })
+            completion(loginResult.mapError { $0.toAppError })
           }
         case .failure(let authenticationError):
           completion(.failure(authenticationError.toAppError))
@@ -135,5 +145,4 @@ final class Auth0RemoteDataSource {
       }
   }
   
-    
 } // 🧱

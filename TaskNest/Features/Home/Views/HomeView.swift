@@ -34,9 +34,12 @@ struct HomeView: View {
                   }
                 }
               }
-              AddCategoryIcon(iconSize: 25, action: {
-                // TODO: ADD new category
-              })
+              NavigationLink(destination: CategoryDetailView(categoryItem: CategoryItem(id: UUID(), title: "123", createdAt: .now, userId: "12345"))) {
+                AddCategoryIcon(iconSize: 25, action: {
+                  // TODO: ADD new category
+                  
+                })
+              }
             }
           }
         }
@@ -84,7 +87,9 @@ struct HomeView: View {
       .sheet(isPresented: homeViewModel.showSettingsBinding) {
         SettingsPanel(
           onLogout: {
-            homeViewModel.logout()
+            Task {
+              await homeViewModel.logout()
+            }
           }
         )
       }
@@ -96,13 +101,7 @@ struct HomeView: View {
 #Preview {
   let container = AppDIContainer.shared.container
   HomeView(
-    homeViewModel: HomeViewModel(
-      authManager: container.resolve(AuthManager.self)!,
-      authUseCase: container.resolve(AuthUseCase.self)!,
-      appCoordinator: container.resolve(AppCoordinator.self)!,
-      getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase(categoryRepository: MockCategoryRepository()),
-      deleteCategoryUseCase: DeleteCategoryEntityUseCase(categoryRepository: MockCategoryRepository())
-    ),
-    appCoordinator: container.resolve(AppCoordinator.self)!
+    homeViewModel: container.resolve(HomeViewModel.self)!,
+    appCoordinator: container.resolve(AppCoordinator.self)!,
   )
 }

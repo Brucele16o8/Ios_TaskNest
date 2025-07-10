@@ -13,7 +13,7 @@ final class HomeViewModel {
   // MARK: - States
   private(set) var homeViewState = HomeViewUIState()
   private let authManager: AuthManager
-  private let appCoordinator: AppCoordinator  
+  private let appCoordinator: AppCoordinator
   
   // MARK: - Dependencies
   private let authUseCase: AuthUseCase
@@ -39,9 +39,6 @@ final class HomeViewModel {
   func startLoading() async {
     homeViewState.isLoading = true
     do {
-      let user = try await authUseCase.getUserInfo(acceessToken: authManager.authToken)
-      authManager.storeAuthenticatedUser(user)
-      
       let categoryEntities = try await getAllCategoriesUseCase()
       let categoryItems = categoryEntities.map { $0.mapToCategotyItem }
       homeViewState = homeViewState.copy(
@@ -90,23 +87,16 @@ final class HomeViewModel {
   }
   
   // ✅
-  func logout() {
-    authUseCase.logout { result in
-      switch result {
-      case .success:
-        Task { @MainActor [weak self] in
-          self?.authManager.authState = .unauthenticated
-        }
-        
-        Logger.d(tag: "Logout", message: "Inside HomeViewModel - logout")
-        Logger.d(tag: "Logout", message: "Successful Logout - Session cookies cleared")
-        
-      case .failure(let error):
-        let appError = error as? AppError
-        
-        Logger.d(tag: "Logout", message: "Inside HomeViewModel - logout")
-        Logger.e(tag: "Logout", message: "unuccessful Logout", error: appError)
-      }
+  func logout() async {
+    do {
+      try await authManager.logout()
+      Logger.d(tag: "HomeViewModel", message: "Logged out successfully")
+      appCoordinator.logOut()
+    } catch let appError as AppError {
+      homeViewState.errorMessage = appError.localizedDescription
+    } catch {
+      homeViewState.errorMessage = "Failed to Log Out"
     }
   }
-}
+  
+} // 🧱

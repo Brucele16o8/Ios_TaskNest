@@ -6,19 +6,48 @@
 //
 
 struct LoginUIState: Equatable {
+  // MARK: - Type
+  enum LoginStatus: Equatable {
+    case idle
+    case authenticating
+    case authenticated
+    case error(Error)
+    
+    static func ==(lhs: LoginStatus, rhs: LoginStatus) -> Bool {
+      switch (lhs, rhs) {
+      case (.idle, .idle),
+        (.authenticating, .authenticating),
+        (.authenticated, .authenticated):
+        return true
+      case (.error(let lhsError), .error(let rhsError)):
+        return lhsError.localizedDescription == rhsError.localizedDescription
+      default:
+        return false
+      }
+    }
+  }
+  
+  var status: LoginStatus = .idle
   var email: String = ""
   var password: String = ""
-  var status: LoginStatus = .idle
-  var showText = false
+  var errorMessage: String?
+  var emailError: String = ""
+  var passwordError: String = ""
+  var showText: Bool = false
   
-  var isAuthenticating: Bool { status == .authenticating }
-  var isAuthenticated: Bool { status == .authenticated }
-  var isLoginDisable: Bool { email.isEmpty || password.isEmpty || isAuthenticating }
+  var isLoginDisabled: Bool {
+    email.isEmpty || password.isEmpty || status == .authenticating || !emailError.isEmpty || !passwordError.isEmpty
+  }
   
   var isValidLoginForm: Bool {
-    !email.isEmpty && email.contains("@") &&
-    !password.isEmpty && password.count >= SignUpLoginConfig.passwordMinLength
+    !email.isEmpty &&
+    email.contains("@") &&
+    !password.isEmpty &&
+    password.count >= SignUpLoginConfig.passwordMinLength &&
+    password.contains(where: \.isUppercase) &&
+    password.contains(where: \.isNumber)
   }
+  
 }
 
 

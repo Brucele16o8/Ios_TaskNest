@@ -8,10 +8,10 @@
 import Auth0
 
 protocol AuthRepository {
-  func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void)
-  func loginWithGoogle(completion: @escaping (Result<Credentials, Error>) -> Void)
-  func logout(completion: @escaping (Result<Void, Error>) -> Void)
-  func restoreSession(completion: @escaping (Result<Credentials, Error>) -> Void)
+  func isAuthenticated() async throws -> Bool
+  func loginWithEmailAndPassword(email: String, password: String) async throws -> Credentials
+  func loginWithGoogle() async throws -> Credentials
+  func logout() async throws
   func getUserInfo(accessToken: String) async throws -> AuthenticatedUser
-  func signUpwithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, AppError>) -> Void)
+  func signUpwithEmailAndPassword(email: String, password: String) async throws -> Credentials
 }

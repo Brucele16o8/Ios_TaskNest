@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PhotoViewerView: View {
   let startingIndex : Int
-  let photos : [String]
+  let photos : [PhotoAttachmentItem]
   
   var body: some View {
     Text("PhotoViewerView")

@@ -14,30 +14,61 @@ final class AuthRepositoryImpl: AuthRepository {
     self.remoteAuthenticationSource = remote
   }
   
-  func loginWithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Credentials, Error>) -> Void) {
+  // ✅
+  func isAuthenticated() async throws -> Bool {
+    try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.restoreSession { result in
+        switch result {
+        case .success:
+          continuation.resume(returning: true)
+        case .failure(let appError):
+          continuation.resume(throwing: appError)
+        }
+      }
+    }
+  }
+  
+  // ✅
+  func loginWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
     Logger.d(tag: "", message: "Inside AuthRepositoryImpl - loginWithEmailAndPassword")
-    remoteAuthenticationSource.loginWithEmailandPassword(email: email, password: password, completion: completion)
+    return try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.loginWithEmailandPassword(email: email, password: password) { result in
+        continuation.resume(with: result)
+      }
+    }
   }
   
-  func loginWithGoogle(completion: @escaping (Result<Credentials, any Error>) -> Void) {
-    remoteAuthenticationSource.loginWithGoogle(completion: completion)
+  // ✅
+  func loginWithGoogle() async throws -> Credentials {
+    return try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.loginWithGoogle { result in
+        continuation.resume(with: result)
+      }
+    }
   }
   
-  func restoreSession(completion: @escaping (Result<Credentials, any Error>) -> Void) {
-    remoteAuthenticationSource.restoreSession(completion: completion)
+  // ✅
+  func logout() async throws {
+    try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.clearCredentials()
+      remoteAuthenticationSource.clearSession { result in
+        continuation.resume(with: result)
+      }
+    }
   }
   
-  func logout(completion: @escaping (Result<Void, Error>) -> Void) {
-    remoteAuthenticationSource.clearSession(completion: completion)
-    remoteAuthenticationSource.clearCredentials()
-  }
-  
+  // ✅
   func getUserInfo(accessToken: String) async throws -> AuthenticatedUser {
     return try await remoteAuthenticationSource.getUserInfo(accessToken: accessToken)
   }
   
-  func signUpwithEmailAndPassword(email: String, password: String, completion: @escaping (Result<Auth0.Credentials, AppError>) -> Void) {
-    remoteAuthenticationSource.singUpWithEmailAndPassword(email: email, password: password, completion: completion)
+  // ✅
+  func signUpwithEmailAndPassword(email: String, password: String) async throws -> Credentials {
+    return try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.singUpWithEmailAndPassword(email: email, password: password) { result in
+        continuation.resume(with: result)
+      }
+    }
   }
   
 } // 🧱

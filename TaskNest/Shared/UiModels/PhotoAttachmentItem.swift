@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PhotoAttachmentItem: Identifiable, Equatable, Sendable {
+struct PhotoAttachmentItem: Identifiable, Equatable, Sendable, Hashable {
   let id: UUID
   let localPath: String?
   let remoteURL: String?

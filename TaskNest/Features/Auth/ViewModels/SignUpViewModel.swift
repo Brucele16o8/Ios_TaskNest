@@ -9,146 +9,114 @@ import Observation
 import SwiftUI
 import Auth0
 
+@MainActor
 @Observable
 class SignUpViewModel {
-  private var signUpState = SignUpUIState()
-  private var appError: AppError?
+  private var signUpUiState = SignUpUiState()
+  var state: SignUpUiState { signUpUiState }
   
-  var state: SignUpUIState { signUpState }
-  var error: AppError? { appError }
   
   // MARK: - Dependencies
   private let authManager: AuthManager
   private let authUseCase: AuthUseCase
+  private let appCoordinator: AppCoordinator
   
-  var isValidForm: Bool {
-    signUpState.isValidForm
+  var isValidSignUpForm: Bool {
+    signUpUiState.isValidSignUpForm
   }
   
   // MARK: Initialiser
-  init(authManager: AuthManager, authUseCase: AuthUseCase) {
+  init(authManager: AuthManager, authUseCase: AuthUseCase, appCoordinator: AppCoordinator) {
     self.authManager = authManager
     self.authUseCase = authUseCase
+    self.appCoordinator = appCoordinator
   }
   
   // ✅ Update variables & Real-time input error tracking
   
   func updateEmail(_ email: String) {
-    signUpState.email = email
+    signUpUiState.email = email
     
     if email.isEmpty {
-      signUpState.emailError = "Email cannot be empty."
+      signUpUiState.emailError = "Email cannot be empty."
     } else if !email.contains("@") {
-      signUpState.emailError = "Invalid email format."
+      signUpUiState.emailError = "Invalid email format."
     } else {
-      signUpState.emailError = ""
+      signUpUiState.emailError = ""
     }
   }
   
   func updatePassword(_ password: String) {
-    signUpState.password = password
+    signUpUiState.password = password
     
     if password.isEmpty {
-      signUpState.passwordError = "Password cannot be empty."
+      signUpUiState.passwordError = "Password cannot be empty."
     } else if password.count < SignUpLoginConfig.passwordMinLength {
-      signUpState.passwordError = "Password too short (min \(SignUpLoginConfig.passwordMinLength))"
+      signUpUiState.passwordError = "Password too short (min \(SignUpLoginConfig.passwordMinLength))"
     } else if !password.contains(where: \.isUppercase) {
-      signUpState.passwordError = "Password must contain an uppercase letter."
+      signUpUiState.passwordError = "Password must contain an uppercase letter."
     } else if !password.contains(where: \.isNumber) {
-      signUpState.passwordError = "Password must contain a number."
+      signUpUiState.passwordError = "Password must contain a number."
     } else {
-      signUpState.passwordError = ""
+      signUpUiState.passwordError = ""
     }
     
     validateConfirmPassword()
   }
   
   func updateConfirmPassword(_ confirmPassword: String) {
-    signUpState.confirmPassword = confirmPassword
+    signUpUiState.confirmPassword = confirmPassword
     validateConfirmPassword()
   }
   
   private func validateConfirmPassword() {
-    if signUpState.confirmPassword != signUpState.password {
-      signUpState.confirmPasswordError = "Passwords do not match."
+    if signUpUiState.confirmPassword != signUpUiState.password {
+      signUpUiState.confirmPasswordError = "Passwords do not match."
     } else {
-      signUpState.confirmPasswordError = ""
+      signUpUiState.confirmPasswordError = ""
     }
   }
-  
-//  func updateUserName(_ userName: String) {
-//    signUpState.userName = userName
-//    
-//    if userName.isEmpty {
-//      signUpState.userNameError = "Username cannot be empty."
-//    } else if userName.count < SignUpLoginConfig.userNameMinLength {
-//      signUpState.userNameError = "Username too short (min \(SignUpLoginConfig.userNameMinLength))"
-//    } else {
-//      signUpState.userNameError = ""
-//    }
-//  }
   
   // ✅ - Validate input
   private func validateInput() {
-    updateEmail(signUpState.email)
-    updatePassword(signUpState.password)
-    updateConfirmPassword(signUpState.confirmPassword)
-//    updateUserName(signUpState.userName)
+    updateEmail(signUpUiState.email)
+    updatePassword(signUpUiState.password)
+    updateConfirmPassword(signUpUiState.confirmPassword)
   }
   
   // ✅ SignUp with email and password
-  func signUpWithEmailAndPassword() {
-    Logger.d(tag: "SignUp", message: "Inside SignUpViewModel - signUpWithEmailAndPassword")
+  func signUpWithEmailAndPassword() async {
+    Logger.d(tag: "SignUp", message: "Inside SignUpViewModel - signUp")
+    signUpUiState.status = .signingUp
+    signUpUiState.errorMessage = nil
     
-    validateInput()
-    
-    Logger.d(tag: "SignUp", message: "emai: \(signUpState.email), password: \(signUpState.password)")
-    let hasError = [
-      signUpState.emailError,
-      signUpState.passwordError,
-      signUpState.confirmPasswordError,
-      signUpState.userNameError
-    ].contains(where: { !$0.isEmpty })
-    
-    guard !hasError else {
-      signUpState.status = .error
+    guard signUpUiState.isValidSignUpForm else {
+      Logger.e(tag: "SignUpViewModel", message: "Invalid form")
+      signUpUiState.status = .idle
       return
     }
-    Logger.d(tag: "SignUp", message: "There is no validation error")
-    appError = nil
     
-    authUseCase.signUpWithEmailAndPassword(
-      email: signUpState.email,
-      password: signUpState.password
-    ) { [weak self] result in
-      self?.handleSignUpResult(result)
-    }
-  }
-  
-  /// ++  Helper method
-  private func handleSignUpResult(_ result: Result<Credentials, AppError>) {
-    Task { @MainActor in
-      switch result {
-      case .success(let credentials):
-        self.authManager.storeCredentials(credentials)
-        signUpState.status = .signedUp
-        authManager.updateAuthStateIfNeeded(from: signUpState.status)
-        
-        Logger.d(tag: "SignUp", message: "Inside SignUpViewModel - handleSignUpResult")
-        Logger.d(tag: "SignUp", message: "SignUp Status: \(signUpState.status)")
-        Logger.d(tag: "SignUp", message: "Auth Manager status: \(authManager.authState)")
-        
-      case .failure(let error):
-        appError = error.toAppError
-        signUpState.status = .error
-        authManager.updateAuthStateIfNeeded(from: signUpState.status)
-        
-        Logger.d(tag: "SignUp", message: "Inside SignUpViewModel - handleSignUpResult")
-        Logger.d(tag: "SignUp", message: "SignUp Status: \(signUpState.status)")
-        Logger.d(tag: "SignUp", message: "Auth Manager status: \(authManager.authState)")
-        Logger.e(tag: "SignUp", message: "Error while authenticating: \(error)")
+    do {
+      let credentials = try await authUseCase.signUpWithEmailAndPassword(email: signUpUiState.email, password: signUpUiState.password)
+      authManager.storeCredentials(credentials)
+      let authenticatedUser = try await authUseCase.getUserInfo(acceessToken: try authManager.authToken)
+      authManager.storeAuthenticatedUser(authenticatedUser)
+      signUpUiState.status = .signedUp
+      appCoordinator.setRootRoute(.main)
+      Logger.d(tag: "SignUpViewModel", message: "Sign up successful with token: \(credentials.accessToken)")
+    } catch {
+      var appError: AppError
+      if case let error as AppError = error {
+        appError = error
+      } else {
+        appError = ErrorMapper.map(error)
       }
+      
+      signUpUiState.status = .error(appError)
+      signUpUiState.errorMessage = appError.localizedDescription
+      Logger.e(tag: "SignUpViewModel", message: "Sign up failed: \(appError.debugDescription)")
     }
+    
   }
   
   // ✅
@@ -156,9 +124,14 @@ class SignUpViewModel {
     Task {
       try? await Task.sleep(nanoseconds: 300_000_000)
       withAnimation(.easeOut(duration: 1)) {
-        signUpState.showText = true
+        signUpUiState.showText = true
       }
     }
+  }
+  
+  // ✅  - Navigation
+  func navigateToLogin() {
+      appCoordinator.setRootRoute(.auth(authRoute: .login))
   }
   
 } // 🧱

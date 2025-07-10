@@ -12,22 +12,12 @@ import Observation
 @MainActor
 @Observable
 final class AuthManager {
-  // ✅ Type
-  enum AuthState: Equatable {
-    case checking
-    case authenticating
-    case authenticated
-    case unauthenticated
-  }
-  
-  var authState: AuthState = .checking
-  private let loginUseCase: AuthUseCase
+  private let authUseCase: AuthUseCase
   private var credentials: Credentials?
   private(set) var currentUser: AuthenticatedUser?
   
-  init(loginUseCase: AuthUseCase) {
-    self.loginUseCase = loginUseCase
-    checkSession()
+  init(authUseCase: AuthUseCase) {
+    self.authUseCase = authUseCase
     }
   
   var authToken: String {
@@ -36,20 +26,6 @@ final class AuthManager {
         throw AppError.auth(.unknown(message: "Failed to get auth token from stored credentials in AuthManager"))
       }
       return credentials.accessToken
-    }
-  }
-  
-  /// Checking session
-  func checkSession() {
-    loginUseCase.restore { [weak self] result in
-      Task { @MainActor in
-          switch result {
-          case .success:
-            self?.authState = .authenticated
-          case .failure:
-            self?.authState = .unauthenticated
-        }
-      }
     }
   }
   
@@ -62,29 +38,78 @@ final class AuthManager {
       self.currentUser = user
     }
   
+  // ===== Combine authUseCase in authManager
   // ✅
-  func updateAuthStateIfNeeded(from loginStatus: LoginStatus) {
-    switch loginStatus {
-    case .authenticated:
-      authState = AuthState.authenticated
-    case .authenticating:
-      authState = AuthState.authenticating
-    case .idle, .error:
-      authState = AuthState.unauthenticated
+  func loginWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
+    do {
+      let credentials = try await authUseCase.loginWithEmailAndPassword(email: email, password: password)
+      storeCredentials(credentials)
+      return credentials
+    } catch let appError as AppError{
+      throw appError
+    } catch {
+      throw AppError.unknown(message: "Unknown error occurred while logging in", underlyingError: error)
     }
   }
   
   // ✅
-  func updateAuthStateIfNeeded(from signupStatus: SignUpStatus) {
-    switch signupStatus {
-    case .signedUp:
-      authState = AuthState.authenticated
-    case .signingUp:
-      authState = AuthState.authenticating
-    case .idle, .error:
-      authState = AuthState.unauthenticated
+  func loginWithGoogle() async throws -> Credentials {
+    do {
+      let credentials = try await authUseCase.loginWithGoogle()
+      storeCredentials(credentials)
+      return credentials
+    } catch let appError as AppError{
+      throw appError
+    } catch {
+      throw AppError.unknown(message: "Unknown error occurred while logging in with Google", underlyingError: error)
     }
   }
   
+  // ✅
+  func signUpWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
+    do {
+      let credentials = try await authUseCase.signUpWithEmailAndPassword(email: email, password: password)
+      storeCredentials(credentials)
+      return credentials
+    } catch let appError as AppError{
+      throw appError
+    } catch {
+      throw AppError.unknown(message: "Unknown error occurred while signing up", underlyingError: error)
+    }
+  }
+  
+  // ✅
+  func getUserInfo() async throws -> AuthenticatedUser {
+    do {
+      let authenticatedUser = try await authUseCase.getUserInfo(acceessToken: self.authToken)
+      storeAuthenticatedUser(authenticatedUser)
+      return authenticatedUser
+    } catch let appError as AppError{
+      throw appError
+    } catch {
+      throw AppError.unknown(message: "Unknown error occurred while getting user info", underlyingError: error)
+    }
+  }
+  
+  // ✅
+  func logout() async throws {
+    do {
+      try await authUseCase.logout()
+      clearCredentials()
+    } catch let appError as AppError {
+      throw appError
+    } catch {
+      throw AppError.unknown(message: "Unknown error occurred while logging out", underlyingError: error)
+    }
+  }
+  
+  // ✅
+  @discardableResult
+  func clearCredentials() -> Bool {
+    credentials = nil
+    currentUser = nil
+    return true
+  }
+
 } // 🧱
 

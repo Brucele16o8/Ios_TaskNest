@@ -65,31 +65,20 @@ struct SignUpView: View {
               .frame(maxWidth: .infinity, alignment: .leading)
           }
           
-          // ✅ Username field + error -> Later
-//          TextFieldFormGeneral(
-//            title: "Username",
-//            bindingText: viewModel.userNameBinding,
-//            keyboardType: nil
-//          )
-//          
-//          if !state.userNameError.isEmpty {
-//            Text(state.userNameError)
-//              .foregroundColor(.red)
-//              .font(.caption)
-//              .frame(maxWidth: .infinity, alignment: .leading)
-//          }
-          
           // ✅ Primary Button – only enabled if form is valid
           PrimaryButton<Image>(
             title: "Sign Up",
             icon: nil,
-            isDisabled: !state.isValidForm
+            isDisabled: state.isSignUpDisabled
           ) {
-            viewModel.signUpWithEmailAndPassword()
+            Task {
+              await viewModel.signUpWithEmailAndPassword()
+            }
           }
           
           SignUpLoginText {
-            appCoordinator.goBack() // Go back to login screen
+            Logger.d(tag: "SignUpView", message: "Navigating to login")
+            viewModel.navigateToLogin()
           }
           
         } // VStack
@@ -98,6 +87,7 @@ struct SignUpView: View {
         Spacer()
       }
     }
+    .navigationTitle("Sign Up")
     .task {
       viewModel.startAnimation()
     }

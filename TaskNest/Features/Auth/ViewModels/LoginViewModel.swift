@@ -14,125 +14,119 @@ import Combine
 @Observable
 final class LoginViewModel {
   // MARK: - State
-  private var loginState: LoginUIState = LoginUIState()
-  private var appError: AppError?
-  
-  var state: LoginUIState { loginState }
-  var error: AppError? { appError }
+  private var loginUiState: LoginUIState = LoginUIState()
+  var state: LoginUIState { loginUiState }
   
   // MARK: - Dependencies
   private let authUseCase: AuthUseCase
   private var authManager: AuthManager
+  private let appCoordinator: AppCoordinator
   
   // MARK: - Computed
   var isValidLoginForm: Bool {
-    loginState.isValidLoginForm
+    loginUiState.isValidLoginForm
   }
   
   // MARK: - INIT
-  init(loginUseCase: AuthUseCase, authManager: AuthManager) {
-    self.authUseCase = loginUseCase
+  init(authUseCase: AuthUseCase, authManager: AuthManager, appCoordinator: AppCoordinator) {
+    self.authUseCase = authUseCase
     self.authManager = authManager
-    restoreSession()
+    self.appCoordinator = appCoordinator
   }
   
   // ✅
   func updateEmail(_ email: String) {
-    loginState.email = email
+    loginUiState.email = email
+    
+    if email.isEmpty {
+      loginUiState.emailError = "Email cannot be empty."
+    } else if !email.contains("@") {
+      loginUiState.emailError = "Invalid email format."
+    } else {
+      loginUiState.emailError = ""
+    }
   }
   
   // ✅
   func updatePassword(_ password: String) {
-    loginState.password = password
-  }
-  
-  ///  - Restore session
-  func restoreSession() {
-    authUseCase.restore { [weak self] result in
-      if case .success(let credentials) = result {
-        self?.authManager.storeCredentials(credentials)
-        self?.loginState.status = .authenticated
-      }
+    loginUiState.password = password
+    
+    if password.isEmpty {
+      loginUiState.passwordError = "Password cannot be empty."
+    } else if password.count < SignUpLoginConfig.passwordMinLength {
+      loginUiState.passwordError = "Password too short (min \(SignUpLoginConfig.passwordMinLength))"
+    } else if !password.contains(where: \.isUppercase) {
+      loginUiState.passwordError = "Password must contain an uppercase letter."
+    } else if !password.contains(where: \.isNumber) {
+      loginUiState.passwordError = "Password must contain a number."
+    } else {
+      loginUiState.passwordError = ""
     }
   }
   
   // ✅ Login with email and password
-  func loginWithEmailAndPassword() {
+  func loginWithEmailAndPassword() async {
     Logger.d(tag: "Login", message: "Inside LoginViewModel - loginWithEmailAndPassword")
-    let result = validateInput(email: loginState.email, password: loginState.password)
-    Logger.d(tag: "Login", message: "emai: \(loginState.email), password: \(loginState.password)")
-    appError = result.appError
-    guard result.isValid else {
-      Logger.e(tag: "Login", message: "Error in loginWithEmailAndPassword", error: appError)
-      loginState.status = .authenticating
+    
+    loginUiState.status = .authenticating
+    loginUiState.errorMessage = nil
+    
+    Logger.d(tag: "Login", message: "emai: \(loginUiState.email), password: \(loginUiState.password)")
+    
+    guard loginUiState.isValidLoginForm else {
+      Logger.e(tag: "LoginViewModel", message: "Invalid form")
+      loginUiState.status = .idle
       return
     }
-    Logger.d(tag: "Login", message: "Result is valid")
     
-    appError = nil
-    
-    authUseCase.loginWithEmailAndPassword(
-      email: loginState.email,
-      password: loginState.password
-    ) { [weak self] result in
-      self?.handleLoginResult(result)
+    do {
+      let credentials = try await authUseCase.loginWithEmailAndPassword(email: loginUiState.email, password: loginUiState.password)
+      authManager.storeCredentials(credentials)
+      let authenticatedUser = try await authUseCase.getUserInfo(acceessToken: authManager.authToken)
+      authManager.storeAuthenticatedUser(authenticatedUser)
+      loginUiState.status = .authenticated
+      appCoordinator.setRootRoute(.main)
+      Logger.d(tag: "LoginViewModel", message: "Login successful with token: \(credentials.accessToken)")
+    }
+    catch {
+      var appError: AppError
+      if case let error as AppError = error {
+        appError = error
+      } else {
+        appError = ErrorMapper.map(error)
+      }
+      
+      loginUiState.status = .error(appError)
+      loginUiState.errorMessage = appError.localizedDescription
+      Logger.e(tag: "LoginViewModel", message: "Login failed: \(appError.debugDescription)")
     }
   }
   
   // ✅ Login with Google
-  func loginWithGoogle() {
-    loginState.status = .authenticating
-    appError = nil
+  func loginWithGoogle() async {
+    loginUiState.status = .authenticating
+    loginUiState.errorMessage = nil
     
-    authUseCase.loginWithGoogle() { [weak self] result in
-      self?.handleLoginResult(result)
+    do {
+      let credentials = try await authUseCase.loginWithGoogle()
+      authManager.storeCredentials(credentials)
+      let authenticatedUser = try await authUseCase.getUserInfo(acceessToken: authManager.authToken)
+      authManager.storeAuthenticatedUser(authenticatedUser)
+      loginUiState.status = .authenticated
+      appCoordinator.setRootRoute(.main)
+      Logger.d(tag: "LoginViewModel", message: "Google login successful with token: \(credentials.accessToken)")
     }
-  }
-  
-  /// ✅ -  Helper method
-  private func handleLoginResult(_ result: Result<Credentials, Error>) {
-    Task { @MainActor in
-      switch result {
-      case .success(let credentials):
-        self.authManager.storeCredentials(credentials)
-        loginState.status = .authenticated
-        authManager.updateAuthStateIfNeeded(from: loginState.status)
-        
-        Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
-        Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
-        Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")
-        
-      case .failure(let error):
-        appError = error.toAppError
-        loginState.status = .error
-        authManager.updateAuthStateIfNeeded(from: loginState.status)
-        
-        Logger.d(tag: "Login", message: "Inside LoginViewModel - handleLoginResult")
-        Logger.d(tag: "Login", message: "Authentication Status: \(loginState.status)")
-        Logger.d(tag: "Login", message: "Auth Manager status: \(authManager.authState)")
-        Logger.e(tag: "Login", message: "Error while authenticating: \(error)")
+    catch {
+      var appError: AppError
+      if case let error as AppError = error {
+        appError = error
+      } else {
+        appError = ErrorMapper.map(error)
       }
+      loginUiState.status = .error(appError)
+      loginUiState.errorMessage = appError.localizedDescription
+      Logger.e(tag: "LoginViewModel", message: "Google login failed: \(appError.debugDescription)")
     }
-  }
-  
-  ///  - Validation
-  private func validateInput(email: String, password: String) -> (isValid: Bool, appError: AppError?) {
-    let rules: [(Bool, ValidationError)] = [
-      (email.isEmpty, .emptyEmail),
-      (!email.contains("@"), .invalidEmailFormat),
-      (password.isEmpty, .emptyPassword),
-      (password.count < SignUpLoginConfig.passwordMinLength, .tooShortPassword(min: SignUpLoginConfig.passwordMinLength)),
-      (!password.contains(where: \.isUppercase), .missingUppercase),
-      (!password.contains(where: \.isNumber) , .missingNumber),
-    ]
-    
-    for (failed, validationError) in rules {
-      if failed {
-        return (false, validationError.toAppError)
-      }
-    }
-    
-    return (true, nil)
   }
   
   ///  - Animation
@@ -140,9 +134,25 @@ final class LoginViewModel {
     Task {
       try? await Task.sleep(nanoseconds: 300_000_000)
       withAnimation(.easeOut(duration: 1)) {
-        loginState.showText = true
+        loginUiState.showText = true
       }
     }
   }
   
+  // ✅ Navigation
+  func navigateToSignUp() {
+    appCoordinator.setRootRoute(.auth(authRoute: .signUp))
+  }
+  
+  func navigateToForgotPassword() {
+    appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
+  }
+  
 } // 🧱
+
+
+// MARK: - Helper method
+extension LoginViewModel {
+  // ✅
+  
+}

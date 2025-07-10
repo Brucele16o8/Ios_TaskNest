@@ -9,80 +9,74 @@ import SwiftUI
 import Swinject
 
 struct RootAppView: View {
-  @State private var authManager = AppDIContainer.shared.container.resolve(AuthManager.self)!
-  @State private var appCoordinator = AppDIContainer.shared.container.resolve(AppCoordinator.self)!
-  let container = AppDIContainer.shared.container
+  @Bindable private(set) var appCoordinator: AppCoordinator
+  private let container = AppDIContainer.shared.container
   
   var body: some View {
-    NavigationStack(path: $appCoordinator.path) {
+    NavigationStack(path: $appCoordinator.navigationPath){
       Group {
-        switch authManager.authState {
-        case .checking, .authenticating:
+        switch appCoordinator.currentRootRoute {
+        case .loading:
           LoadingView(loadingViewModel: container.resolve(LoadingViewModel.self)!)
-          
-        case .authenticated:
-          HomeView(
-            homeViewModel: HomeViewModel(
-              authManager: container.resolve(AuthManager.self)!,
-              authUseCase: container.resolve(AuthUseCase.self)!,
-              appCoordinator: container.resolve(AppCoordinator.self)!,
-              getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
-              deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
-            ),
-            appCoordinator: container.resolve(AppCoordinator.self)!
-          )
-          
-        case .unauthenticated:
-          LoginView(
-            viewModel: container.resolve(LoginViewModel.self)!,
-            appCoordinator: container.resolve(AppCoordinator.self)!
-          )
-        }
-      }
-      
-      .onChange(of: authManager.authState) { newState, _ in
-              if newState == .unauthenticated {
-                appCoordinator.goToRootScreen()
-              }
+            .task {
+              await appCoordinator.restoreSession(usingAuthUseCase: container.resolve(AuthUseCase.self)!)
             }
-      
-      .navigationDestination(for: AppRoute.self) { route in
-        switch route {
         case .auth(let authRoute):
           switch authRoute {
           case .login:
             LoginView(
               viewModel: container.resolve(LoginViewModel.self)!,
-              appCoordinator: container.resolve(AppCoordinator.self)!
+              appCoordinator: appCoordinator
             )
-          case .forgotPassword:
-            ForgotPasswordView()
           case .signUp:
             SignUpView(
               viewModel: container.resolve(SignUpViewModel.self)!,
-              appCoordinator: container.resolve(AppCoordinator.self)!)
+              appCoordinator: appCoordinator
+            )
+          case .forgotPassword:
+            ForgotPasswordView()
+          }
+        case .main:
+          HomeView(
+            homeViewModel: container.resolve(HomeViewModel.self)!,
+            appCoordinator: container.resolve(AppCoordinator.self)!
+          )
+        }
+      }
+      
+      .navigationDestination(for: AppRoute.self) { appRoute in
+        switch appRoute {
+        case .auth(let authRoute):
+          switch authRoute {
+          case .login:
+            LoginView(
+              viewModel: container.resolve(LoginViewModel.self)!,
+              appCoordinator: appCoordinator
+            )
+          case .signUp:
+            SignUpView(
+              viewModel: container.resolve(SignUpViewModel.self)!,
+              appCoordinator: appCoordinator
+            )
+          case .forgotPassword:
+            ForgotPasswordView()
           }
         case .home:
           HomeView(
-            homeViewModel: HomeViewModel(
-              authManager: container.resolve(AuthManager.self)!,
-              authUseCase: container.resolve(AuthUseCase.self)!,
-              appCoordinator: container.resolve(AppCoordinator.self)!,
-              getAllCategoriesUseCase: container.resolve(GetAllCategoryEntitiesUseCase.self)!,
-              deleteCategoryUseCase: container.resolve(DeleteCategoryEntityUseCase.self)!
-            ),
-            appCoordinator: container.resolve(AppCoordinator.self)!
+            homeViewModel: container.resolve(HomeViewModel.self)!,
+            appCoordinator: appCoordinator
           )
-        case .category(categoryItem: let categoryItem):
+        case .category(let categoryItem):
           CategoryDetailView(categoryItem: categoryItem)
-        case .photoViewer(startingAt: let index, photos: let photos):
-          PhotoViewerView(startingIndex: index, photos: photos)
+        case .photoViewer(let startingAt, let photoItems):
+          PhotoViewerView(startingIndex: startingAt, photos: photoItems)
         }
       }
+      
     }
   }
 }
 
 #Preview {
-  RootAppView()
+  RootAppView(appCoordinator: AppDIContainer.shared.container.resolve(AppCoordinator.self)!)
 }
