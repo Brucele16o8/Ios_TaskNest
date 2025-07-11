@@ -19,6 +19,7 @@ final class HomeViewModel {
   private let authUseCase: AuthUseCase
   private let getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase
   private let deleteCategoryUseCase: DeleteCategoryEntityUseCase
+  private let saveCategoryUseCase: SaveCategoryEntityUseCase
   
   // MARK: - INIT
   init(
@@ -26,13 +27,16 @@ final class HomeViewModel {
     authUseCase: AuthUseCase,
     appCoordinator: AppCoordinator,
     getAllCategoriesUseCase: GetAllCategoryEntitiesUseCase,
-    deleteCategoryUseCase: DeleteCategoryEntityUseCase
+    deleteCategoryUseCase: DeleteCategoryEntityUseCase,
+    saveCategoryUseCase: SaveCategoryEntityUseCase
   ) {
     self.authManager = authManager
     self.authUseCase = authUseCase
     self.appCoordinator = appCoordinator
     self.getAllCategoriesUseCase = getAllCategoriesUseCase
     self.deleteCategoryUseCase = deleteCategoryUseCase
+    self.saveCategoryUseCase = saveCategoryUseCase
+    Task { await setupDefaultCategoriesIfNeeded() }
   }
   
   // ✅
@@ -52,6 +56,34 @@ final class HomeViewModel {
     }
   }
   
+  // ✅ Seeding logic
+  private func setupDefaultCategoriesIfNeeded() async {
+    Logger.d(tag: "HomeViewModel", message: "Inside setupDefaultCategoriesIfNeeded")
+    guard let userId = authManager.currentUser?.id else { return }
+    
+    let loadedCategories = (try? await getAllCategoriesUseCase()) ?? []
+    if !loadedCategories.isEmpty {
+      homeViewState = homeViewState.copy(
+        isLoading: false,
+        categories: loadedCategories.map( \.mapToCategotyItem )
+      )
+      return
+    } else {
+      let defaultNames = ["Personal", "Work", "Study", "Shopping"]
+      for name in defaultNames {
+        let categoryEntity = CategoryEntity(id: UUID(), title: name, userId: userId)
+        do {
+          try await saveCategoryUseCase(categoryEntity)
+        } catch let appError as AppError {
+          homeViewState.errorMessage = appError.localizedDescription
+        } catch {
+          homeViewState.errorMessage = "Failed to create default category"
+        }
+      }
+    }
+    await loadCategories()
+  }
+  
   // ✅
   func updateSearchText(_ searchText: String) {
     homeViewState.searchText = searchText
@@ -62,6 +94,7 @@ final class HomeViewModel {
     homeViewState.showSetting = showSetting
   }
   
+  // MARK: - CATEGORY manipulation
   // ✅  haven't finished
   func deleteCategory(ofId categoryId: UUID) async {
     do {
@@ -70,6 +103,24 @@ final class HomeViewModel {
       homeViewState.errorMessage = appError.localizedDescription
     } catch {
       homeViewState.errorMessage = "Failed to delete category"
+    }
+  }
+  
+  // ✅ Load categories into UiState
+  private func loadCategories() async {
+    guard let userId = authManager.currentUser?.id else { return }
+    homeViewState.isLoading = true
+    do {
+      let categoryEntities = try await getAllCategoriesUseCase()
+      let categoryItems = categoryEntities.map { $0.mapToCategotyItem }
+      homeViewState = homeViewState.copy(
+        isLoading: false,
+        categories: categoryItems
+      )
+    } catch let appError as AppError {
+      homeViewState.errorMessage = appError.localizedDescription
+    } catch {
+      homeViewState.errorMessage = "Failed to loading data from Database"
     }
   }
   

@@ -183,7 +183,8 @@ final class AppDIContainer {
         authUseCase: r.resolve(AuthUseCase.self)!,
         appCoordinator: r.resolve(AppCoordinator.self)!,
         getAllCategoriesUseCase: r.resolve(GetAllCategoryEntitiesUseCase.self)!,
-        deleteCategoryUseCase: r.resolve(DeleteCategoryEntityUseCase.self)!
+        deleteCategoryUseCase: r.resolve(DeleteCategoryEntityUseCase.self)!,
+        saveCategoryUseCase: r.resolve(SaveCategoryEntityUseCase.self)!
       )
     }.inObjectScope(.container)
     
