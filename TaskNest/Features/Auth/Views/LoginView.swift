@@ -77,7 +77,7 @@ struct LoginView: View {
           
           SignUpText {
             Logger.d(tag: "LoginView", message: "Navigating to signup")
-            appCoordinator.setRootRoute(.auth(authRoute: .signUp))
+            viewModel.navigateToSignUp()
           }
           .padding(.top, 5)
         }
@@ -87,7 +87,6 @@ struct LoginView: View {
     .task {
       viewModel.startAnimation()
     }
-    .navigationTitle("Login")
   }
 }
 

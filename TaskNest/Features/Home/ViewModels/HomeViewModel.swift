@@ -90,8 +90,11 @@ final class HomeViewModel {
   func logout() async {
     do {
       try await authManager.logout()
+//      authManager.clearCredentials()
+      homeViewState = HomeViewUIState()
       Logger.d(tag: "HomeViewModel", message: "Logged out successfully")
       appCoordinator.logOut()
+      Logger.d(tag: "HomeViewModel", message: "Navigated to LogIn")
     } catch let appError as AppError {
       homeViewState.errorMessage = appError.localizedDescription
     } catch {

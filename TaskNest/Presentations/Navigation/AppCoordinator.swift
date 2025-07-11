@@ -9,34 +9,67 @@ import SwiftUI
 
 @Observable
 final class AppCoordinator {
-  var navigationPath = [AppRoute]()
+  var navigationPath = NavigationPath()
+  private var routeHistory: [AppRoute] = []
   var currentRootRoute: AppRootRoute = .loading
   private var isNavigating = false
   
-  // ✅ This thing is from the branch testing 01
-  func navigate(to route: AppRoute, allowDuplicate: Bool = false) {
-    guard !isNavigating else {
-      Logger.w(tag: "AppCoordinator", message: "Already navigating. Ignoring navigation to \(route).")
+  // ✅ ✅ Handling and keep route history in sync
+  private func append(_ route: AppRoute) {
+    navigationPath.append(route)
+    routeHistory.append(route)
+  }
+  
+  private func removeLast() {
+    navigationPath.removeLast()
+    routeHistory.removeLast()
+  }
+  
+  private func removeAll() {
+    while !navigationPath.isEmpty {
+      navigationPath.removeLast()
+    }
+    routeHistory.removeAll()
+  }
+  
+  
+  // ✅
+  func navigate(to route: AppRoute, allowDuplicate: Bool = false, isInternalCall: Bool = false) {
+    guard isInternalCall || !isNavigating else {
+      Logger.d(tag: "AppCoordinator", message: "Route \(route) already exists at index \(index). Popping back to it.")
       return
     }
     
-    guard currentRootRoute == .main else {
-      Logger.w(tag: "AppCoordinator", message: "Cannot navigate to \(route) while not in .main root route. Current root route is \(currentRootRoute).")
-      return
-    }
     isNavigating = true
     defer { isNavigating = false }
     
-    // Avoid duplicate route if already in stack
-    if !allowDuplicate, let _ = navigationPath.firstIndex(of: route) {
-      Logger.d(tag: "AppCoordinator", message: "Route \(route) already exists. Popping back to it.")
+    /// Check for duplicates in routeHistory
+    if !allowDuplicate, let _ = routeHistory.firstIndex(of: route) {
       popTo(route, isInternalCall: true)
       return
     }
-    Logger.d(tag: "AppCoordinator", message: "Path: \(navigationPath) before append")
+    
     Logger.d(tag: "AppCoordinator", message: "Navigating to: \(route)")
-    navigationPath.append(route)
-    Logger.d(tag: "AppCoordinator", message: "path: \(navigationPath) after append")
+    withAnimation(.easeInOut(duration: 0.3)) {
+      append(route)
+    }
+  }
+  
+  // ++ Heper method: Pop to a specific route if it exists in the stack
+  private func popTo(_ route: AppRoute, isInternalCall: Bool = false) {
+    guard let index = routeHistory.firstIndex(of: route) else {
+      Logger.w(tag: "AppCoordinator", message: "Route \(route) not found. Cannot pop to it.")
+      return
+    }
+    
+    Logger.d(tag: "AppCoordinator", message: "Popping to existing route: \(route) at index: \(index)")
+    let countToRemove = navigationPath.count - index - 1
+    guard countToRemove > 0 else { return }
+    withAnimation {
+      for _ in 0..<countToRemove {
+        removeLast()
+      }
+    }
   }
   
   // ✅ Go back one screen
@@ -45,15 +78,17 @@ final class AppCoordinator {
       Logger.w(tag: "AppCoordinator", message: "Path is already empty. Ignoring goBack().")
       return
     }
-    
-    Logger.d(tag: "AppCoordinator", message: "Going back from: \(navigationPath.last!)")
-    navigationPath.removeLast()
+    withAnimation(.easeInOut(duration: 0.3)) {
+      removeLast()
+    }
   }
   
   // ✅ Reset navigation to root screen
   func clearPath() {
     Logger.d(tag: "AppCoordinator", message: "Resetting path to root")
-    navigationPath.removeAll()
+    withAnimation {
+      removeAll()
+    }
   }
   
   // ✅ Set RootRoute
@@ -65,27 +100,11 @@ final class AppCoordinator {
     }
     isNavigating = true
     defer { isNavigating = false }
+    clearPath()
     
-    if rootRoute != .main {
-      clearPath()
+    if rootRoute != currentRootRoute {
+      currentRootRoute = rootRoute
     }
-    currentRootRoute = rootRoute
-  }
-  
-  // ✅ Pop to a specific route if it exists in the stack
-  func popTo(_ route: AppRoute, isInternalCall: Bool = false) {
-    guard isInternalCall || !isNavigating else {
-      Logger.w(tag: "AppCoordinator", message: "Navigation in progress, ignoring popTo: \(route)")
-      return
-    }
-    
-    guard let index = navigationPath.firstIndex(of: route) else {
-      Logger.w(tag: "AppCoordinator", message: "Route \(route) not found. Cannot pop to it.")
-      return
-    }
-    
-    Logger.d(tag: "AppCoordinator", message: "Popping to existing route: \(route) at index: \(index)")
-    navigationPath.removeLast(navigationPath.count - index - 1)
   }
   
   // ✅
@@ -100,14 +119,21 @@ final class AppCoordinator {
     }
     isNavigating = true
     defer { isNavigating = false }
+    
     do {
       let isAuthenticated = try await authUseCase.isAuthenticated()
       setRootRoute(isAuthenticated ? .main : .auth(authRoute: .login), isInternalCall: true)
-    } catch {
-      let appError = ErrorMapper.map(error)
+    }
+    catch {      
+      var appError: AppError
+      if case let error as AppError = error {
+        appError = error
+      } else {
+        appError = ErrorMapper.map(error)
+      }
+      Logger.e(tag: "LoginViewModel", message: "Login failed: \(appError.debugDescription)")
       setRootRoute(.auth(authRoute: .login))
     }
-    
   }
   
   // ✅

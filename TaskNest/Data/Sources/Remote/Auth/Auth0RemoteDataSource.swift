@@ -85,7 +85,7 @@ final class Auth0RemoteDataSource {
     Auth0
       .webAuth(clientId: Auth0Config.clientId, domain: Auth0Config.domain)
       .redirectURL(URL(string: Auth0Config.callbackURLString)!)
-      .clearSession { result in
+      .clearSession(federated: true) { result in
         Logger.d(tag: "Auth0", message: "Session cleared")
         completion(result.mapError{ $0.toAppError })
       }

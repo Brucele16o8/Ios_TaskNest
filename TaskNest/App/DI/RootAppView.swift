@@ -22,28 +22,25 @@ struct RootAppView: View {
               Logger.d(tag: "RootAppView", message: "Restore session")
               await appCoordinator.restoreSession(usingAuthUseCase: container.resolve(AuthUseCase.self)!)
             }
-        case .auth(let authRoute):
-          switch authRoute {
-          case .login:
+            .transition(.opacity)
+            .id("loading")
+        case .auth:
             LoginView(
               viewModel: container.resolve(LoginViewModel.self)!,
               appCoordinator: appCoordinator
             )
-          case .signUp:
-            SignUpView(
-              viewModel: container.resolve(SignUpViewModel.self)!,
-              appCoordinator: appCoordinator
-            )
-          case .forgotPassword:
-            ForgotPasswordView()
-          }
+            .transition(.slide)
+            .id("auth")
         case .main:
           HomeView(
             homeViewModel: container.resolve(HomeViewModel.self)!,
             appCoordinator: container.resolve(AppCoordinator.self)!
           )
+          .transition(.slide)
+          .id("main")
         }
       }
+      .animation(.easeInOut(duration: 0.3), value: appCoordinator.currentRootRoute)
       
       .navigationDestination(for: AppRoute.self) { appRoute in
         switch appRoute {
@@ -73,7 +70,7 @@ struct RootAppView: View {
           PhotoViewerView(startingIndex: startingAt, photos: photoItems)
         }
       }
-      
+      .transition(.slide)
     }
   }
 }

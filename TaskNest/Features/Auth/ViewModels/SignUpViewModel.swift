@@ -131,7 +131,8 @@ class SignUpViewModel {
   
   // ✅  - Navigation
   func navigateToLogin() {
-      appCoordinator.setRootRoute(.auth(authRoute: .login))
+//      appCoordinator.setRootRoute(.auth(authRoute: .login))
+    appCoordinator.navigate(to: .auth(authRoute: .login))
   }
   
 } // 🧱

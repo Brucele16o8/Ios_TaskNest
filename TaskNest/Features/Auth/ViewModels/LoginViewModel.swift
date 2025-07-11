@@ -85,8 +85,10 @@ final class LoginViewModel {
       let authenticatedUser = try await authUseCase.getUserInfo(acceessToken: authManager.authToken)
       authManager.storeAuthenticatedUser(authenticatedUser)
       loginUiState.status = .authenticated
+      Logger.d(tag: "LoginViewModel", message: "Before setRootRoute - current path: \(appCoordinator.navigationPath)")
       appCoordinator.setRootRoute(.main)
-      Logger.d(tag: "LoginViewModel", message: "Login successful with token: \(credentials.accessToken)")
+      Logger.d(tag: "LoginViewModel", message: "Login successful with token: ...\(credentials.accessToken.suffix(10))")
+      Logger.d(tag: "LoginViewModel", message: "After setRootRoute - current path: \(appCoordinator.navigationPath)")
     }
     catch {
       var appError: AppError
@@ -114,7 +116,7 @@ final class LoginViewModel {
       authManager.storeAuthenticatedUser(authenticatedUser)
       loginUiState.status = .authenticated
       appCoordinator.setRootRoute(.main)
-      Logger.d(tag: "LoginViewModel", message: "Google login successful with token: \(credentials.accessToken)")
+      Logger.d(tag: "LoginViewModel", message: "Google login successful with token: \(credentials.accessToken.suffix(10))")
     }
     catch {
       var appError: AppError
@@ -141,11 +143,16 @@ final class LoginViewModel {
   
   // ✅ Navigation
   func navigateToSignUp() {
-    appCoordinator.setRootRoute(.auth(authRoute: .signUp))
+//    appCoordinator.setRootRoute(.auth(authRoute: .signUp))
+//    appCoordinator.setAuthRoute(.signUp)
+    Logger.d(tag: "LoginViewModel", message: "Inside navigateToSignUp")
+    appCoordinator.navigate(to: .auth(authRoute: .signUp))
   }
   
   func navigateToForgotPassword() {
-    appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
+//    appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
+//    appCoordinator.setAuthRoute(.forgotPassword)
+    appCoordinator.navigate(to: .auth(authRoute: .forgotPassword))
   }
   
 } // 🧱

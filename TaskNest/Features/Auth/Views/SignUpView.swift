@@ -87,7 +87,6 @@ struct SignUpView: View {
         Spacer()
       }
     }
-    .navigationTitle("Sign Up")
     .task {
       viewModel.startAnimation()
     }
