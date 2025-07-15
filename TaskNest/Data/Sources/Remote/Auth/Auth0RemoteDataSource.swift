@@ -145,4 +145,16 @@ final class Auth0RemoteDataSource {
       }
   }
   
+  // ✅ Reset password
+  func resetPassword(email: String, completion: @escaping (Result<Void, AppError>) -> Void) {
+    auth
+      .resetPassword(
+        email: email,
+        connection: Auth0Config.databaseRealm
+      )
+      .start { result in
+        completion( result.mapError { $0.toAppError } )
+      }
+  }
+  
 } // 🧱

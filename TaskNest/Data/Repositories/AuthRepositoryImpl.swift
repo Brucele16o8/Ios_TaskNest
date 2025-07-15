@@ -74,4 +74,13 @@ final class AuthRepositoryImpl: AuthRepository {
     }
   }
   
+  // ✅
+  func resetPassword(email: String) async throws {
+    return try await withCheckedThrowingContinuation { continuation in
+      remoteAuthenticationSource.resetPassword(email: email) { result in
+        continuation.resume(with: result)
+      }
+    }
+  }
+  
 } // 🧱

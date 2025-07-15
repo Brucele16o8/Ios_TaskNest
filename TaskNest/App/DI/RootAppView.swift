@@ -57,7 +57,9 @@ struct RootAppView: View {
               appCoordinator: appCoordinator
             )
           case .forgotPassword:
-            ForgotPasswordView()
+            ForgotPasswordView(
+              viewModel: container.resolve(ForgotPasswordViewModel.self)!
+            )
           }
         case .home:
           HomeView(

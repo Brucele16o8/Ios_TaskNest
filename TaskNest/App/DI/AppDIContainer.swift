@@ -188,6 +188,12 @@ final class AppDIContainer {
       )
     }.inObjectScope(.container)
     
+    container.register(ForgotPasswordViewModel.self) { r in // Forgot View Model
+      ForgotPasswordViewModel(
+        authUseCase: r.resolve(AuthUseCase.self)!
+      )
+    }.inObjectScope(.container)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   

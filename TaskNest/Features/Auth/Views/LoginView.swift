@@ -24,22 +24,37 @@ struct LoginView: View {
         Spacer()
         Spacer()
         VStack(spacing: 16) {
+          /// Email
           TextFieldFormGeneral(
             title: "Email",
             bindingText: viewModel.emailBinding,
             keyboardType: .emailAddress
           )
+          if !loginState.emailError.isEmpty {
+            Text(loginState.emailError)
+              .foregroundColor(.red)
+              .font(.caption)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
+          
+          /// Password
           TextFieldFormPassword(
             title: "Password",
             bindingPassword: viewModel.passwordBinding,
           )
+          if !loginState.passwordError.isEmpty {
+            Text(loginState.passwordError)
+              .foregroundColor(.red)
+              .font(.caption)
+              .frame(maxWidth: .infinity, alignment: .leading)
+          }
           
           Spacer()
             .frame(height: 10)
           
           ForgotPassowordText(action: {
             Logger.d(tag: "LoginView", message: "Navigating to forgot password")
-            appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
+            viewModel.navigateToForgotPassword()
           })
           
           PrimaryButton<Image>(

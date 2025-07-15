@@ -39,4 +39,8 @@ final class AuthUseCase {
   func signUpWithEmailAndPassword(email: String, password: String) async throws -> Credentials {
     try await repository.signUpwithEmailAndPassword(email: email, password: password)
   }
+  
+  func resetPasswordUseCase(email: String) async throws {
+    try await repository.resetPassword(email: email)
+  }
 }

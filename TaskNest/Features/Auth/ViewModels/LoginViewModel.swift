@@ -143,15 +143,12 @@ final class LoginViewModel {
   
   // ✅ Navigation
   func navigateToSignUp() {
-//    appCoordinator.setRootRoute(.auth(authRoute: .signUp))
-//    appCoordinator.setAuthRoute(.signUp)
     Logger.d(tag: "LoginViewModel", message: "Inside navigateToSignUp")
     appCoordinator.navigate(to: .auth(authRoute: .signUp))
   }
   
   func navigateToForgotPassword() {
-//    appCoordinator.setRootRoute(.auth(authRoute: .forgotPassword))
-//    appCoordinator.setAuthRoute(.forgotPassword)
+    Logger.d(tag: "LoginViewModel", message: "Inside navigationToForgotPassword")
     appCoordinator.navigate(to: .auth(authRoute: .forgotPassword))
   }
   
