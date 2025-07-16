@@ -15,89 +15,91 @@ struct HomeView: View {
   var body: some View {
     let state = homeViewModel.homeViewState
     
-    NavigationStack {
-      VStack {
-        HomeViewTitleComponent()
-        SearchableBar(searchText: homeViewModel.searchTextBinding)
+    VStack {
+      HomeViewTitleComponent()
+      SearchableBar(searchText: homeViewModel.searchTextBinding)
+      
+      /// Category Grid
+      VStack(alignment: .leading, spacing: 10) {
+        Text("Categories")
+          .font(.title3.bold())
         
-        VStack(alignment: .leading, spacing: 10) {
-          Text("Categories")
-            .font(.title3.bold())
-          
-          let column = [GridItem(.adaptive(minimum: 68))]
-          ScrollView {
-            LazyVGrid(columns: column) {
-              ForEach(state.categoryItems, id: \.id) { categoryItem in
-                CategoryItemView(categoryItem: categoryItem) {
-                  Task {
-                    await homeViewModel.deleteCategory(ofId: categoryItem.id)
-                  }
+        let column = [GridItem(.adaptive(minimum: 68))]
+        ScrollView {
+          LazyVGrid(columns: column) {
+            ForEach(state.categoryItems, id: \.id) { categoryItem in
+              CategoryItemView(categoryItem: categoryItem) {
+                Task {
+                  await homeViewModel.deleteCategory(ofId: categoryItem.id)
                 }
-              }
-              NavigationLink(destination: CategoryDetailView(categoryItem: CategoryItem(id: UUID(), title: "123", createdAt: .now, userId: "12345"))) {
-                AddCategoryIcon(iconSize: 25, action: {
-                  // TODO: ADD new category
-                  
-                })
+              } onClicked: {
+                
               }
             }
-          }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        
-        Spacer()
-      }
-      .task {
-          await homeViewModel.startLoading()
-      }
-      .padding()
-      .navigationBarTitleDisplayMode(.inline)
-      .toolbar {
-        /// --- Search
-        ToolbarItem(placement: .topBarTrailing) {
-          Button {
-            // TODO: viewmodel.search here
-          } label: {
-            Image(systemName: "magnifyingglass")
-              .imageScale(.large)
-          }
-        }
-        
-        /// --- Settings and Profile
-        ToolbarItem(placement: .topBarTrailing) {
-          Button {
-            homeViewModel.openSettings()
-          } label: {
-            Image(systemName: "person.crop.circle")
-              .imageScale(.large)
-          }
-        }
-        
-        /// --- Profile
-        ToolbarItem(placement: .topBarLeading) {
-          Button {
-            // TODO:
-          } label: {
-            Text("Tasknest")
-              .font(.headline)
-              .fontWeight(.bold)
+            AddCategoryIcon(iconSize: 25, action: {
+              // TODO: ADD new category              
+            })
+            
           }
         }
       }
-      .sheet(isPresented: homeViewModel.showSettingsBinding) {
-        SettingsPanel(
-          onLogout: {
-            Task {
-              await homeViewModel.logout()
-            }
-          }
-        )
+      .frame(maxWidth: .infinity, alignment: .leading)
+      
+      /// Task Item
+      
+      Spacer()
+    }
+    .task {
+      await homeViewModel.startLoading()
+    }
+    .padding()
+    .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+      /// --- Search
+      ToolbarItem(placement: .topBarTrailing) {
+        Button {
+          // TODO: viewmodel.search here
+        } label: {
+          Image(systemName: "magnifyingglass")
+            .imageScale(.large)
+        }
       }
-      .background(Color.backgroundColor3)
-      .onAppear {
-        Logger.d(tag: "HomeView", message: "Appeared with path: \(appCoordinator.navigationPath)")
+      
+      /// --- Settings and Profile
+      ToolbarItem(placement: .topBarTrailing) {
+        Button {
+          homeViewModel.openSettings()
+        } label: {
+          Image(systemName: "person.crop.circle")
+            .imageScale(.large)
+        }
+      }
+      
+      /// --- Profile
+      ToolbarItem(placement: .topBarLeading) {
+        Button {
+          // TODO:
+        } label: {
+          Text("Tasknest")
+            .font(.headline)
+            .fontWeight(.bold)
+        }
       }
     }
+    .sheet(isPresented: homeViewModel.showSettingsBinding) {
+      SettingsPanel(
+        onLogout: {
+          Task {
+            await homeViewModel.logout()
+          }
+        }
+      )
+    }
+    .background(Color.backgroundColor3)
+    .onAppear {
+      Logger.d(tag: "HomeView", message: "Appeared with path: \(appCoordinator.navigationPath)")
+    }
+    
   }
 }
 

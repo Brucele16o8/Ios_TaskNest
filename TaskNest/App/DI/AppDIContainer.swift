@@ -152,6 +152,11 @@ final class AppDIContainer {
       DeleteCategoryEntityUseCase(categoryRepository: r.resolve(CategoryRepository.self)!)
     }.inObjectScope(.container)
     
+    /// Use cases for Task
+    container.register(GetTaskItemEntitiesByCategoryEntityUseCase.self) { r in
+      GetTaskItemEntitiesByCategoryEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
+    }.inObjectScope(.container)
+    
     
     Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }

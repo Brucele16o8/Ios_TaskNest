@@ -44,4 +44,13 @@ enum PhotoAttachmentMapper {
     )
   }
   
+  static func fromEntityToItem(_ entity: PhotoAttachmentEntity) -> PhotoAttachmentItem {
+    PhotoAttachmentItem(
+      id: entity.id,
+      localPath: entity.localPath,
+      remoteURL: entity.remoteURL,
+      subTaskID: entity.subTaskID
+    )
+  }
+  
 } // 🧱

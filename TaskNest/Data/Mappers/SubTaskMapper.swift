@@ -50,6 +50,16 @@ enum SubTaskMapper {
     )
   }
   
+  static func fromEntityToItem(_ entity: SubTaskEntity) -> SubTaskItem {
+    SubTaskItem(
+      id: entity.id,
+      title: entity.title,
+      isCompleted: entity.isCompleted,
+      createdAt: entity.createdAt,
+      taskId: entity.taskId
+    )
+  }
+  
   
   // MARK: - From SwiftData
   static func fromSwiftDataToEntity(_ subTask: SubTask) throws -> SubTaskEntity {

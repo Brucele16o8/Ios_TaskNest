@@ -9,4 +9,8 @@ extension SubTaskEntity {
   var mapToSubTask: SubTask {
     SubTaskMapper.fromEntityToSwiftData(self)
   }
+  
+  var mapToSubTaskItem: SubTaskItem {
+    SubTaskMapper.fromEntityToItem(self)
+  }
 }

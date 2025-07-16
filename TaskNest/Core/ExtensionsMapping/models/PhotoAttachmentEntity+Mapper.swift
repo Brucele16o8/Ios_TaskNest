@@ -9,4 +9,8 @@ extension PhotoAttachmentEntity {
   var mapToPhotoAttachment: PhotoAttachment {
     PhotoAttachmentMapper.fromEntityToPhotoAttachment(self)
   }
+  
+  var mapToPhotoAttachmentItem: PhotoAttachmentItem {
+    PhotoAttachmentMapper.fromEntityToItem(self)
+  }
 }

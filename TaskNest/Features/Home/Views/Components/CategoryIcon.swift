@@ -12,6 +12,7 @@ struct CategoryIcon: View {
   let systemIcon: String
   let iconColor: Color = AppColor.allValues.randomElement() ?? .gray
   let iconSize: CGFloat
+  let onClick: (() -> Void)? = nil
   
   var body: some View {
     VStack {

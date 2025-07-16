@@ -10,15 +10,14 @@ import SwiftUI
 struct CategoryItemView: View {
   let categoryItem: CategoryItem
   let onDelete: () -> Void
+  let onClicked: () -> Void
   
   var body: some View {
-    NavigationLink(destination: CategoryDetailView(categoryItem: categoryItem)) {
-      CategoryIcon(
-        name: categoryItem.title,
-        systemIcon: AppCategory.from(title: categoryItem.title).iconName,
-        iconSize: 25
-      )
-    }
+    CategoryIcon(
+      name: categoryItem.title,
+      systemIcon: AppCategory.from(title: categoryItem.title).iconName,
+      iconSize: 25
+    )
     .contextMenu {
       Button("Delete", role: .destructive) {
         onDelete()
@@ -28,5 +27,9 @@ struct CategoryItemView: View {
 }
 
 #Preview {
-  CategoryItemView(categoryItem: CategoryItem(title: "work", userId: "116688"), onDelete: {})
+  CategoryItemView(
+    categoryItem: CategoryItem(title: "work", userId: "116688"),
+    onDelete: { },
+    onClicked: { }
+  )
 }

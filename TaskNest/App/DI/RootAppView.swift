@@ -67,9 +67,9 @@ struct RootAppView: View {
             appCoordinator: appCoordinator
           )
         case .category(let categoryItem):
-          CategoryDetailView(categoryItem: categoryItem)
+          CategoryDetailView(viewModel: container.resolve(CategoryDetailViewModel.self)!)
         case .photoViewer(let startingAt, let photoItems):
-          PhotoViewerView(startingIndex: startingAt, photos: photoItems)
+          PhotoViewerView(startIndex: startingAt, photos: photoItems)
         }
       }
       .transition(.slide)

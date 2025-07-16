@@ -9,4 +9,8 @@ extension TaskItemEntity {
   var mapToTaskItem: TaskItem {
     TaskItemMapper.fromEntityToSwiftData(self)
   }
+  
+  var maptoTaskItemItem: TaskItemItem {
+    TaskItemMapper.fromEntityToItem(self)
+  }
 }
