@@ -12,30 +12,37 @@ struct CategoryIcon: View {
   let systemIcon: String
   let iconColor: Color = AppColor.allValues.randomElement() ?? .gray
   let iconSize: CGFloat
-  let onClick: (() -> Void)? = nil
+  let onClick: (() -> Void)
   
   var body: some View {
-    VStack {
-      Image(systemName: systemIcon)
-        .font(.custom("Category Icons", size: iconSize))
-        .fontWeight(.bold)
-        .foregroundStyle(iconColor)
-        .frame(width: 68, height: 68)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(radius: 1)
-      Text(name)
-        .font(.caption)
-        .fontWeight(.semibold)
+    Button {
+      onClick()
+    } label: {
+      VStack {
+        Image(systemName: systemIcon)
+          .font(.custom("Category Icons", size: iconSize))
+          .fontWeight(.bold)
+          .foregroundStyle(iconColor)
+          .frame(width: 68, height: 68)
+          .background(Color.white)
+          .cornerRadius(12)
+          .shadow(radius: 1)
+        Text(name)
+          .font(.caption)
+          .fontWeight(.semibold)
+      }
     }
+    
+    
+    
   }
 }
-
 
 #Preview {
   CategoryIcon(
     name: "Work",
     systemIcon: AppCategory.from(title: "work").iconName,
-    iconSize: 25
+    iconSize: 25,
+    onClick: { print("Clicked" )}
   )
 }

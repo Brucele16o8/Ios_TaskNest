@@ -166,4 +166,16 @@ final class AppCoordinator {
       Logger.d(tag: "AppCoordinator", message: "Handled deep link: \(url)")
   }
   
+//  func syncRouteHistory() {
+//    /// Manual handling the case using provided default back button
+//    while routeHistory.count > navigationPath.count {
+//      routeHistory.removeLast()
+//    }
+//    
+//    /// If navigationPath grows unexpectedly (unlikely), notify to handle it
+//    if routeHistory.count < navigationPath.count {
+//      Logger.w(tag: "AppCoordinator", message: "navigationPath has more items than routeHistory. Possible manual path manipulation.")
+//    }
+//  }
+  
 } // 🧱

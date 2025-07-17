@@ -14,7 +14,17 @@ struct CategoryDetailView: View {
     let uiState = viewModel.state
     let categoryItem = viewModel.categoryItem
     
-    Text("Category Detail View: name - \(categoryItem.title)")
+    VStack {
+      Text("Category Detail View: name - \(categoryItem.title)")
+    }
+    .toolbar {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button("Back") {
+                viewModel.goBack()
+            }
+        }
+    }
+    .navigationBarBackButtonHidden(true)
   }
 }
 
@@ -22,7 +32,7 @@ struct CategoryDetailView: View {
   let container = AppDIContainer.shared.container
   CategoryDetailView(
     viewModel: CategoryDetailViewModel(
-      categoryItem: CategoryItem(title: "Testing Category", userId: "116688"),
+      categoryItem: CategoryItem(title: "Testing Category", userId: "116688"), appCoordinator: container.resolve(AppCoordinator.self)!,
       getTaskItemEntitiesByCategoryEntityUseCase: container.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!)
   )
 }

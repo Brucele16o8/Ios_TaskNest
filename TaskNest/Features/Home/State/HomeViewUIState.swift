@@ -16,7 +16,8 @@ struct HomeViewUIState: Equatable {
   var taskItemItems: [TaskItemItem] = []
   
   var searchText: String = ""
-  var showSetting: Bool = false  
+  var showSetting: Bool = false
+  var showAddCategory: Bool = false
 }
 
 

@@ -16,7 +16,8 @@ struct CategoryItemView: View {
     CategoryIcon(
       name: categoryItem.title,
       systemIcon: AppCategory.from(title: categoryItem.title).iconName,
-      iconSize: 25
+      iconSize: 25,
+      onClick: { }
     )
     .contextMenu {
       Button("Delete", role: .destructive) {

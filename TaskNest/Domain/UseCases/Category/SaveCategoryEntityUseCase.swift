@@ -15,6 +15,7 @@ struct SaveCategoryEntityUseCase {
   }
   
   func callAsFunction(_ categoryEntity: CategoryEntity) async throws -> Void {
+    Logger.d(tag: "SaveCategory", message: "inside SaveCategoryEntityUseCase")
     try await categoryRepository.save(categoryEntity)
   }
 }

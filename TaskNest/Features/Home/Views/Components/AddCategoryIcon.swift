@@ -12,19 +12,23 @@ struct AddCategoryIcon: View {
   let action: () -> Void
   
   var body: some View {
-    ZStack {
-      RoundedRectangle(cornerRadius: 12)
-        .fill(Color.white)
-        .frame(width: 68, height: 68)
-        .shadow(radius: 1)
-      
-      Circle()
-        .stroke(Color.gray.opacity(0.1), lineWidth: 2)
-                .frame(width: iconSize + 16, height: iconSize + 16)
-      
-      Image(systemName: "plus")
-        .font(.system(size: iconSize, weight: .medium))
-        .foregroundColor(.gray.opacity(0.5))
+    Button {
+      action()
+    } label: {
+      ZStack {
+        RoundedRectangle(cornerRadius: 12)
+          .fill(Color.white)
+          .frame(width: 68, height: 68)
+          .shadow(radius: 1)
+        
+        Circle()
+          .stroke(Color.gray.opacity(0.1), lineWidth: 2)
+          .frame(width: iconSize + 16, height: iconSize + 16)
+        
+        Image(systemName: "plus")
+          .font(.system(size: iconSize, weight: .medium))
+          .foregroundColor(.gray.opacity(0.5))
+      }
     }
   }
 }

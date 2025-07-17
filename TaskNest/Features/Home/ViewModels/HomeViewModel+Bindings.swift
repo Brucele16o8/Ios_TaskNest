@@ -22,4 +22,18 @@ extension HomeViewModel {
       set: { self.updateSearchText($0)}
     )
   }
+  
+  var showAddCategoryBiniding: Binding<Bool> {
+    Binding (
+      get: { self.homeViewState.showAddCategory },
+      set: { self.updateShowAddCategory($0) }
+    )
+  }
+  
+  var errorMessageBinding: Binding<String> {
+    Binding (
+      get: { self.homeViewState.errorMessage },
+      set: { self.updateUiErrorMessage($0) }
+    )
+  }
 }

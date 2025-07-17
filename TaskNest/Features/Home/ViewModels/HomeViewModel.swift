@@ -12,6 +12,7 @@ import SwiftUI
 final class HomeViewModel {
   // MARK: - States
   private(set) var homeViewState = HomeViewUIState()
+  var uiState: HomeViewUIState { homeViewState }
   private let authManager: AuthManager
   private let appCoordinator: AppCoordinator
   
@@ -84,14 +85,21 @@ final class HomeViewModel {
     await loadCategories()
   }
   
-  // ✅
+  // ✅ - Update properties
   func updateSearchText(_ searchText: String) {
     homeViewState.searchText = searchText
   }
   
-  // ✅
   func updateShowSetting(_ showSetting: Bool) {
     homeViewState.showSetting = showSetting
+  }
+  
+  func updateShowAddCategory(_ showAddCategory: Bool) {
+    homeViewState.showAddCategory = showAddCategory
+  }
+  
+  func updateUiErrorMessage(_ errorMessage: String) {
+    homeViewState.errorMessage = errorMessage
   }
   
   // MARK: - CATEGORY manipulation
@@ -106,9 +114,37 @@ final class HomeViewModel {
     }
   }
   
+  // ✅
+  func createAndSaveCategory(from title: String) async {
+    Logger.d(tag: "SaveCategory", message: "Inside createAndSaveCategory - HomeViewModel")
+    guard !title.isEmpty else {
+      homeViewState.errorMessage = "Category name cannot be empty."
+      return
+    }
+    guard let userId = authManager.currentUser?.id else {
+      homeViewState.errorMessage = "Cannot get current user id"
+      return
+    }
+    
+    let newCategory = CategoryItem(title: title, userId: userId)
+    
+    do {
+      try await saveCategoryUseCase(newCategory.mapToEntity)
+    } catch let appError as AppError {
+      homeViewState.errorMessage = appError.localizedDescription
+    } catch {
+      homeViewState.errorMessage = "Something went wrong while adding the category."
+    }
+    await startLoading()
+  }
+  
+  func goBack() {
+    appCoordinator.goBack()
+  }
+  
   // ✅ Load categories into UiState
   private func loadCategories() async {
-    guard let userId = authManager.currentUser?.id else { return }
+    guard let userId = authManager.currentUser?.id else { return } /// leave the error here to correct fetching based on user id later
     homeViewState.isLoading = true
     do {
       let categoryEntities = try await getAllCategoriesUseCase()
@@ -151,6 +187,12 @@ final class HomeViewModel {
     } catch {
       homeViewState.errorMessage = "Failed to Log Out"
     }
+  }
+  
+  // ✅ - Nvaigation
+  func navigateToCategoryDetailView(for categoryItem: CategoryItem) {
+    Logger.d(tag: "HomeViewModel", message: "Inside navigateToCategoryDetailView")
+    appCoordinator.navigate(to: .category(categoryItem: categoryItem))
   }
   
 } // 🧱

@@ -28,16 +28,17 @@ struct HomeView: View {
         ScrollView {
           LazyVGrid(columns: column) {
             ForEach(state.categoryItems, id: \.id) { categoryItem in
-              CategoryItemView(categoryItem: categoryItem) {
-                Task {
-                  await homeViewModel.deleteCategory(ofId: categoryItem.id)
+              CategoryIcon(
+                name: categoryItem.title,
+                systemIcon: AppCategory.from(title: categoryItem.title).iconName,
+                iconSize: 25,
+                onClick: {
+                  homeViewModel.navigateToCategoryDetailView(for: categoryItem)
                 }
-              } onClicked: {
-                
-              }
+              )
             }
             AddCategoryIcon(iconSize: 25, action: {
-              // TODO: ADD new category              
+              homeViewModel.updateShowAddCategory(true)
             })
             
           }
@@ -95,11 +96,25 @@ struct HomeView: View {
         }
       )
     }
+    .sheet(isPresented: homeViewModel.showAddCategoryBiniding) {
+      AddCategoryView(
+        viewModel: AddCategoryViewModel(),
+        onSave: {
+          await homeViewModel.createAndSaveCategory(from: $0)
+          Logger.d(tag: "SaveCategory", message: "Inside onSave - HomeView")
+        },
+        onCancel: {
+          homeViewModel.updateShowAddCategory(false)
+        }
+      )
+    }
+//    .alert("Error Message", isPresented: .constant(homeViewModel.errorMessageBinding == "") , actions: {
+//      <#code#>
+//    })
     .background(Color.backgroundColor3)
     .onAppear {
       Logger.d(tag: "HomeView", message: "Appeared with path: \(appCoordinator.navigationPath)")
     }
-    
   }
 }
 

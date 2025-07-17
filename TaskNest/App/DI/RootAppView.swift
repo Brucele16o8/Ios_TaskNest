@@ -67,7 +67,10 @@ struct RootAppView: View {
             appCoordinator: appCoordinator
           )
         case .category(let categoryItem):
-          CategoryDetailView(viewModel: container.resolve(CategoryDetailViewModel.self)!)
+          let categoryDetailViewModel = container.resolve(CategoryDetailViewModel.self, argument: categoryItem)!
+          CategoryDetailView(
+            viewModel: categoryDetailViewModel
+          )
         case .photoViewer(let startingAt, let photoItems):
           PhotoViewerView(startIndex: startingAt, photos: photoItems)
         }

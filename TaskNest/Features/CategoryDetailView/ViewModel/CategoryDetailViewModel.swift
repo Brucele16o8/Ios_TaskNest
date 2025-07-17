@@ -20,11 +20,16 @@ class CategoryDetailViewModel: ObservableObject {
   private var taskItemViewModels: [TaskItemViewModel] = []
   
   // Use cases
-  private var getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase!
+  private let appCoordinator: AppCoordinator
+  private let getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase!
   
   
-  init(categoryItem: CategoryItem, getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase) {
+  init(categoryItem: CategoryItem,
+       appCoordinator: AppCoordinator,
+       getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase
+  ) {
     self.categoryItem = categoryItem
+    self.appCoordinator = appCoordinator
     self.getTaskItemEntitiesByCategoryEntityUseCase = getTaskItemEntitiesByCategoryEntityUseCase
   }
   
@@ -49,6 +54,9 @@ class CategoryDetailViewModel: ObservableObject {
     }
   }
   
-  
+  // ✅ - Go back to previous screen
+  func goBack() {
+    appCoordinator.goBack()
+  }
   
 } // 🧱

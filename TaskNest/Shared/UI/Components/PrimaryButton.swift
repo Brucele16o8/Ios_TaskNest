@@ -34,5 +34,6 @@ struct PrimaryButton<Icon: View>: View {
 }
 
 #Preview {
+  PrimaryButton<Image>(title: "PrimaryButton", icon: nil, isDisabled: false) { }
   PrimaryButton<Image>(title: "PrimaryButton", icon: nil, isDisabled: true) { }
 }

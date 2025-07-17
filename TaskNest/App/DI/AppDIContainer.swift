@@ -199,6 +199,14 @@ final class AppDIContainer {
       )
     }.inObjectScope(.container)
     
+    container.register(CategoryDetailViewModel.self) { (r: Resolver, categoryItem: CategoryItem )in
+      CategoryDetailViewModel(
+        categoryItem: categoryItem,
+        appCoordinator: r.resolve(AppCoordinator.self)!,
+        getTaskItemEntitiesByCategoryEntityUseCase: r.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!
+      )
+    }.inObjectScope(.graph)
+    
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }
   
