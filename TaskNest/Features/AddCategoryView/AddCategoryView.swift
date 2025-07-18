@@ -31,9 +31,8 @@ struct AddCategoryView: View {
         keyboardType: .default)
       .onSubmit {
         Task {
-          await viewModel.save(onSave: onSave) {
-            dismiss()
-          }
+          await viewModel.save(onSave: onSave)
+          dismiss()
         }
       }
       
@@ -46,9 +45,8 @@ struct AddCategoryView: View {
       // Save button
       Button {
         Task {
-          await viewModel.save(onSave: onSave) {
-            dismiss()
-          }
+          await viewModel.save(onSave: onSave)
+          dismiss()          
         }
       } label: {
         if viewModel.isSaving {

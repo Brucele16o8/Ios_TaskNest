@@ -11,7 +11,11 @@ import SwiftUI
 @MainActor
 @Observable
 final class AddCategoryViewModel {
-  var title = ""
+  var title = "" {
+    didSet {
+      Logger.d(tag: "SaveCategory", message: "title changed: \(title) - AddCategoryViewModel")
+    }
+  }
   var errorMessage: String = ""
   var isSaving = false
   
@@ -32,15 +36,14 @@ final class AddCategoryViewModel {
   // ✅
   func save(
     onSave: (String) async -> Void,
-    onDismiss: () -> Void
   ) async {
     Logger.d(tag: "SaveCategory", message: "Inside save - AddCategoryViewModel")
     guard validateInput() else { return }
+    Logger.d(tag: "SaveCategory", message: "Inside save - after validateInput - AddCategoryViewModel")
     isSaving = true
     await onSave(title)
     Logger.d(tag: "SaveCategory", message: "Inside save with title \(title) - AddCategoryViewModel")
     isSaving = false
-    onDismiss()
   }
   
 } // 🧱

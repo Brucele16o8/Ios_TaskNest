@@ -129,7 +129,9 @@ final class HomeViewModel {
     let newCategory = CategoryItem(title: title, userId: userId)
     
     do {
+      Logger.d(tag: "SaveCategory", message: "Before save use case - AddCategoryViewModel")
       try await saveCategoryUseCase(newCategory.mapToEntity)
+      Logger.d(tag: "SaveCategory", message: "After save use case - AddCategoryViewModel")
     } catch let appError as AppError {
       homeViewState.errorMessage = appError.localizedDescription
     } catch {
