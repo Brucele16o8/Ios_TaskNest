@@ -8,33 +8,37 @@
 import SwiftUI
 
 struct TaskItemRowView: View {
-  @Bindable private(set) var viewModel: TaskItemViewModel
+  @Bindable private(set) var viewModel: TaskItemRowViewModel
   @State private var isExpanded = false
-
+  
   
   var body: some View {
     let taskItem = viewModel.taskItem
     
-    DisclosureGroup(isExpanded: $isExpanded) {
-      VStack(alignment: .leading, spacing: 16) {
-        ForEach(viewModel.subTaskItemViewModels.indices, id: \.self) { index in
-          let subTaskItemViewModel = viewModel.subTaskItemViewModels[index]
-          SubTaskRowView(
-            viewMOdel: subTaskItemViewModel
-          )
-        }
+    HStack(spacing: 12) {
+      Button {
+        Task { await viewModel.toggleCompletion() }
+      } label: {
+        Image(systemName: taskItem.isCompleted ? "checkmark.circle.fill" : "circle")
+          .foregroundColor(.blue)
+          .font(.system(size: 22))
       }
-      .padding(.top, 8)
-    } label: {
-      HStack {
-        Text(taskItem.title)
-          .font(.headline)
-        Spacer()
-        if isExpanded {
-          Image(systemName: "cheron.down")
-        }
-      }
-      .contentShape(Rectangle())
+      .buttonStyle(.plain)
+      
+      Text(taskItem.title)
+        .font(.subheadline)
+        .foregroundStyle(taskItem.isCompleted ? .gray : .primary)
+        .strikethrough(taskItem.isCompleted)
+      
+      Spacer()
+      
+      Image(systemName: "chevron.right")
+        .foregroundStyle(.gray)
+        .font(.system(size: 14, weight: .semibold))
+    }
+    .contentShape(Rectangle())
+    .onTapGesture {
+      viewModel.onCliked(taskItem)
     }
     .padding()
     .background(Color.backgroundColor3.opacity(0.6))
@@ -46,6 +50,11 @@ struct TaskItemRowView: View {
   let container = AppDIContainer.shared.container
   
   TaskItemRowView(
-    viewModel: container.resolve(TaskItemViewModel.self)!
+    viewModel: TaskItemRowViewModel(
+      taskItem: TaskItemEntity.taskItem2.maptoTaskItemItem,
+      onDelete: { _ in },
+      onUpdate: { _ in },
+      onCliked: { _ in }
+    )
   )
 }

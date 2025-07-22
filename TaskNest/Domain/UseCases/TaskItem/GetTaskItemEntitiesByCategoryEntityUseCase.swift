@@ -18,3 +18,17 @@ struct GetTaskItemEntitiesByCategoryEntityUseCase {
     return try await taskItemRepository.getTaskItemsByCategory(categoryEntityId: categoryEntityId)
   }
 }
+
+
+
+struct MockGetTaskItemEntitiesByCategoryEntityUseCase {
+  private let taskItemRepository: TaskItemRepository
+  
+  init(taskItemRepository: MockTaskItemRepository) {
+    self.taskItemRepository = taskItemRepository
+  }
+  
+  func callAsFunction(categoryEntityId: UUID) async throws -> [TaskItemEntity] {
+    return try await taskItemRepository.getTaskItemsByCategory(categoryEntityId: categoryEntityId)
+  }
+}

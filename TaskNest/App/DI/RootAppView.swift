@@ -71,6 +71,13 @@ struct RootAppView: View {
           CategoryDetailView(
             viewModel: categoryDetailViewModel
           )
+        case .taskDetail(taskItem: let taskItem):
+          let taskItemDetailViewModel = container.resolve(TaskItemDetailViewModel.self, argument: taskItem)!
+          TaskItemDetailView(
+            viewModel: taskItemDetailViewModel
+          )
+          
+          
         case .photoViewer(let startingAt, let photoItems):
           PhotoViewerView(startIndex: startingAt, photos: photoItems)
         }

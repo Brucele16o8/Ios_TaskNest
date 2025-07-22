@@ -35,7 +35,7 @@ struct TaskItemEntity {
 
 extension TaskItemEntity {
   static let taskItem1 = TaskItemEntity(title: "Task 1", isCompleted: false, categoryId: CategoryEntity.work.id, userId: "116688")
-  static let taskItem2 = TaskItemEntity(title: "Task 2", isCompleted: false, categoryId: CategoryEntity.work.id, userId: "116688")
+  static let taskItem2 = TaskItemEntity(title: "Task 2", isCompleted: true, categoryId: CategoryEntity.work.id, userId: "116688")
   static let taskItem3 = TaskItemEntity(title: "Task 3", isCompleted: false, categoryId: CategoryEntity.work.id, userId: "116688")
   static let taskItem4 = TaskItemEntity(title: "Task 1", isCompleted: false, categoryId: CategoryEntity.personal.id, userId: "116688")
   static let taskItem5 = TaskItemEntity(title: "Task 2", isCompleted: false, categoryId: CategoryEntity.personal.id, userId: "116688")

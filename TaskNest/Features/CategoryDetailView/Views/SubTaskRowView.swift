@@ -8,29 +8,68 @@
 import SwiftUI
 
 struct SubTaskRowView: View {
-  @Bindable private(set) var viewMOdel: SubTaskItemViewModel
+  @Bindable private(set) var viewModel: SubTaskItemViewModel
   
   
-  @State var showGallery: Bool = false
-  @State var selectedIndex: Int = 0
+  @State private var showGallery: Bool = false
+  @State private var selectedIndex: Int = 0
   @State private var showPhotoPicker = false
+  @State private var isEditing = false
+  @FocusState private var isFocused: Bool
+  @State private var editedTitle = ""
   
   var body: some View {
-    let uiState = viewMOdel.uiState
-    let subTaskItem = viewMOdel.subTaskItem
+    let uiState = viewModel.uiState
+    let subTaskItem = viewModel.subTaskItem
     
-    VStack(alignment: .leading) {
-      Text(subTaskItem.title)
-        .font(.subheadline)
-        .fontWeight(.medium)
+    VStack(alignment: .leading, spacing: 6) {
+      HStack(spacing: 12) {
+        Button {
+          Task {
+            await viewModel.toggleCompletion()
+          }
+        } label: {
+          Image(systemName: subTaskItem.isCompleted ? "checkmark.circle.fill" : "circle")
+            .foregroundStyle(.blue)
+            .font(.system(size: 23))
+        }
+        
+        /// Edit the subtask title
+        if isEditing {
+            TextField("Edit subtask", text: $editedTitle, onCommit: {
+              Task {
+                await viewModel.updateTitle(editedTitle)
+                isEditing = false
+              }
+            })
+            .focused($isFocused)
+            .onAppear {
+              editedTitle = subTaskItem.title
+              isFocused = true
+            }
+          
+        } else {
+          Text(subTaskItem.title)
+            .font(.subheadline)
+            .foregroundStyle(subTaskItem.isCompleted ? .gray : .black)
+            .strikethrough(subTaskItem.isCompleted)
+            .onTapGesture {
+              isEditing = true
+            }
+        }
+        
+        Spacer()
+        
+        Button{
+          
+        } label: {
+          Image(systemName: "photo")
+        }
+      }
+      
+      Spacer(minLength: 0)
       
       HStack {
-        /// Camera Button
-        Button {
-          showPhotoPicker = true
-        } label: {
-          Label("Add photo", systemImage: "camera")
-        }
         
         /// ScrollView for thumpnail
         ScrollView(.horizontal, showsIndicators: false) {
@@ -55,32 +94,51 @@ struct SubTaskRowView: View {
         
       }
     }
+    .padding()
+    .background(
+      RoundedRectangle(cornerRadius: 10)
+        .fill(Color(uiColor: .systemBackground))
+    )
+    .overlay {
+      RoundedRectangle(cornerRadius: 10)
+        .stroke(Color.blue, lineWidth: 1)
+    }
+    .contentShape(Rectangle())
+    .swipeActions(content: {
+      Button(role: .destructive) {
+        Task {
+          await viewModel.deleteTaskSubTask()
+        }
+      } label: {
+        Label("Delete", systemImage: "trash")
+      }
+
+    })
     .fullScreenCover(isPresented: $showGallery) {
       PhotoViewerView(
         startIndex: selectedIndex,
         photos: uiState.photoAttachments
       )
-    }    
+    }
+    .padding(.horizontal, 4)
   }
 }
 
 #Preview {
-  
-  //  photoAttachmentItems: PhotoAttachmentEntity.all.map { $0.mapToPhotoAttachmentItem },
-  //)
-  
-  
+  let container = AppDIContainer.shared.container
+  let subTaskItem = SubTaskItem(
+    id: UUID(),
+    title: "Test",
+    isCompleted: false,
+    createdAt: Date(),
+    taskId: UUID())
   
   SubTaskRowView(
-    viewMOdel: SubTaskItemViewModel(
-      subTaskItem: SubTaskItem(
-        id: UUID(),
-        title: "Subtask 1",
-        isCompleted: true,
-        createdAt: Date(),
-        taskId: UUID()
-      )
+    viewModel: SubTaskItemViewModel(
+      subTaskItem: subTaskItem,
+      getAllSubTaskEntitiesOfTaskId: container.resolve(GetAllSubTaskEntitiesOfTaskIdUseCase.self)!,
+      updateSubTaskUseEntityCase: container.resolve(UpdateSubTaskUseEntityCase.self)!,
+      getAllPhotoAttachmentEntitiesOfSubTaskId: container.resolve(GetAllPhotoAttachmentEntitiesOfSubTaskId.self)!, deleteSubTaskEntityUseCase: container.resolve(DeleteSubTaskEntityUseCase.self)!
     ),
-  )
-  
+  )  
 }

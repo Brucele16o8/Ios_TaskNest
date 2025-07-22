@@ -12,4 +12,5 @@ struct PhotoAttachmentDto: Codable, Identifiable {
   let localPath: String?
   let remoteURL: String?
   let subTaskId: UUID // foreign key to SubTask
+  let createdAt: Date
 }

@@ -10,27 +10,94 @@ import SwiftUI
 
 @Observable
 final class SubTaskItemViewModel {
-  let subTaskItem: SubTaskItem
+  var subTaskItem: SubTaskItem
   
   // State
   private(set) var subTaskItemUiState: SubTaskItemUiState = SubTaskItemUiState()
   var uiState: SubTaskItemUiState { subTaskItemUiState }
   
-  init(subTaskItem: SubTaskItem) {
+  // Use cases
+  private var updateSubTaskUseEntityCase: UpdateSubTaskUseEntityCase
+  private var getAllPhotoAttachmentEntitiesOfSubTaskId: GetAllPhotoAttachmentEntitiesOfSubTaskId
+  private var deleteSubTaskEntityUseCase: DeleteSubTaskEntityUseCase
+  
+  
+  init(
+    subTaskItem: SubTaskItem,
+    getAllSubTaskEntitiesOfTaskId: GetAllSubTaskEntitiesOfTaskIdUseCase,
+    updateSubTaskUseEntityCase: UpdateSubTaskUseEntityCase,
+    getAllPhotoAttachmentEntitiesOfSubTaskId: GetAllPhotoAttachmentEntitiesOfSubTaskId,
+    deleteSubTaskEntityUseCase: DeleteSubTaskEntityUseCase
+  ) {
     self.subTaskItem = subTaskItem
+    self.updateSubTaskUseEntityCase = updateSubTaskUseEntityCase
+    self.getAllPhotoAttachmentEntitiesOfSubTaskId = getAllPhotoAttachmentEntitiesOfSubTaskId
+    self.deleteSubTaskEntityUseCase = deleteSubTaskEntityUseCase
+  }
+  
+  func start() async {
+    subTaskItemUiState.isLoading = true
+    do {
+      subTaskItemUiState.photoAttachments = try await getAllPhotoAttachmentEntitiesOfSubTaskId(subTaskItem.id)
+        .map { $0.mapToPhotoAttachmentItem }
+        .sorted { $0.createdAt > $1.createdAt }        
+    } catch let appError as AppError {
+      subTaskItemUiState.errorMessage = appError.localizedDescription
+    } catch {
+      subTaskItemUiState.errorMessage = "Error when fetching photoAttachment items"
+    }
+  }
+  
+  // ✅ - Check completion
+  func toggleCompletion() async {
+    subTaskItem.isCompleted.toggle()
+    do {
+      try await updateSubTaskUseEntityCase(subTaskEntity: subTaskItem.mapToEntity)
+    } catch let appError as AppError {
+      subTaskItemUiState.errorMessage = appError.localizedDescription
+    } catch {
+      subTaskItemUiState.errorMessage = "Error when updating photoAttachment items"
+    }
+  }
+  
+   // ✅ - updateTitle
+  func updateTitle(_ newTitle: String) async {
+    guard newTitle.count > 0 else {
+      subTaskItemUiState.errorMessage = "Title must not be empty"
+      return
+    }
+    subTaskItem.title = newTitle
+    do {
+      try await updateSubTaskUseEntityCase(subTaskEntity: subTaskItem.mapToEntity)
+    } catch let appError as AppError {
+      subTaskItemUiState.errorMessage = appError.localizedDescription
+    } catch {
+      subTaskItemUiState.errorMessage = "Error when updating photoAttachment items"
+    }
+  }
+  
+  // ✅ - Delete SubTask
+  func deleteTaskSubTask() async {
+    do {
+      try await deleteSubTaskEntityUseCase(id: subTaskItem.id)
+    } catch let appError as AppError {
+      subTaskItemUiState.errorMessage = appError.localizedDescription
+    } catch {
+      subTaskItemUiState.errorMessage = "Error when deleting subtask item."
+    }
   }
   
   // ✅
   func addPhoto(_ image: UIImage) {
     let localPath = saveImageToLocalDirectory(image: image)
-    if localPath.isEmpty { return } // more to handle empty
+    if localPath.isEmpty { return } // more to handle empty    
     
-    
-    let newPhoto = PhotoAttachmentItem(
+    let _ = PhotoAttachmentItem(
       id: UUID(),
       localPath: localPath,
       remoteURL: nil,
-      subTaskID: subTaskItem.id
+      subTaskID: subTaskItem.id,
+      createdAt: Date()
     )
   }
   
@@ -55,6 +122,7 @@ final class SubTaskItemViewModel {
     }
     return ""
   }
-
+  
+  // MARK: Navigate 
   
 } // 🧱

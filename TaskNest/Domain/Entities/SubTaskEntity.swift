@@ -31,7 +31,7 @@ class SubTaskEntity: Identifiable {
 }
 
 extension SubTaskEntity {
-  static let subTask1 = SubTaskEntity(title: "SubTask 1", isCompleted: false, taskId: TaskItem.taskItem1.id)
+  static let subTask1 = SubTaskEntity(title: "SubTask 1", isCompleted: false, taskId: UUID())
   static let subTask2 = SubTaskEntity(title: "SubTask 2", isCompleted: true, taskId: TaskItem.taskItem1.id)
   static let subTask3 = SubTaskEntity(title: "SubTask 1", isCompleted: true, taskId: TaskItem.taskItem2.id)
   

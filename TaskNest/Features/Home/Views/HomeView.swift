@@ -108,9 +108,6 @@ struct HomeView: View {
         }
       )
     }
-//    .alert("Error Message", isPresented: .constant(homeViewModel.errorMessageBinding == "") , actions: {
-//      <#code#>
-//    })
     .background(Color.backgroundColor3)
     .onAppear {
       Logger.d(tag: "HomeView", message: "Appeared with path: \(appCoordinator.navigationPath)")

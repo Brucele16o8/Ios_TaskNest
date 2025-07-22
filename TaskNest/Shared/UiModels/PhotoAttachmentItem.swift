@@ -12,6 +12,7 @@ struct PhotoAttachmentItem: Identifiable, Equatable, Sendable, Hashable {
   let localPath: String?
   let remoteURL: String?
   let subTaskID: UUID
+  let createdAt: Date
 }
 
 // MARK: - Extensions

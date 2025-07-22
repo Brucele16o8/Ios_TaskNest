@@ -14,8 +14,24 @@
             filePath = "TaskNest/Features/CategoryDetailView/Views/CategoryDetailView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A90B86F7-94BD-484B-9EA4-319DC599907D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TaskNest/Features/CategoryDetailView/Views/SubTaskRowView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>

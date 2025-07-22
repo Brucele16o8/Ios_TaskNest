@@ -9,6 +9,7 @@ enum AppRoute: Hashable, Equatable {
   case auth(authRoute: AuthRoute)
   case home
   case category(categoryItem: CategoryItem)
+  case taskDetail(taskItem: TaskItemItem)
   case photoViewer(startingAt: Int, photoAttachmentItems: [PhotoAttachmentItem])
   
   static func ==(lhs: AppRoute, rhs: AppRoute) -> Bool {
@@ -17,8 +18,12 @@ enum AppRoute: Hashable, Equatable {
       return lhsAuthRoute == rhsAuthRoute
     case (.home, .home):
       return true
-      case (.category(let lhsCategoryItem), .category(let rhsCategoryItem)):
+    case (.category(let lhsCategoryItem), .category(let rhsCategoryItem)):
       return lhsCategoryItem == rhsCategoryItem
+    case (.photoViewer(let lhsStartingAt, let lhsPhotoAttachmentItems), .photoViewer(let rhsStartingAt, let rhsPhotoAttachmentItems)):
+      return lhsStartingAt == rhsStartingAt && lhsPhotoAttachmentItems == rhsPhotoAttachmentItems
+    case (.taskDetail(let lhsTaskItem), .taskDetail(let rhsTaskItem)):
+       return lhsTaskItem == rhsTaskItem
     default:
       return false
     }
@@ -38,6 +43,9 @@ enum AppRoute: Hashable, Equatable {
       hasher.combine("photoViewer")
       hasher.combine(startingAt)
       hasher.combine(photoAttachmentItems)
+    case .taskDetail(taskItem: let taskItem):
+      hasher.combine("TaskDetail")
+      hasher.combine(taskItem)
     }
   }
   

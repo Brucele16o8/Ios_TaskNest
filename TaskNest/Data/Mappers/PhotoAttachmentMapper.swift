@@ -31,7 +31,8 @@ enum PhotoAttachmentMapper {
       id: photoAttachment.id,
       localPath: photoAttachment.localPath,
       remoteURL: photoAttachment.remoteURL,
-      subTaskId: subTaskId
+      subTaskId: subTaskId,
+      createdAt: photoAttachment.createdAt
     )
   }
   
@@ -41,6 +42,7 @@ enum PhotoAttachmentMapper {
       id: entity.id,
       localPath: entity.localPath,
       remoteURL: entity.remoteURL,
+      createdAt: entity.createdAt
     )
   }
   
@@ -49,7 +51,8 @@ enum PhotoAttachmentMapper {
       id: entity.id,
       localPath: entity.localPath,
       remoteURL: entity.remoteURL,
-      subTaskID: entity.subTaskID
+      subTaskID: entity.subTaskID,
+      createdAt: entity.createdAt
     )
   }
   

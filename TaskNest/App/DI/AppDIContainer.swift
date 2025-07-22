@@ -157,6 +157,24 @@ final class AppDIContainer {
       GetTaskItemEntitiesByCategoryEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
     }.inObjectScope(.container)
     
+    /// Use cases for SubTask
+    container.register(GetAllSubTaskEntitiesOfTaskIdUseCase.self) { r in
+      GetAllSubTaskEntitiesOfTaskIdUseCase(subTaskRepository: r.resolve(SubTaskRepository.self )!)
+    }.inObjectScope(.container)
+    
+    container.register(UpdateSubTaskUseEntityCase.self) { r in
+      UpdateSubTaskUseEntityCase(subTaskRepository: r.resolve(SubTaskRepository.self )!)
+    }.inObjectScope(.container)
+    
+    
+    container.register(DeleteSubTaskEntityUseCase.self) { r in
+      DeleteSubTaskEntityUseCase(subTaskRepository: r.resolve(SubTaskRepository.self)!)
+    }.inObjectScope(.container)
+    
+    /// Use cases for PhotoAttachments
+    container.register(GetAllPhotoAttachmentEntitiesOfSubTaskId.self) { r in
+      GetAllPhotoAttachmentEntitiesOfSubTaskId(photoAttachmentRepository: r.resolve(PhotoAttachmentRepository.self)!)
+    }
     
     Logger.d(tag: "DIContainer", message: "Successful registerUseCases")
   }
@@ -199,13 +217,23 @@ final class AppDIContainer {
       )
     }.inObjectScope(.container)
     
-    container.register(CategoryDetailViewModel.self) { (r: Resolver, categoryItem: CategoryItem )in
+    container.register(CategoryDetailViewModel.self) { (r: Resolver, categoryItem: CategoryItem ) in  // Category Item View model
       CategoryDetailViewModel(
         categoryItem: categoryItem,
         appCoordinator: r.resolve(AppCoordinator.self)!,
-        getTaskItemEntitiesByCategoryEntityUseCase: r.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!
+        getTaskItemEntitiesByCategoryEntityUseCase: r.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!,
+        updateTaskItemEntityUseCase: r.resolve(UpdateTaskItemEntityUseCase.self)!,
+        deleteTaskItemEntityUseCase: r.resolve(DeleteTaskItemEntityUseCase.self)!
       )
     }.inObjectScope(.graph)
+    
+    container.register(TaskItemDetailViewModel.self) { (r: Resolver, taskItem: TaskItemItem ) in
+      TaskItemDetailViewModel(
+        taskItem: taskItem,
+        appCoordinatoor: r.resolve(AppCoordinator.self)!
+      )
+    }.inObjectScope(.graph)
+    
     
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }

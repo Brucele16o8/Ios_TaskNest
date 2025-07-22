@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GetAllSubTaskEntitiesOfTaskId {
+struct GetAllSubTaskEntitiesOfTaskIdUseCase {
   private let subTaskRepository: SubTaskRepository
   
   init(subTaskRepository: SubTaskRepository) {

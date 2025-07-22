@@ -13,17 +13,20 @@ struct PhotoAttachmentEntity: Identifiable {
   var localPath: String?
   var remoteURL: String?
   var subTaskID: UUID
+  var createdAt: Date
   
   init (
     id: UUID = .init(),
     localPath: String? = nil,
     remoteURL: String? = nil,
-    subTaskId: UUID
+    subTaskId: UUID,
+    createdAt: Date = Date()
   ) {
     self.id = id
     self.localPath = localPath
     self.remoteURL = remoteURL
     self.subTaskID = subTaskId
+    self.createdAt = createdAt
   }
 }
 

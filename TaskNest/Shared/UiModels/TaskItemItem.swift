@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct TaskItemItem: Identifiable, Equatable, Sendable {
+struct TaskItemItem: Identifiable, Equatable, Sendable, Hashable {
   let id: UUID = UUID()
-  let title: String
-  let isCompleted: Bool
+  var title: String
+  var isCompleted: Bool
   let createdAt: Date
   let categoryId: UUID
   let userId: String

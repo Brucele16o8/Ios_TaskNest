@@ -76,4 +76,14 @@ enum SubTaskMapper {
     )
   }
   
+  // MARK: - From Item to Entity
+  static func fromItemToEntity(_ subTaskItem: SubTaskItem) -> SubTaskEntity {
+    return SubTaskEntity(
+      id: subTaskItem.id,
+      title: subTaskItem.title,
+      createdAt: subTaskItem.createdAt,
+      taskId: subTaskItem.taskId,
+    )
+  }
+  
 } // 🧱

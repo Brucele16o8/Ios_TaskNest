@@ -48,9 +48,7 @@ final class MockTaskItemRepository: TaskItemRepository {
   }
   
   func getTaskItemsByCategory(categoryEntityId: UUID) async throws -> [TaskItemEntity] {
-    let taskItems = TaskItem.all.filter { $0.category?.id == categoryEntityId }
-    return try taskItems.map { try $0.mapToTaskItemEntity }
-    // wrong - change later
+    return TaskItemEntity.all
   }
   
 } // 🧱

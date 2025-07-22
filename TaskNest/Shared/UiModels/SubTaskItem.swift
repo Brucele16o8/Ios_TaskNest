@@ -9,8 +9,8 @@ import Foundation
 
 struct SubTaskItem: Identifiable, Equatable, Sendable {
   let id: UUID
-  let title: String
-  let isCompleted: Bool
+  var title: String
+  var isCompleted: Bool
   let createdAt: Date
   let taskId: UUID
 }
