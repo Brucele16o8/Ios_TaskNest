@@ -21,23 +21,28 @@ class CategoryDetailViewModel: ObservableObject {
   
   // Use cases
   private let appCoordinator: AppCoordinator
+  private let authManager: AuthManager
   private let getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase!
   
   private let updateTaskItemEntityUseCase: UpdateTaskItemEntityUseCase
   private let deleteTaskItemEntityUseCase: DeleteTaskItemEntityUseCase
+  private let saveTaskItemEntityUseCase: SaveTaskItemEntityUseCase
   
   init(categoryItem: CategoryItem,
        appCoordinator: AppCoordinator,
+       authManager: AuthManager,
        getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase,
        updateTaskItemEntityUseCase: UpdateTaskItemEntityUseCase,
-       deleteTaskItemEntityUseCase: DeleteTaskItemEntityUseCase
-       
+       deleteTaskItemEntityUseCase: DeleteTaskItemEntityUseCase,
+       saveTaskItemEntityUseCase: SaveTaskItemEntityUseCase
   ) {
     self.categoryItem = categoryItem
     self.appCoordinator = appCoordinator
+    self.authManager = authManager
     self.getTaskItemEntitiesByCategoryEntityUseCase = getTaskItemEntitiesByCategoryEntityUseCase
     self.updateTaskItemEntityUseCase = updateTaskItemEntityUseCase
     self.deleteTaskItemEntityUseCase = deleteTaskItemEntityUseCase
+    self.saveTaskItemEntityUseCase = saveTaskItemEntityUseCase
   }
   
   
@@ -74,9 +79,47 @@ class CategoryDetailViewModel: ObservableObject {
     }
   }
   
+  // MARK: - Task Item manipulation
+  func addNewTaskItem() async {
+    Logger.d(tag: "SaveTaskItem", message: "Inside addNewTaskItem - HomeViewModel")
+    guard !categoryDetailUiState.newTaskTitle.isEmpty else {
+      categoryDetailUiState.errorMessage = "Task title cannot be empty."
+      return
+    }
+    guard let userId = authManager.currentUser?.id else {
+      categoryDetailUiState.errorMessage = "Cannot get current user id"
+      return
+    }
+    
+    
+    let newTaskItem = TaskItem(
+      id: UUID(),
+      title: categoryDetailUiState.newTaskTitle,
+      isCompleted: false,
+      createdAt: Date(),
+      userId: userId)
+    
+    do {
+      try await saveTaskItemEntityUseCase(newTaskItem.mapToTaskItemEntity)
+    } catch let appError as AppError {
+      categoryDetailUiState.errorMessage = appError.localizedDescription
+    } catch {
+      categoryDetailUiState.errorMessage = "Something went wrong while adding a new task item."
+    }
+    
+    await start()
+  }
+  
+  // MARK: - Navigation
   // ✅ - Go back to previous screen
   func goBack() {
     appCoordinator.goBack()
+  }
+  
+  
+  // MARK: - Update for binding
+  func updateNewTaskItemTitle(_ newTitle: String) {
+    categoryDetailUiState.newTaskTitle = newTitle
   }
   
 } // 🧱

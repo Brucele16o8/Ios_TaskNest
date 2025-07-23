@@ -157,6 +157,18 @@ final class AppDIContainer {
       GetTaskItemEntitiesByCategoryEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
     }.inObjectScope(.container)
     
+    container.register(UpdateTaskItemEntityUseCase.self) { r in
+      UpdateTaskItemEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(DeleteTaskItemEntityUseCase.self) { r in
+      DeleteTaskItemEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
+    }.inObjectScope(.container)
+    
+    container.register(SaveTaskItemEntityUseCase.self) { r in
+      SaveTaskItemEntityUseCase(taskItemRepository: r.resolve(TaskItemRepository.self)!)
+    }.inObjectScope(.container)
+    
     /// Use cases for SubTask
     container.register(GetAllSubTaskEntitiesOfTaskIdUseCase.self) { r in
       GetAllSubTaskEntitiesOfTaskIdUseCase(subTaskRepository: r.resolve(SubTaskRepository.self )!)
@@ -221,9 +233,11 @@ final class AppDIContainer {
       CategoryDetailViewModel(
         categoryItem: categoryItem,
         appCoordinator: r.resolve(AppCoordinator.self)!,
+        authManager: r.resolve(AuthManager.self)!,
         getTaskItemEntitiesByCategoryEntityUseCase: r.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!,
         updateTaskItemEntityUseCase: r.resolve(UpdateTaskItemEntityUseCase.self)!,
-        deleteTaskItemEntityUseCase: r.resolve(DeleteTaskItemEntityUseCase.self)!
+        deleteTaskItemEntityUseCase: r.resolve(DeleteTaskItemEntityUseCase.self)!,
+        saveTaskItemEntityUseCase: r.resolve(SaveTaskItemEntityUseCase.self)!
       )
     }.inObjectScope(.graph)
     
@@ -232,8 +246,7 @@ final class AppDIContainer {
         taskItem: taskItem,
         appCoordinatoor: r.resolve(AppCoordinator.self)!
       )
-    }.inObjectScope(.graph)
-    
+    }.inObjectScope(.graph)    
     
     Logger.d(tag: "DIContainer", message: "Successful registerViewModels")
   }

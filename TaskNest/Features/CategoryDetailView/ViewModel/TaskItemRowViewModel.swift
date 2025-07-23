@@ -28,19 +28,29 @@ final class TaskItemRowViewModel {
   }
   
   // MARK: TaskItem manipulation
-  func updateTaskItem() async throws {
-    try await onUpdate(taskItem.mapToEntity)
+  func delteTaskItem() async {
+    do {
+      try await onDelete(taskItem.id)
+    } catch let appError as AppError {
+      errorMessage = appError.localizedDescription
+    } catch {
+      errorMessage = "Error when deleting task items"
+    }
+  }
+  
+  func updateTaskItem() async {
+    do {
+      try await onUpdate(taskItem.mapToEntity)
+    } catch let appError as AppError {
+      errorMessage = appError.localizedDescription
+    } catch {
+      errorMessage = "Error when updating task items"
+    }
   }
   
   func toggleCompletion() async {
     taskItem.isCompleted.toggle()
-    do {
-      try await updateTaskItem()
-    } catch let appError as AppError {
-      errorMessage = appError.localizedDescription
-    } catch {
-      errorMessage = "Error when fetching photoAttachment items"
-    }
+    await updateTaskItem()
   }
   
   // MARK: Navigation

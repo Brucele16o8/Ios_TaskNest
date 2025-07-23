@@ -41,8 +41,27 @@ struct TaskItemRowView: View {
       viewModel.onCliked(taskItem)
     }
     .padding()
-    .background(Color.backgroundColor3.opacity(0.6))
-    .cornerRadius(12)
+    .background(
+      ZStack {
+        RoundedRectangle(cornerRadius: 12)
+          .fill(Color.white)
+        RoundedRectangle(cornerRadius: 12)
+          .fill(Color.backgroundColor3.opacity(0.6))
+      }
+    )
+    .overlay {
+      RoundedRectangle(cornerRadius: 12)
+        .stroke(Color.gray.opacity(0.25), lineWidth: 1)
+    }
+    .swipeActions {
+      Button(role: .destructive) {
+        Task {
+          await viewModel.delteTaskItem()
+        }
+      } label: {
+        Label("Delete", systemImage: "trash")
+      }
+    }
   }
 }
 

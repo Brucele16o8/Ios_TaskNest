@@ -71,6 +71,7 @@ struct RootAppView: View {
           CategoryDetailView(
             viewModel: categoryDetailViewModel
           )
+          .withScopedErrorAlert()
         case .taskDetail(taskItem: let taskItem):
           let taskItemDetailViewModel = container.resolve(TaskItemDetailViewModel.self, argument: taskItem)!
           TaskItemDetailView(
