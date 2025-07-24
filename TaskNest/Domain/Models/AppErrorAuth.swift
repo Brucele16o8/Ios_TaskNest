@@ -11,9 +11,13 @@ enum AppErrorAuth: LocalizedError {
   case cancelled
   case noInternet
   case invalidCredentials
-  case unknown(message: String)
   case unauthorized(message: String)
   case unauthenticated(message: String)
+  
+  /// for the case of creating new task item
+  case userNotFound
+  
+  case unknown(message: String)
   
   // 🧩
   public var errorDescription: String? {
@@ -32,6 +36,9 @@ enum AppErrorAuth: LocalizedError {
       
     case .unauthenticated(message: let message):
       return "Authentication error - \(message)"
+      
+    case .userNotFound:
+      return "User not found"
       
     case .unknown(let message):
       return "Auth error \(message)"
@@ -55,6 +62,9 @@ enum AppErrorAuth: LocalizedError {
       
     case .unauthenticated(message: let message):
       return "Authentication error - \(message)"
+      
+    case .userNotFound:
+      return "User or userId not found"
       
     case .unknown(let message):
       return "Unknown authentication error: \(message)"

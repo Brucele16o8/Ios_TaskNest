@@ -16,6 +16,8 @@ class CategoryDetailViewModel: ObservableObject {
   private(set) var categoryDetailUiState: CategoryDetailUiState = .init()
   var state: CategoryDetailUiState { categoryDetailUiState }
   
+  private(set) var errorPresenter: AlertErrorPresenter
+  
   // TaskItem view models
   private(set) var taskItemViewModels: [TaskItemRowViewModel] = []
   
@@ -34,7 +36,8 @@ class CategoryDetailViewModel: ObservableObject {
        getTaskItemEntitiesByCategoryEntityUseCase: GetTaskItemEntitiesByCategoryEntityUseCase,
        updateTaskItemEntityUseCase: UpdateTaskItemEntityUseCase,
        deleteTaskItemEntityUseCase: DeleteTaskItemEntityUseCase,
-       saveTaskItemEntityUseCase: SaveTaskItemEntityUseCase
+       saveTaskItemEntityUseCase: SaveTaskItemEntityUseCase,
+       errorPresenter: AlertErrorPresenter
   ) {
     self.categoryItem = categoryItem
     self.appCoordinator = appCoordinator
@@ -43,6 +46,7 @@ class CategoryDetailViewModel: ObservableObject {
     self.updateTaskItemEntityUseCase = updateTaskItemEntityUseCase
     self.deleteTaskItemEntityUseCase = deleteTaskItemEntityUseCase
     self.saveTaskItemEntityUseCase = saveTaskItemEntityUseCase
+    self.errorPresenter = errorPresenter
   }
   
   
@@ -68,14 +72,13 @@ class CategoryDetailViewModel: ObservableObject {
             },
             onCliked: { taskItem in
               self.appCoordinator.navigate(to: AppRoute.taskDetail(taskItem: taskItem))
-            }
+            },
+            errorPresenter: errorPresenter
           )
         }
       
-    } catch let appError as AppError {
-      categoryDetailUiState.errorMessage = appError.localizedDescription
     } catch {
-      categoryDetailUiState.errorMessage = "Error when fetching task items"
+      errorPresenter.present(error)
     }
   }
   
@@ -83,28 +86,27 @@ class CategoryDetailViewModel: ObservableObject {
   func addNewTaskItem() async {
     Logger.d(tag: "SaveTaskItem", message: "Inside addNewTaskItem - HomeViewModel")
     guard !categoryDetailUiState.newTaskTitle.isEmpty else {
-      categoryDetailUiState.errorMessage = "Task title cannot be empty."
+      errorPresenter.present(AppError.validation(.emptyTitle))
       return
     }
     guard let userId = authManager.currentUser?.id else {
-      categoryDetailUiState.errorMessage = "Cannot get current user id"
+      errorPresenter.present(AppError.auth(.userNotFound))
       return
     }
     
     
-    let newTaskItem = TaskItem(
+    let newTaskItem = TaskItemItem(
       id: UUID(),
       title: categoryDetailUiState.newTaskTitle,
       isCompleted: false,
       createdAt: Date(),
+      categoryId: categoryItem.id,
       userId: userId)
     
     do {
-      try await saveTaskItemEntityUseCase(newTaskItem.mapToTaskItemEntity)
-    } catch let appError as AppError {
-      categoryDetailUiState.errorMessage = appError.localizedDescription
+      try await saveTaskItemEntityUseCase(newTaskItem.mapToEntity)
     } catch {
-      categoryDetailUiState.errorMessage = "Something went wrong while adding a new task item."
+      errorPresenter.present(error)
     }
     
     await start()

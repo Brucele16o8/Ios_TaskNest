@@ -237,7 +237,8 @@ final class AppDIContainer {
         getTaskItemEntitiesByCategoryEntityUseCase: r.resolve(GetTaskItemEntitiesByCategoryEntityUseCase.self)!,
         updateTaskItemEntityUseCase: r.resolve(UpdateTaskItemEntityUseCase.self)!,
         deleteTaskItemEntityUseCase: r.resolve(DeleteTaskItemEntityUseCase.self)!,
-        saveTaskItemEntityUseCase: r.resolve(SaveTaskItemEntityUseCase.self)!
+        saveTaskItemEntityUseCase: r.resolve(SaveTaskItemEntityUseCase.self)!,
+        errorPresenter: r.resolve(AlertErrorPresenter.self)!
       )
     }.inObjectScope(.graph)
     
@@ -261,6 +262,14 @@ final class AppDIContainer {
     container.register(NetworkService.self) { _ in
       NetworkManager()
     }.inObjectScope(.container)
+    
+    container.register(AlertErrorPresenter.self) { _ in
+      AlertErrorPresenter()
+    }.inObjectScope(.graph)
+    
+    container.register(ErrorPresenter.self) { r in    /// register Error Presenter
+      r.resolve(AlertErrorPresenter.self)!
+    }.inObjectScope(.graph)
     
     Logger.d(tag: "DIContainer", message: "Successful registerManagers")
   }

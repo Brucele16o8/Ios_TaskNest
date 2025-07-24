@@ -34,7 +34,8 @@ struct RootAppView: View {
         case .main:
           HomeView(
             homeViewModel: container.resolve(HomeViewModel.self)!,
-            appCoordinator: container.resolve(AppCoordinator.self)!
+            appCoordinator: container.resolve(AppCoordinator.self)!,
+            errorPresenter: container.resolve(AlertErrorPresenter.self)!,
           )
           .transition(.slide)
           .id("main")
@@ -64,14 +65,14 @@ struct RootAppView: View {
         case .home:
           HomeView(
             homeViewModel: container.resolve(HomeViewModel.self)!,
-            appCoordinator: appCoordinator
+            appCoordinator: appCoordinator,
+            errorPresenter: container.resolve(AlertErrorPresenter.self)!
           )
         case .category(let categoryItem):
           let categoryDetailViewModel = container.resolve(CategoryDetailViewModel.self, argument: categoryItem)!
           CategoryDetailView(
             viewModel: categoryDetailViewModel
           )
-          .withScopedErrorAlert()
         case .taskDetail(taskItem: let taskItem):
           let taskItemDetailViewModel = container.resolve(TaskItemDetailViewModel.self, argument: taskItem)!
           TaskItemDetailView(

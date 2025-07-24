@@ -13,38 +13,37 @@ final class TaskItemRowViewModel {
   var onDelete: (UUID) async throws -> Void
   var onUpdate: (TaskItemEntity) async throws -> Void
   var onCliked: (TaskItemItem) -> Void
-  var errorMessage: String = ""
+  
+  private let errorPresenter: ErrorPresenter
   
   init(
     taskItem: TaskItemItem,
     onDelete: @escaping (UUID) async throws -> Void,
     onUpdate: @escaping (TaskItemEntity) async throws -> Void,
-    onCliked: @escaping (TaskItemItem) -> Void
+    onCliked: @escaping (TaskItemItem) -> Void,
+    errorPresenter: ErrorPresenter
   ) {
     self.taskItem = taskItem
     self.onDelete = onDelete
     self.onUpdate = onUpdate
     self.onCliked = onCliked
+    self.errorPresenter = errorPresenter
   }
   
   // MARK: TaskItem manipulation
   func delteTaskItem() async {
     do {
       try await onDelete(taskItem.id)
-    } catch let appError as AppError {
-      errorMessage = appError.localizedDescription
     } catch {
-      errorMessage = "Error when deleting task items"
+      errorPresenter.present(error)
     }
   }
   
   func updateTaskItem() async {
     do {
       try await onUpdate(taskItem.mapToEntity)
-    } catch let appError as AppError {
-      errorMessage = appError.localizedDescription
     } catch {
-      errorMessage = "Error when updating task items"
+      errorPresenter.present(error)
     }
   }
   

@@ -73,7 +73,8 @@ struct TaskItemRowView: View {
       taskItem: TaskItemEntity.taskItem2.maptoTaskItemItem,
       onDelete: { _ in },
       onUpdate: { _ in },
-      onCliked: { _ in }
+      onCliked: { _ in },
+      errorPresenter: container.resolve(ErrorPresenter.self)!
     )
   )
 }

@@ -7,7 +7,6 @@
 
 struct CategoryDetailUiState: Equatable {
   var isLoading: Bool = false
-  var errorMessage: String = ""
   var taskItems: [TaskItemItem] = []
   var newTaskTitle: String = ""
 }

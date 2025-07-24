@@ -10,6 +10,8 @@ import SwiftUI
 struct HomeView: View {
   @Bindable private(set) var homeViewModel: HomeViewModel
   @Bindable private(set) var appCoordinator: AppCoordinator
+  @StateObject var errorPresenter: AlertErrorPresenter
+  
   private let columns = [GridItem(.adaptive(minimum: 80), spacing: 16)]
   
   var body: some View {
@@ -112,6 +114,13 @@ struct HomeView: View {
     .onAppear {
       Logger.d(tag: "HomeView", message: "Appeared with path: \(appCoordinator.navigationPath)")
     }
+    .alert(item: $errorPresenter.currentError) { error in
+      Alert(
+        title: Text(error.title),
+        message: Text(error.description),
+        dismissButton: .default(Text("OK"))
+      )
+    }
   }
 }
 
@@ -120,5 +129,6 @@ struct HomeView: View {
   HomeView(
     homeViewModel: container.resolve(HomeViewModel.self)!,
     appCoordinator: container.resolve(AppCoordinator.self)!,
+    errorPresenter: container.resolve(AlertErrorPresenter.self)!,
   )
 }

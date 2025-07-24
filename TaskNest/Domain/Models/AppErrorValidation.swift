@@ -17,6 +17,10 @@ enum ValidationError: LocalizedError {
   case passwordMismatch
   case tooShortUsername(min: Int)
   
+  /// new for creating task item
+  case emptyTitle
+  case unknown
+  
   
   var errorDescription: String? {
     switch self {
@@ -36,6 +40,10 @@ enum ValidationError: LocalizedError {
           return "Passwords do not match."
     case .tooShortUsername(min: let min):
       return "Username must be at least 6 characters."
+    case .emptyTitle:
+      return "Title must not be empty"
+    case .unknown:
+      return "Unkown validation error"
     }
   }
   

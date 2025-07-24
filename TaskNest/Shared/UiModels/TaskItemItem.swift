@@ -8,7 +8,7 @@
 import Foundation
 
 struct TaskItemItem: Identifiable, Equatable, Sendable, Hashable {
-  let id: UUID = UUID()
+  let id: UUID
   var title: String
   var isCompleted: Bool
   let createdAt: Date

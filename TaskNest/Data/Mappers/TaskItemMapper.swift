@@ -54,6 +54,7 @@ enum TaskItemMapper {
   
   static func fromEntityToItem(_ taskItemEntity: TaskItemEntity) -> TaskItemItem {
     TaskItemItem(
+      id: taskItemEntity.id,
       title: taskItemEntity.title,
       isCompleted: taskItemEntity.isCompleted,
       createdAt: taskItemEntity.createdAt,
