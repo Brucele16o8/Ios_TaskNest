@@ -11,16 +11,24 @@ import SwiftUI
 @Observable
 final class TaskItemDetailViewModel {
   let taskItem: TaskItemItem
-  let appCoordinatoor: AppCoordinator
+  
+  // State
+  private(set) var errorPresenter: AlertErrorPresenter
+  
+  private let appCoordinator: AppCoordinator
   
   init(
     taskItem: TaskItemItem,
-    appCoordinatoor: AppCoordinator
+    appCoordinator: AppCoordinator,
+    errorPresenter: AlertErrorPresenter
   ) {
     self.taskItem = taskItem
-    self.appCoordinatoor = appCoordinatoor
+    self.appCoordinator = appCoordinator
+    self.errorPresenter = errorPresenter
+  }  
+  
+  // ✅
+  func goBack() {
+    appCoordinator.goBack()
   }
-  
-  
-  
 } // 🧱

@@ -32,7 +32,6 @@ final class AppCoordinator {
     routeHistory.removeAll()
   }
   
-  
   // ✅
   func navigate(to route: AppRoute, allowDuplicate: Bool = false, isInternalCall: Bool = false) {
     guard isInternalCall || !isNavigating else {

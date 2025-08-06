@@ -191,7 +191,7 @@ final class HomeViewModel {
     }
   }
   
-  // ✅ - Nvaigation
+  // ✅ - Navigation
   func navigateToCategoryDetailView(for categoryItem: CategoryItem) {
     Logger.d(tag: "HomeViewModel", message: "Inside navigateToCategoryDetailView")
     appCoordinator.navigate(to: .category(categoryItem: categoryItem))

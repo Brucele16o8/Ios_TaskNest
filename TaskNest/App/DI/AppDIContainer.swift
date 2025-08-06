@@ -245,7 +245,8 @@ final class AppDIContainer {
     container.register(TaskItemDetailViewModel.self) { (r: Resolver, taskItem: TaskItemItem ) in
       TaskItemDetailViewModel(
         taskItem: taskItem,
-        appCoordinatoor: r.resolve(AppCoordinator.self)!
+        appCoordinator: r.resolve(AppCoordinator.self)!,
+        errorPresenter: r.resolve(AlertErrorPresenter.self)!,
       )
     }.inObjectScope(.graph)    
     
@@ -263,7 +264,7 @@ final class AppDIContainer {
       NetworkManager()
     }.inObjectScope(.container)
     
-    container.register(AlertErrorPresenter.self) { _ in
+    container.register(AlertErrorPresenter.self) { _ in /// register Alert Error Presenter
       AlertErrorPresenter()
     }.inObjectScope(.graph)
     
